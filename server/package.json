@@ -1,0 +1,47 @@
+{
+  "name": "intelligent-automation-testing-backend",
+  "version": "1.0.0",
+  "description": "Production-ready backend for Generative AI-based Intelligent Automation Testing System",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "eslint src/",
+    "build": "echo 'Backend ready for deployment'"
+  },
+  "keywords": [
+    "testing",
+    "ai",
+    "automation",
+    "quality-assurance"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.6.0",
+    "dotenv": "^16.3.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "express-rate-limit": "^7.1.5",
+    "cors": "^2.8.5",
+    "express-validator": "^7.0.1",
+    "axios": "^1.6.2",
+    "multer": "^1.4.5-lts.1",
+    "xlsx": "^0.18.5",
+    "csv-parse": "^5.5.0",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "eslint": "^8.54.0",
+    "@types/node": "^20.10.0",
+    "@types/express": "^4.17.21"
+  }
+}

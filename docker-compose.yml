@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: ai-testing-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: ai-testing-system
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - ai-testing-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: ai-testing-backend
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://admin:password@mongodb:27017/ai-testing-system
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      JWT_EXPIRE: 7d
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      LOG_LEVEL: info
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - ai-testing-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:5000/api
+    container_name: ai-testing-frontend
+    ports:
+      - "3000:8080"
+    environment:
+      VITE_API_URL: http://backend:5000/api
+    depends_on:
+      - backend
+    networks:
+      - ai-testing-network
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  ai-testing-network:
+    driver: bridge
