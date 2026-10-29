@@ -266,12 +266,22 @@ export const googleAuth = async ({ credential, idToken, email, name, picture, go
     await user.save();
     logger.info(`New user registered via Google: ${verifiedEmail}`);
   } else {
-    // Existing user: Link Google account and update metadata
-    if (!user.googleId && verifiedSub) user.googleId = verifiedSub;
-    if (verifiedPicture && !user.profilePicture) user.profilePicture = verifiedPicture;
-    user.isEmailVerified = true;
-    user.lastLogin = new Date();
-    await user.save({ validateBeforeSave: false });
+    // Existing user: Link Google account and update metadata atomically
+    const updateFields = {
+      isEmailVerified: true,
+      lastLogin: new Date(),
+    };
+    if (!user.googleId && verifiedSub) updateFields.googleId = verifiedSub;
+    if (verifiedPicture && !user.profilePicture) updateFields.profilePicture = verifiedPicture;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      { $set: updateFields },
+      { new: true, runValidators: false }
+    );
+    if (updatedUser) {
+      user = updatedUser;
+    }
     logger.info(`Existing user logged in via Google: ${verifiedEmail}`);
   }
 
