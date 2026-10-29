@@ -9,19 +9,15 @@ const connectDB = async () => {
     Boolean(process.env.RENDER_SERVICE_ID) ||
     Boolean(process.env.VERCEL);
 
-  // If in cloud/production and no URI or pointing to localhost/127.0.0.1, skip attempting local connect
-  if (!mongoUri || mongoUri.includes('localhost') || mongoUri.includes('127.0.0.1')) {
-    if (isCloudOrProduction) {
-      logger.warn(
-        '⚠️ No cloud MongoDB Atlas URI found in cloud environment (MONGODB_URI is unset or points to localhost). ' +
-        'Please add your MongoDB Atlas connection string (mongodb+srv://...) in the Render Dashboard -> Environment tab. ' +
-        'Continuing in resilient mode without crashing.'
-      );
-      return null;
-    }
-  }
+  const defaultAtlasUri = 'mongodb+srv://genai_user:TestPass12345@cluster0.szjtmxo.mongodb.net/ai-testing-system?retryWrites=true&w=majority';
+  const rawUri = process.env.MONGODB_URI;
+  const uriToUse =
+    rawUri && !rawUri.includes('localhost') && !rawUri.includes('127.0.0.1')
+      ? rawUri
+      : isCloudOrProduction
+      ? defaultAtlasUri
+      : rawUri || 'mongodb://localhost:27017/ai-testing-system';
 
-  const uriToUse = mongoUri || 'mongodb://localhost:27017/ai-testing-system';
 
   try {
     const conn = await mongoose.connect(uriToUse, {

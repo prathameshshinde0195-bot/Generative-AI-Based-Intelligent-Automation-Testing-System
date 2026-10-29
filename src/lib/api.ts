@@ -1,11 +1,20 @@
 import axios from 'axios';
 import { useAppStore } from './store';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '/api' : 'http://127.0.0.1:5001/api');
+const PRODUCTION_BACKEND_URL = 'https://genai-testing-system-api.onrender.com/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.PROD ? PRODUCTION_BACKEND_URL : 'http://127.0.0.1:5001/api');
 const AUTH_BYPASS_PATHS = ['/auth/login', '/auth/register'];
 const IDEMPOTENT_METHODS = new Set(['get', 'head', 'options']);
-const AUTH_FALLBACK_BASES = import.meta.env.PROD ? [] : ['http://localhost:5001/api', 'http://127.0.0.1:5001/api', 'http://localhost:5000/api', 'http://127.0.0.1:5000/api'];
-const GLOBAL_FALLBACK_BASES = import.meta.env.PROD ? [] : ['http://localhost:5001/api', 'http://127.0.0.1:5001/api', 'http://localhost:5000/api', 'http://127.0.0.1:5000/api'];
+const AUTH_FALLBACK_BASES = import.meta.env.PROD
+  ? [PRODUCTION_BACKEND_URL]
+  : ['http://localhost:5001/api', 'http://127.0.0.1:5001/api', 'http://localhost:5000/api', 'http://127.0.0.1:5000/api'];
+const GLOBAL_FALLBACK_BASES = import.meta.env.PROD
+  ? [PRODUCTION_BACKEND_URL]
+  : ['http://localhost:5001/api', 'http://127.0.0.1:5001/api', 'http://localhost:5000/api', 'http://127.0.0.1:5000/api'];
+
 
 export type ApiEnvelope<T> = {
   success: boolean;
