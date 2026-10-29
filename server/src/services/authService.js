@@ -68,7 +68,8 @@ export const login = async (email, password) => {
     throw new ValidationError('Email and password are required');
   }
 
-  const user = await User.findOne({ email }).select('+password');
+  const cleanEmail = String(email).toLowerCase().trim();
+  const user = await User.findOne({ email: cleanEmail }).select('+password');
 
   if (!user) {
     throw new AuthenticationError('Invalid email or password');
@@ -84,13 +85,16 @@ export const login = async (email, password) => {
     throw new AuthenticationError('Your account has been deactivated');
   }
 
-  // Update last login
-  user.lastLogin = new Date();
-  await user.save();
+  // Update last login safely without triggering VersionError
+  try {
+    await User.updateOne({ _id: user._id }, { $set: { lastLogin: new Date() } });
+  } catch (err) {
+    logger.warn(`Could not update lastLogin for ${cleanEmail}: ${err.message}`);
+  }
 
   const token = generateToken(user._id);
 
-  logger.info(`User logged in: ${email}`);
+  logger.info(`User logged in: ${cleanEmail}`);
 
   return {
     user: {
