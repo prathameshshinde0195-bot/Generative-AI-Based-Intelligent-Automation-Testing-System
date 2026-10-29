@@ -4,9 +4,16 @@ import { OAuth2Client } from 'google-auth-library';
 import User from '../models/User.js';
 import config from '../config/index.js';
 import { generateToken } from '../utils/jwt.js';
-import { ValidationError, AuthenticationError } from '../utils/errors.js';
+import { ValidationError, AuthenticationError, NotFoundError } from '../utils/errors.js';
 import logger from '../utils/logger.js';
 import { ensureDefaultProject } from './projectService.js';
+import {
+  sendWelcomeEmail,
+  sendSignInNotificationEmail,
+  sendVerificationEmail,
+  sendPasswordResetEmail,
+  sendPasswordChangedEmail,
+} from '../utils/emailService.js';
 
 const googleClient = new OAuth2Client(config.google?.clientId || undefined);
 
@@ -25,18 +32,20 @@ export const register = async (userData) => {
     throw new ValidationError('Password must be at least 6 characters');
   }
 
-  // Check if user exists
+  // Check if user already exists
   const existingUser = await User.findOne({ email: cleanEmail });
   if (existingUser) {
-    throw new ValidationError('An account with this email already exists');
+    throw new ValidationError('An account with this email address already exists');
   }
 
-  // Create user
+  // Create new user (default role: QA)
   const user = new User({
     name: cleanName,
     email: cleanEmail,
     password,
-    company: company || 'AI Test Org',
+    role: 'QA',
+    authProvider: 'local',
+    company: company || 'AI Testing Workspace',
     department: department || 'Quality Assurance',
   });
 
@@ -47,6 +56,11 @@ export const register = async (userData) => {
   } catch (projErr) {
     logger.warn(`Could not create default project for ${cleanEmail}: ${projErr.message}`);
   }
+
+  // Send Welcome Email (Email A) asynchronously without blocking response
+  sendWelcomeEmail(user).catch((err) => {
+    logger.warn(`Welcome email failed for ${cleanEmail}: ${err.message}`);
+  });
 
   const token = generateToken(user._id);
 
@@ -92,6 +106,11 @@ export const login = async (email, password) => {
     logger.warn(`Could not update lastLogin for ${cleanEmail}: ${err.message}`);
   }
 
+  // Send Sign-in notification (Email B) asynchronously if enabled
+  if (user.preferences?.emailNotifications || config.email?.enabled) {
+    sendSignInNotificationEmail(user, { method: 'Email & Password' }).catch(() => {});
+  }
+
   const token = generateToken(user._id);
 
   logger.info(`User logged in: ${cleanEmail}`);
@@ -103,6 +122,7 @@ export const login = async (email, password) => {
       email: user.email,
       role: user.role,
       preferences: user.preferences,
+      profilePicture: user.profilePicture,
     },
     token,
   };
@@ -112,7 +132,7 @@ export const getProfile = async (userId) => {
   const user = await User.findById(userId);
 
   if (!user) {
-    throw new Error('User not found');
+    throw new NotFoundError('User not found');
   }
 
   return user;
@@ -141,7 +161,7 @@ export const changePassword = async (userId, oldPassword, newPassword) => {
   const user = await User.findById(userId).select('+password');
 
   if (!user) {
-    throw new Error('User not found');
+    throw new NotFoundError('User not found');
   }
 
   const isPasswordValid = await user.matchPassword(oldPassword);
@@ -150,15 +170,129 @@ export const changePassword = async (userId, oldPassword, newPassword) => {
     throw new ValidationError('Current password is incorrect');
   }
 
+  if (!newPassword || newPassword.length < 6) {
+    throw new ValidationError('New password must be at least 6 characters long');
+  }
+
   user.password = newPassword;
   await user.save();
+
+  // Send Password Changed confirmation (Email E)
+  sendPasswordChangedEmail(user).catch(() => {});
 
   logger.info(`Password changed for user: ${user.email}`);
 
   return { message: 'Password changed successfully' };
 };
 
-export const googleAuth = async ({ credential, idToken, email, name, picture, googleId }) => {
+export const forgotPassword = async (email) => {
+  if (!email) {
+    throw new ValidationError('Please provide an email address');
+  }
+
+  const cleanEmail = String(email).toLowerCase().trim();
+  const user = await User.findOne({ email: cleanEmail });
+
+  if (!user) {
+    // Return generic success to prevent email enumeration attacks
+    return {
+      message: 'If an account with that email exists, a password reset link has been sent.',
+    };
+  }
+
+  // Generate cryptographically secure 32-byte token
+  const rawToken = crypto.randomBytes(32).toString('hex');
+  const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+  const tokenExpire = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+  await User.updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        resetPasswordToken: tokenHash,
+        resetPasswordExpire: tokenExpire,
+      },
+    }
+  );
+
+  // Send reset email (Email D) asynchronously
+  sendPasswordResetEmail(user, rawToken).catch((err) => {
+    logger.warn(`Could not send password reset email to ${cleanEmail}: ${err.message}`);
+  });
+
+  logger.info(`Password reset requested for: ${cleanEmail}`);
+
+  return {
+    message: 'If an account with that email exists, a password reset link has been sent.',
+  };
+};
+
+export const resetPassword = async (rawToken, newPassword) => {
+  if (!rawToken) {
+    throw new ValidationError('Password reset token is required');
+  }
+  if (!newPassword || newPassword.length < 6) {
+    throw new ValidationError('Password must be at least 6 characters long');
+  }
+
+  const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+  const user = await User.findOne({
+    resetPasswordToken: tokenHash,
+    resetPasswordExpire: { $gt: new Date() },
+  });
+
+  if (!user) {
+    throw new ValidationError('Password reset token is invalid or has expired');
+  }
+
+  user.password = newPassword;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  await user.save();
+
+  // Send confirmation email (Email E)
+  sendPasswordChangedEmail(user).catch(() => {});
+
+  logger.info(`Password successfully reset for: ${user.email}`);
+
+  return {
+    message: 'Password successfully reset. You can now sign in with your new password.',
+  };
+};
+
+export const verifyEmail = async (rawToken) => {
+  if (!rawToken) {
+    throw new ValidationError('Verification token is required');
+  }
+
+  const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+  const user = await User.findOne({
+    emailVerificationToken: tokenHash,
+    emailVerificationExpire: { $gt: new Date() },
+  });
+
+  if (!user) {
+    throw new ValidationError('Verification link is invalid or has expired');
+  }
+
+  await User.updateOne(
+    { _id: user._id },
+    {
+      $set: { isEmailVerified: true },
+      $unset: { emailVerificationToken: 1, emailVerificationExpire: 1 },
+    }
+  );
+
+  logger.info(`Email verified for user: ${user.email}`);
+
+  return {
+    message: 'Email address verified successfully. Thank you!',
+  };
+};
+
+export const googleAuth = async ({ credential, idToken, accessToken, email, name, picture, googleId }) => {
   let verifiedEmail = '';
   let verifiedName = '';
   let verifiedPicture = '';
@@ -166,9 +300,9 @@ export const googleAuth = async ({ credential, idToken, email, name, picture, go
 
   const tokenToVerify = credential || idToken;
 
+  // 1. If Google ID Token is provided (from Google Sign In button / One-Tap)
   if (tokenToVerify) {
     try {
-      // 1. Primary: Verify using official google-auth-library
       if (config.google?.clientId) {
         try {
           const ticket = await googleClient.verifyIdToken({
@@ -183,11 +317,10 @@ export const googleAuth = async ({ credential, idToken, email, name, picture, go
             verifiedSub = String(payload.sub || '').trim();
           }
         } catch (gErr) {
-          logger.warn(`google-auth-library verification ticket error: ${gErr.message}`);
+          logger.warn(`google-auth-library verify error: ${gErr.message}`);
         }
       }
 
-      // 2. TokenInfo endpoint fallback if not yet verified
       if (!verifiedEmail) {
         const tokenInfoRes = await axios.get(
           `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(tokenToVerify)}`,
@@ -196,12 +329,7 @@ export const googleAuth = async ({ credential, idToken, email, name, picture, go
         const payload = tokenInfoRes.data;
 
         if (!payload || !payload.email) {
-          throw new AuthenticationError('Invalid Google token payload');
-        }
-
-        // If client ID is configured, verify audience
-        if (config.google?.clientId && payload.aud && payload.aud !== config.google.clientId) {
-          logger.warn(`Google token audience mismatch: ${payload.aud} vs ${config.google.clientId}`);
+          throw new AuthenticationError('Invalid Google ID token payload');
         }
 
         verifiedEmail = String(payload.email).toLowerCase().trim();
@@ -210,8 +338,7 @@ export const googleAuth = async ({ credential, idToken, email, name, picture, go
         verifiedSub = String(payload.sub || '').trim();
       }
     } catch (err) {
-      logger.warn(`Google token verification via API failed: ${err.message}. Attempting safe JWT decode...`);
-      // Fallback: decode JWT payload if signed Google JWT format (header.payload.signature)
+      // Safe fallback decode if network lookup fails
       try {
         const parts = tokenToVerify.split('.');
         if (parts.length === 3) {
@@ -231,17 +358,38 @@ export const googleAuth = async ({ credential, idToken, email, name, picture, go
         throw new AuthenticationError('Google token verification failed: ' + (err.response?.data?.error_description || err.message));
       }
     }
-  } else if (email) {
-    // Direct verified payload format (e.g. from local tests or pre-verified client callback)
+  } else if (accessToken) {
+    // 2. If OAuth2 access_token is provided (from google.accounts.oauth2 account chooser)
+    try {
+      const userInfoRes = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        timeout: 8000,
+      });
+      const info = userInfoRes.data;
+      if (info && info.email) {
+        verifiedEmail = String(info.email).toLowerCase().trim();
+        verifiedName = String(info.name || info.given_name || verifiedEmail.split('@')[0]).trim();
+        verifiedPicture = String(info.picture || '').trim();
+        verifiedSub = String(info.sub || '').trim();
+      }
+    } catch (tokenErr) {
+      throw new AuthenticationError('Failed to verify Google access token: ' + (tokenErr.response?.data?.error_description || tokenErr.message));
+    }
+  } else if (email && process.env.NODE_ENV === 'test') {
+    // In automated testing environments only, permit synthetic test user
     verifiedEmail = String(email).toLowerCase().trim();
     verifiedName = String(name || verifiedEmail.split('@')[0]).trim();
     verifiedPicture = String(picture || '').trim();
     verifiedSub = String(googleId || `g_${Date.now()}`).trim();
   } else {
-    throw new ValidationError('Google credential or token is required');
+    throw new ValidationError('A valid Google credential, ID token, or access token is required');
   }
 
-  // Find user by googleId or email
+  if (!verifiedEmail) {
+    throw new AuthenticationError('Could not verify Google email address');
+  }
+
+  // Find user by Google Sub ID or Email
   let user = null;
   if (verifiedSub) {
     user = await User.findOne({ googleId: verifiedSub });
@@ -269,6 +417,9 @@ export const googleAuth = async ({ credential, idToken, email, name, picture, go
     });
     await user.save();
     logger.info(`New user registered via Google: ${verifiedEmail}`);
+
+    // Send Welcome Email (Email A)
+    sendWelcomeEmail(user).catch(() => {});
   } else {
     // Existing user: Link Google account and update metadata atomically
     const updateFields = {
@@ -287,6 +438,11 @@ export const googleAuth = async ({ credential, idToken, email, name, picture, go
       user = updatedUser;
     }
     logger.info(`Existing user logged in via Google: ${verifiedEmail}`);
+
+    // Send Sign-in notification (Email B)
+    if (user.preferences?.emailNotifications || config.email?.enabled) {
+      sendSignInNotificationEmail(user, { method: 'Google Account Chooser' }).catch(() => {});
+    }
   }
 
   try {
@@ -312,4 +468,3 @@ export const googleAuth = async ({ credential, idToken, email, name, picture, go
     message: isNewUser ? 'Welcome! Account created with Google.' : 'Welcome back!',
   };
 };
-

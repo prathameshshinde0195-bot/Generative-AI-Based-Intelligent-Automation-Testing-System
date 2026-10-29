@@ -52,6 +52,36 @@ export const changePassword = catchAsync(async (req, res) => {
   });
 });
 
+export const forgotPassword = catchAsync(async (req, res) => {
+  const { email } = req.body;
+  const result = await authService.forgotPassword(email);
+
+  res.status(200).json({
+    success: true,
+    message: result.message,
+  });
+});
+
+export const resetPassword = catchAsync(async (req, res) => {
+  const { token, newPassword } = req.body;
+  const result = await authService.resetPassword(token, newPassword);
+
+  res.status(200).json({
+    success: true,
+    message: result.message,
+  });
+});
+
+export const verifyEmail = catchAsync(async (req, res) => {
+  const token = req.params.token || req.body.token || req.query.token;
+  const result = await authService.verifyEmail(token);
+
+  res.status(200).json({
+    success: true,
+    message: result.message,
+  });
+});
+
 export const logout = catchAsync(async (req, res) => {
   res.status(200).json({
     success: true,
@@ -68,4 +98,3 @@ export const googleLogin = catchAsync(async (req, res) => {
     data: result,
   });
 });
-

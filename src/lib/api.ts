@@ -222,13 +222,16 @@ apiClient.interceptors.response.use(
 export const authAPI = {
   register: (data: Record<string, unknown>) => postAuthWithFallback('/auth/register', data),
   login: (email: string, password: string) => postAuthWithFallback('/auth/login', { email, password }),
-  googleLogin: (data: { credential?: string; email?: string; name?: string; picture?: string; googleId?: string }) =>
+  googleLogin: (data: { credential?: string; idToken?: string; accessToken?: string; email?: string; name?: string; picture?: string; googleId?: string }) =>
     postAuthWithFallback('/auth/google', data),
   logout: () => apiClient.post('/auth/logout'),
   getProfile: () => apiClient.get('/auth/profile'),
   getMe: () => apiClient.get('/auth/me'),
   updateProfile: (data: Record<string, unknown>) => apiClient.put('/auth/profile', data),
   changePassword: (data: Record<string, unknown>) => apiClient.post('/auth/change-password', data),
+  forgotPassword: (email: string) => apiClient.post('/auth/forgot-password', { email }),
+  resetPassword: (token: string, newPassword: string) => apiClient.post('/auth/reset-password', { token, newPassword }),
+  verifyEmail: (token: string) => apiClient.get(`/auth/verify-email/${token}`),
 };
 
 // AI APIs

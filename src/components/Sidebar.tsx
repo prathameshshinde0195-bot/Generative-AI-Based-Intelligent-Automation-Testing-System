@@ -47,7 +47,7 @@ export default function Sidebar() {
         </div>
         {!collapsed && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="overflow-hidden">
-            <h1 className="text-sm font-bold text-foreground tracking-tight leading-tight">GenAI Test</h1>
+            <h1 className="text-sm font-bold text-foreground tracking-tight leading-tight">JNET Testing</h1>
             <p className="text-[10px] text-muted font-medium">Automation System</p>
           </motion.div>
         )}

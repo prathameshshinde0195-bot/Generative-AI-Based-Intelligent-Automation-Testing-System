@@ -52,6 +52,20 @@ const config = {
     webhooks: process.env.ENABLE_WEBHOOKS === 'true',
     analytics: process.env.ENABLE_ANALYTICS === 'true',
   },
+
+  // Email Notification System (JNET Testing System)
+  email: {
+    enabled: process.env.ENABLE_EMAIL_NOTIFICATIONS === 'true',
+    from: process.env.SMTP_FROM || process.env.EMAIL_FROM || 'JNET Testing System <prathamdiploma@gmail.com>',
+    frontendUrl: process.env.FRONTEND_URL || 'https://generative-ai-based-intelligent-aut-delta.vercel.app',
+    smtp: {
+      host: process.env.SMTP_SERVER || process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      secure: process.env.SMTP_SECURE === 'true' || process.env.SMTP_PORT === '465',
+      user: process.env.SMTP_USER || '',
+      password: process.env.SMTP_PASSWORD || process.env.SMTP_PASS || '',
+    },
+  },
 };
 
 export default config;
