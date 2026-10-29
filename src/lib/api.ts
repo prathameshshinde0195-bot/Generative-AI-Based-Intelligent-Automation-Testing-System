@@ -24,10 +24,17 @@ export type ApiEnvelope<T> = {
 
 function getErrorPayload(error: unknown): { message: string; status?: number; details?: unknown } {
   if (typeof error === 'object' && error) {
-    const e = error as { message?: string; status?: number; errors?: unknown };
+    const e = error as {
+      message?: string;
+      status?: number;
+      errors?: unknown;
+      response?: { status?: number; data?: { message?: string } };
+    };
+    const status = e.status || e.response?.status;
+    const message = e.response?.data?.message || e.message || 'Request failed';
     return {
-      message: String(e.message || 'Request failed'),
-      status: e.status,
+      message: String(message),
+      status,
       details: e.errors,
     };
   }
@@ -207,7 +214,7 @@ apiClient.interceptors.response.use(
         // ignore store update issues
       }
     }
-    throw getErrorPayload(error.response?.data || error);
+    throw getErrorPayload(error);
   }
 );
 

@@ -36,68 +36,24 @@ export default function LoginPage() {
   const handleGoogleResponse = async (credential: string) => {
     setIsGoogleLoading(true);
     try {
-      const response = (await authAPI.googleLogin({ credential })) as {
-        data?: { user: any; token: string; message?: string };
-      };
-      if (response?.data) {
-        const { user, token, message } = response.data;
+      const response: any = await authAPI.googleLogin({ credential });
+      const payload = response?.data || response;
+      const user = payload?.user;
+      const token = payload?.token;
+      if (user && token) {
         setUser(user);
         setToken(token);
         setIsAuthenticated(true);
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        toast.success(message || `Signed in as ${user.name}`);
+        toast.success(payload.message || `Signed in as ${user.name}`);
         navigate('/');
+      } else {
+        throw new Error('Google sign-in did not return a valid user session');
       }
     } catch (err: any) {
       console.error('Google Auth Error:', err);
       toast.error(err?.message || 'Google authentication failed');
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
-  const handleDirectGoogleDemo = async () => {
-    setIsGoogleLoading(true);
-    try {
-      const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Backend connection timeout')), 3500)
-      );
-      const response = (await Promise.race([
-        authAPI.googleLogin({
-          email: 'prathameshshinde0195@gmail.com',
-          name: 'Prathamesh Shinde',
-          picture: 'https://lh3.googleusercontent.com/a/default-user',
-          googleId: 'google_oauth_' + Date.now(),
-        }),
-        timeoutPromise,
-      ])) as { data?: { user: any; token: string; message?: string } };
-      if (response?.data) {
-        const { user, token, message } = response.data;
-        setUser(user);
-        setToken(token);
-        setIsAuthenticated(true);
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        toast.success(message || `Signed in as ${user.name} via Google`);
-        navigate('/');
-      }
-    } catch (err: any) {
-      console.warn('Backend unavailable for Google Auth, activating resilient demo session:', err);
-      const demoUser = {
-        id: 'usr_demo_prathamesh',
-        name: 'Prathamesh Shinde',
-        email: 'prathameshshinde0195@gmail.com',
-        role: 'Admin' as const,
-      };
-      const demoToken = 'demo-jwt-token-reviewer-session';
-      setUser(demoUser);
-      setToken(demoToken);
-      setIsAuthenticated(true);
-      localStorage.setItem('token', demoToken);
-      localStorage.setItem('user', JSON.stringify(demoUser));
-      toast.success('Signed in as Prathamesh Shinde (Demo Mode)');
-      navigate('/');
     } finally {
       setIsGoogleLoading(false);
     }
@@ -131,6 +87,66 @@ export default function LoginPage() {
     }
   };
 
+  const handleDirectGoogleDemo = async () => {
+    setIsGoogleLoading(true);
+    try {
+      const response: any = await authAPI.googleLogin({
+        email: 'prathameshshinde0195@gmail.com',
+        name: 'Prathamesh Shinde',
+        picture: 'https://lh3.googleusercontent.com/a/default-user',
+        googleId: 'google_oauth_' + Date.now(),
+      });
+      const payload = response?.data || response;
+      const user = payload?.user;
+      const token = payload?.token;
+      if (user && token) {
+        setUser(user);
+        setToken(token);
+        setIsAuthenticated(true);
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        toast.success(payload.message || `Signed in as ${user.name} via Google`);
+        navigate('/');
+      } else {
+        throw new Error('Google sign-in did not return a valid session');
+      }
+    } catch (err: any) {
+      console.error('Google direct login error:', err);
+      toast.error(err?.message || 'Failed to sign in with Google account');
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
+  const handleQuickLogin = async (quickEmail: string, quickPass: string) => {
+    setEmail(quickEmail);
+    setPassword(quickPass);
+    setIsLogin(true);
+    setIsLoading(true);
+    try {
+      const response: any = await authAPI.login(quickEmail, quickPass);
+      const payload = response?.data || response;
+      const user = payload?.user;
+      const token = payload?.token;
+      if (user && token) {
+        setUser(user);
+        setToken(token);
+        setIsAuthenticated(true);
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        toast.success(`Welcome back, ${user.name}!`);
+        navigate('/');
+      } else {
+        throw new Error('Invalid credentials');
+      }
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || 'Quick login failed';
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -156,9 +172,11 @@ export default function LoginPage() {
 
     try {
       if (isLogin) {
-        const response = (await authAPI.login(cleanEmail, password)) as { data?: { user: any; token: string } };
-        if (response?.data) {
-          const { user, token } = response.data;
+        const response: any = await authAPI.login(cleanEmail, password);
+        const payload = response?.data || response;
+        const user = payload?.user;
+        const token = payload?.token;
+        if (user && token) {
           setUser(user);
           setToken(token);
           setIsAuthenticated(true);
@@ -166,17 +184,21 @@ export default function LoginPage() {
           localStorage.setItem('user', JSON.stringify(user));
           toast.success(`Welcome back, ${user.name}!`);
           navigate('/');
+        } else {
+          throw new Error('Invalid response received from authentication server');
         }
       } else {
-        const response = (await authAPI.register({
+        const response: any = await authAPI.register({
           name: cleanName,
           email: cleanEmail,
           password,
           company: 'AI Test Org',
           department: 'Quality Assurance',
-        })) as { data?: { user: any; token: string } };
-        if (response?.data) {
-          const { user, token } = response.data;
+        });
+        const payload = response?.data || response;
+        const user = payload?.user;
+        const token = payload?.token;
+        if (user && token) {
           setUser(user);
           setToken(token);
           setIsAuthenticated(true);
@@ -184,30 +206,12 @@ export default function LoginPage() {
           localStorage.setItem('user', JSON.stringify(user));
           toast.success('Account created successfully!');
           navigate('/');
+        } else {
+          throw new Error('Invalid response received from registration server');
         }
       }
     } catch (err: any) {
       console.error('Auth error details:', err);
-
-      const isNetworkError = !err?.status && !err?.response?.status;
-      if (isNetworkError) {
-        toast.info('Backend connecting... entering Demo Mode');
-        const demoUser = {
-          id: 'usr_demo_user',
-          name: cleanName || cleanEmail.split('@')[0] || 'Prathamesh Shinde',
-          email: cleanEmail,
-          role: 'Admin' as const,
-        };
-        const demoToken = 'demo-jwt-token-reviewer-session';
-        setUser(demoUser);
-        setToken(demoToken);
-        setIsAuthenticated(true);
-        localStorage.setItem('token', demoToken);
-        localStorage.setItem('user', JSON.stringify(demoUser));
-        navigate('/');
-        return;
-      }
-
       let msg = 'Authentication failed. Please check your details.';
       if (err?.response?.data?.message) {
         msg = err.response.data.message;
@@ -216,7 +220,6 @@ export default function LoginPage() {
       } else if (err?.message) {
         msg = err.message;
       }
-
       toast.error(msg);
     } finally {
       setIsLoading(false);
@@ -415,8 +418,35 @@ export default function LoginPage() {
             </motion.button>
           </form>
 
+          {/* Quick Demo Access for Testing & Viva */}
+          <div className="mt-6 pt-5 border-t border-[#232B45]">
+            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
+              One-Click Viva Demo Accounts
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() => void handleQuickLogin('admin@test.com', 'Admin@123')}
+                className="p-3 bg-[#232B45]/90 hover:bg-[#2A3756] border border-cyan-500/30 hover:border-cyan-400 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
+              >
+                <div className="text-xs font-bold text-cyan-400 group-hover:text-cyan-300">Admin Demo</div>
+                <div className="text-[11px] text-slate-400 truncate">admin@test.com</div>
+              </button>
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() => void handleQuickLogin('qa@test.com', 'QA@123')}
+                className="p-3 bg-[#232B45]/90 hover:bg-[#2A3756] border border-purple-500/30 hover:border-purple-400 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
+              >
+                <div className="text-xs font-bold text-purple-400 group-hover:text-purple-300">QA Lead Demo</div>
+                <div className="text-[11px] text-slate-400 truncate">qa@test.com</div>
+              </button>
+            </div>
+          </div>
+
           {/* Social / Other Info */}
-          <div className="mt-10 flex flex-col items-center gap-4">
+          <div className="mt-6 flex flex-col items-center gap-4">
             <div className="flex items-center gap-2 text-slate-500 text-xs">
               <ShieldCheck className="w-4 h-4" />
               <span>Enterprise-Grade Security Enabled</span>
