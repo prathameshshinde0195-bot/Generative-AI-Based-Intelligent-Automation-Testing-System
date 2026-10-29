@@ -40,7 +40,12 @@ export default function LoginPage() {
   // Google OAuth Client ID config state
   const [showGoogleConfigModal, setShowGoogleConfigModal] = useState(false);
   const [customClientId, setCustomClientId] = useState(() => {
-    return localStorage.getItem('jnet_google_client_id') || (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID || '';
+    return (
+      localStorage.getItem('genai_google_client_id') ||
+      localStorage.getItem('jnet_google_client_id') ||
+      (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID ||
+      ''
+    );
   });
 
   const { setUser, setToken, setIsAuthenticated } = useAppStore();
@@ -154,6 +159,7 @@ export default function LoginPage() {
     return (
       (window as any).VITE_GOOGLE_CLIENT_ID ||
       (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID ||
+      localStorage.getItem('genai_google_client_id') ||
       localStorage.getItem('jnet_google_client_id') ||
       ''
     );
@@ -244,7 +250,7 @@ export default function LoginPage() {
       toast.error('Please enter a valid Google OAuth Client ID');
       return;
     }
-    localStorage.setItem('jnet_google_client_id', cleanId);
+    localStorage.setItem('genai_google_client_id', cleanId);
     (window as any).VITE_GOOGLE_CLIENT_ID = cleanId;
     setShowGoogleConfigModal(false);
     toast.success('Google OAuth Client ID configured successfully!');
