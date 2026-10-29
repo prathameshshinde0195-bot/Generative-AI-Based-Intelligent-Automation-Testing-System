@@ -53,10 +53,10 @@ const config = {
     analytics: process.env.ENABLE_ANALYTICS === 'true',
   },
 
-  // Email Notification System (JNET Testing System)
+  // Email Notification System (Gen AI Testing System)
   email: {
     enabled: process.env.ENABLE_EMAIL_NOTIFICATIONS === 'true',
-    from: process.env.SMTP_FROM || process.env.EMAIL_FROM || 'JNET Testing System <prathamdiploma@gmail.com>',
+    from: process.env.SMTP_FROM || process.env.EMAIL_FROM || 'Gen AI Testing System <prathamdiploma@gmail.com>',
     frontendUrl: process.env.FRONTEND_URL || 'https://generative-ai-based-intelligent-aut-delta.vercel.app',
     smtp: {
       host: process.env.SMTP_SERVER || process.env.SMTP_HOST || 'smtp.gmail.com',

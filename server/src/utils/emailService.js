@@ -49,10 +49,10 @@ export async function verifyEmailTransport() {
 }
 
 /**
- * Base email layout branded as JNET Testing System
+ * Base email layout branded as Gen AI Testing System
  */
 function baseTemplate({ title, subtitle, bodyHtml, ctaLabel, ctaUrl, previewText }) {
-  const brandName = 'JNET Testing System';
+  const brandName = 'Gen AI Testing System';
   const currentYear = new Date().getFullYear();
 
   return `<!DOCTYPE html>
@@ -174,10 +174,10 @@ export async function sendWelcomeEmail(user) {
   const frontendUrl = config.email.frontendUrl;
 
   const html = baseTemplate({
-    title: `Welcome to JNET Testing System, ${displayName}!`,
+    title: `Welcome to Gen AI Testing System, ${displayName}!`,
     subtitle: 'Your intelligent test automation workspace is ready.',
     bodyHtml: `
-      <p>Thank you for creating your account on <strong>JNET Testing System</strong>.</p>
+      <p>Thank you for creating your account on <strong>Gen AI Testing System</strong>.</p>
       <p>You now have full access to:</p>
       <ul style="padding-left:20px;margin:12px 0;color:#94a3b8;">
         <li>AI-powered SRS to Test Case generation with high precision</li>
@@ -187,14 +187,14 @@ export async function sendWelcomeEmail(user) {
       </ul>
       <p style="margin-top:16px;">If you did not register for this account, please ignore this email or contact support immediately.</p>
     `,
-    ctaLabel: 'Open JNET Testing System',
+    ctaLabel: 'Open Gen AI Testing System',
     ctaUrl: frontendUrl,
-    previewText: `Welcome to JNET Testing System! Start generating test cases with AI.`,
+    previewText: `Welcome to Gen AI Testing System! Start generating test cases with AI.`,
   });
 
   return sendMail({
     to: user.email,
-    subject: 'Welcome to JNET Testing System',
+    subject: 'Welcome to Gen AI Testing System',
     html,
   });
 }
@@ -209,11 +209,11 @@ export async function sendSignInNotificationEmail(user, details = {}) {
   const frontendUrl = config.email.frontendUrl;
 
   const html = baseTemplate({
-    title: 'New Sign-in to JNET Testing System',
+    title: 'New Sign-in to Gen AI Testing System',
     subtitle: 'Security notification for your workspace account',
     bodyHtml: `
       <p>Hello ${displayName},</p>
-      <p>A new sign-in to your <strong>JNET Testing System</strong> account was detected:</p>
+      <p>A new sign-in to your <strong>Gen AI Testing System</strong> account was detected:</p>
       <div style="background-color:#1c2847;padding:14px 18px;border-radius:10px;margin:16px 0;border:1px solid #233152;">
         <div style="font-size:13px;color:#94a3b8;margin-bottom:4px;"><strong>Account:</strong> ${user.email}</div>
         <div style="font-size:13px;color:#94a3b8;margin-bottom:4px;"><strong>Time:</strong> ${timestamp}</div>
@@ -223,12 +223,12 @@ export async function sendSignInNotificationEmail(user, details = {}) {
     `,
     ctaLabel: 'Review Account Security',
     ctaUrl: frontendUrl,
-    previewText: `New sign-in to your JNET Testing System account at ${timestamp}`,
+    previewText: `New sign-in to your Gen AI Testing System account at ${timestamp}`,
   });
 
   return sendMail({
     to: user.email,
-    subject: 'New sign-in to JNET Testing System',
+    subject: 'New sign-in to Gen AI Testing System',
     html,
   });
 }
@@ -242,21 +242,21 @@ export async function sendVerificationEmail(user, rawToken) {
 
   const html = baseTemplate({
     title: 'Verify your email address',
-    subtitle: 'Complete your registration on JNET Testing System',
+    subtitle: 'Complete your registration on Gen AI Testing System',
     bodyHtml: `
       <p>Hello ${displayName},</p>
-      <p>Please confirm your email address to complete your registration on <strong>JNET Testing System</strong>.</p>
+      <p>Please confirm your email address to complete your registration on <strong>Gen AI Testing System</strong>.</p>
       <p style="font-size:13px;color:#94a3b8;">This single-use verification link will expire in <strong>24 hours</strong>.</p>
-      <p style="font-size:12px;color:#64748b;margin-top:16px;">If you did not create an account on JNET Testing System, you can safely disregard this message.</p>
+      <p style="font-size:12px;color:#64748b;margin-top:16px;">If you did not create an account on Gen AI Testing System, you can safely disregard this message.</p>
     `,
     ctaLabel: 'Verify Email Address',
     ctaUrl: verifyUrl,
-    previewText: 'Verify your email address for JNET Testing System',
+    previewText: 'Verify your email address for Gen AI Testing System',
   });
 
   return sendMail({
     to: user.email,
-    subject: 'Verify your email — JNET Testing System',
+    subject: 'Verify your email — Gen AI Testing System',
     html,
   });
 }
@@ -269,7 +269,7 @@ export async function sendPasswordResetEmail(user, rawToken) {
   const resetUrl = `${config.email.frontendUrl}/?reset=${rawToken}`;
 
   const html = baseTemplate({
-    title: 'Reset your JNET Testing System password',
+    title: 'Reset your Gen AI Testing System password',
     subtitle: 'Secure single-use password reset link',
     bodyHtml: `
       <p>Hello ${displayName},</p>
@@ -279,14 +279,14 @@ export async function sendPasswordResetEmail(user, rawToken) {
     `,
     ctaLabel: 'Reset Password',
     ctaUrl: resetUrl,
-    previewText: 'Reset your password for JNET Testing System',
+    previewText: 'Reset your password for Gen AI Testing System',
   });
 
   return sendMail({
     to: user.email,
-    subject: 'Reset your JNET Testing System password',
+    subject: 'Reset your Gen AI Testing System password',
     html,
-    text: `Reset your JNET Testing System password: ${resetUrl}`,
+    text: `Reset your Gen AI Testing System password: ${resetUrl}`,
   });
 }
 
@@ -303,17 +303,17 @@ export async function sendPasswordChangedEmail(user) {
     subtitle: 'Security update for your account',
     bodyHtml: `
       <p>Hello ${displayName},</p>
-      <p>The password for your <strong>JNET Testing System</strong> account (<strong>${user.email}</strong>) was successfully changed on <strong>${timestamp}</strong>.</p>
+      <p>The password for your <strong>Gen AI Testing System</strong> account (<strong>${user.email}</strong>) was successfully changed on <strong>${timestamp}</strong>.</p>
       <p style="color:#f87171;font-size:13px;margin-top:16px;">If you did not make this change, please contact your administrator or initiate an immediate password reset.</p>
     `,
-    ctaLabel: 'Go to JNET Testing System',
+    ctaLabel: 'Go to Gen AI Testing System',
     ctaUrl: frontendUrl,
-    previewText: `Your JNET Testing System password was changed at ${timestamp}`,
+    previewText: `Your Gen AI Testing System password was changed at ${timestamp}`,
   });
 
   return sendMail({
     to: user.email,
-    subject: 'Your JNET Testing System password was changed',
+    subject: 'Your Gen AI Testing System password was changed',
     html,
   });
 }
@@ -326,10 +326,10 @@ export async function sendSignOutEmail(user) {
   const timestamp = new Date().toLocaleString('en-US', { timeZoneName: 'short' });
 
   const html = baseTemplate({
-    title: 'Signed out of JNET Testing System',
+    title: 'Signed out of Gen AI Testing System',
     bodyHtml: `
       <p>Hello ${displayName},</p>
-      <p>You were successfully signed out of <strong>JNET Testing System</strong> on ${timestamp}.</p>
+      <p>You were successfully signed out of <strong>Gen AI Testing System</strong> on ${timestamp}.</p>
       <p>Your session has been terminated safely.</p>
     `,
     ctaLabel: 'Sign In Again',
@@ -338,7 +338,7 @@ export async function sendSignOutEmail(user) {
 
   return sendMail({
     to: user.email,
-    subject: 'Signed out — JNET Testing System',
+    subject: 'Signed out — Gen AI Testing System',
     html,
   });
 }

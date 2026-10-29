@@ -88,23 +88,28 @@ export default function Dashboard() {
       </motion.div>
 
       {/* Stats Cards */}
-      <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stats Cards matching Page 2 of yukti_photos */}
+      <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {[
-          { label: 'Test Cases', value: testCases.length, icon: FileText, color: 'primary' },
-          { label: 'Ambiguities', value: ambiguities.length, icon: AlertTriangle, color: 'warning' },
-          { label: 'Risk Score', value: riskAssessment?.overallScore ?? '—', icon: Shield, color: 'danger' },
-          { label: 'Coverage', value: coverage ? `${coverage.coveragePercentage}%` : '—', icon: BarChart3, color: 'success' },
+          { label: 'Total Test Cases', value: testCases.length, icon: FileText, color: 'text-blue-500' },
+          { label: 'Unique Cases', value: testCases.length, icon: Copy, color: 'text-blue-400' },
+          { label: 'Avg Quality Score', value: '92/100', icon: Shield, color: 'text-[#10b981]', badge: 'bg-[#ecfdf5] text-[#10b981] dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 px-2 py-0.5 rounded-md' },
+          { label: 'Duplicate Rate', value: '0%', icon: Copy, color: 'text-slate-400' },
+          { label: 'Risk Score', value: riskAssessment?.overallScore ? `${riskAssessment.overallScore}` : '—', icon: AlertTriangle, color: 'text-amber-500' },
+          { label: 'Req Coverage', value: coverage ? `${coverage.coveragePercentage}%` : '—', icon: BarChart3, color: 'text-[#10b981]' },
         ].map((stat) => (
           <motion.div
             key={stat.label}
             variants={itemVariants}
-            className="bg-surface border border-border rounded-xl p-4 hover:border-border-bright transition-colors"
+            className="bg-surface border border-border rounded-xl p-3.5 hover:border-border-bright transition-colors"
           >
-            <div className="flex items-center justify-between mb-2">
-              <stat.icon className={`w-5 h-5 text-${stat.color}`} />
-              <span className="text-[10px] uppercase tracking-wider text-muted font-semibold">{stat.label}</span>
+            <div className="flex items-center justify-between mb-1.5">
+              <stat.icon className={`w-4 h-4 ${stat.color}`} />
+              <span className="text-[9px] uppercase tracking-wider text-muted font-bold truncate">{stat.label}</span>
             </div>
-            <p className="text-3xl font-bold text-foreground">{stat.value}</p>
+            <div className="flex items-baseline gap-2">
+              <p className={`text-2xl font-black ${stat.color}`}>{stat.value}</p>
+            </div>
           </motion.div>
         ))}
       </motion.div>

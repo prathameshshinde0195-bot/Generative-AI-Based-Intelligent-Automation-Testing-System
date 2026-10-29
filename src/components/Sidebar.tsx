@@ -47,7 +47,10 @@ export default function Sidebar() {
         </div>
         {!collapsed && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="overflow-hidden">
-            <h1 className="text-sm font-bold text-foreground tracking-tight leading-tight">JNET Testing</h1>
+            <h1 className="text-sm font-bold text-foreground tracking-tight leading-tight flex items-center gap-1">
+              <span>Gen AI</span>
+              <span className="text-[#2563eb] dark:text-blue-400">Testing</span>
+            </h1>
             <p className="text-[10px] text-muted font-medium">Automation System</p>
           </motion.div>
         )}
@@ -70,19 +73,19 @@ export default function Sidebar() {
               onClick={() => setActiveFeature(item.id)}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-left transition-all duration-200 group ${
                 isActive
-                  ? 'bg-primary/10 text-primary border border-primary/20'
-                  : 'text-muted hover:text-foreground hover:bg-surface-alt border border-transparent'
+                  ? 'bg-[#eff6ff] dark:bg-blue-950/40 text-[#2563eb] dark:text-blue-400 border border-blue-200 dark:border-blue-800/40 font-semibold shadow-xs'
+                  : 'text-slate-600 dark:text-muted hover:text-slate-900 dark:hover:text-foreground hover:bg-slate-100 dark:hover:bg-surface-alt border border-transparent'
               }`}
               title={collapsed ? item.label : undefined}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'text-muted group-hover:text-foreground'}`} />
+              <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#2563eb] dark:text-blue-400' : 'text-slate-500 dark:text-muted group-hover:text-slate-900 dark:group-hover:text-foreground'}`} />
               {!collapsed && (
                 <span className="text-[13px] font-medium truncate">{item.label}</span>
               )}
               {isActive && !collapsed && (
                 <motion.div
                   layoutId="activeIndicator"
-                  className="ml-auto w-1.5 h-1.5 rounded-full bg-primary"
+                  className="ml-auto w-1.5 h-1.5 rounded-full bg-[#2563eb] dark:bg-blue-400"
                 />
               )}
             </button>

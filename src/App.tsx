@@ -43,6 +43,26 @@ const featureComponents: Record<string, React.ComponentType> = {
   'chat-chatbot': TestCaseChatbot,
 };
 
+const featureTitles: Record<string, string> = {
+  'dashboard': 'Testing Intelligence Dashboard',
+  'srs-input': 'SRS Input & Test Case Generator',
+  'ambiguity': 'Ambiguity Detection',
+  'prioritization': 'Test Prioritization',
+  'automation': 'Automation Script Generator',
+  'traceability': 'Requirement Traceability Matrix',
+  'duplicates': 'Duplicate Test Case Detection',
+  'negative': 'Negative & Edge Cases',
+  'coverage': 'Test Coverage Analyzer',
+  'api': 'CI/CD API Integration',
+  'risk': 'AI Risk Assessment',
+  'ai-templates': 'AI Prompt Templates & Settings',
+  'test-runs': 'Live Test Execution & Online IDE Runner',
+  'change-impact': 'Requirement Change Impact Predictor',
+  'test-data': 'AI Test Data Generator',
+  'history': 'Execution & Audit History',
+  'chat-chatbot': 'Conversational Test Case Chatbot',
+};
+
 export default function App() {
   const { activeFeature, theme, setTheme, isAuthenticated, setIsAuthenticated, setUser, setToken } = useAppStore();
   const [mounted, setMounted] = useState(false);
@@ -101,7 +121,7 @@ export default function App() {
         <div className="relative flex items-center justify-between px-6 py-4 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-              {Object.entries(featureComponents).find(([key]) => key === activeFeature)?.[0] || 'Dashboard'}
+              {featureTitles[activeFeature] || 'Testing Intelligence Dashboard'}
             </h2>
           </div>
           <div className="flex items-center gap-3">

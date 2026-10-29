@@ -496,9 +496,9 @@ export default function SRSInput() {
   };
 
   const getPriorityColor = (p: string) => {
-    if (p === 'High') return 'bg-red-500/15 text-red-400 border-red-500/30';
-    if (p === 'Medium') return 'bg-amber-500/15 text-amber-400 border-amber-500/30';
-    return 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+    if (p === 'High') return 'bg-[#fef2f2] text-[#ef4444] border-red-200 dark:bg-red-500/15 dark:text-red-400 dark:border-red-500/30';
+    if (p === 'Medium') return 'bg-[#fff7ed] text-[#f97316] border-orange-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30';
+    return 'bg-[#ecfdf5] text-[#10b981] border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30';
   };
 
   return (
@@ -553,7 +553,7 @@ export default function SRSInput() {
             <button
               onClick={handleGenerate}
               disabled={isProcessing || !srsText.trim()}
-              className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-accent text-white font-semibold py-3 px-6 rounded-xl hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex-1 flex items-center justify-center gap-2 bg-[#1d4ed8] hover:bg-[#1e40af] text-white font-semibold py-3.5 px-6 rounded-xl hover:opacity-95 transition-all shadow-md shadow-blue-700/25 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {isProcessing ? (
                 <>
@@ -561,7 +561,7 @@ export default function SRSInput() {
                   Analyzing with AI...
                 </>
               ) : (
-                <><Sparkles className="w-4 h-4" /> Generate All Test Artifacts</>
+                <><Sparkles className="w-4 h-4" /> Generate Complete Test Suite</>
               )}
             </button>
             <button
@@ -658,6 +658,13 @@ export default function SRSInput() {
                       className="w-full flex items-center gap-3 p-3 text-left"
                     >
                       <span className="text-[10px] font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">{tc.testCaseId}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wider ${
+                        tc.category === 'negative' || tc.category === 'boundary' || tc.category === 'security'
+                          ? 'bg-[#fef2f2] text-[#ef4444] border-red-200 dark:bg-red-950/40 dark:text-red-400 dark:border-red-900/40'
+                          : 'bg-[#ecfdf5] text-[#10b981] border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/40'
+                      }`}>
+                        {tc.category === 'negative' || tc.category === 'boundary' || tc.category === 'security' ? 'NEGATIVE' : 'POSITIVE'}
+                      </span>
                       <span className="text-xs text-foreground flex-1 truncate">{tc.scenario}</span>
                       <button
                         onClick={(e) => { e.stopPropagation(); toggleTestCaseCoverage(tc.testCaseId); }}
