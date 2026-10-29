@@ -13,6 +13,7 @@ import {
   EyeOff,
   KeyRound,
   X,
+  Settings,
 } from 'lucide-react';
 import { useAppStore } from '../lib/store';
 import { authAPI } from '../lib/api';
@@ -35,6 +36,12 @@ export default function LoginPage() {
   const [resetToken, setResetToken] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState('');
   const [isResettingPassword, setIsResettingPassword] = useState(false);
+
+  // Google OAuth Client ID config state
+  const [showGoogleConfigModal, setShowGoogleConfigModal] = useState(false);
+  const [customClientId, setCustomClientId] = useState(() => {
+    return localStorage.getItem('jnet_google_client_id') || (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID || '';
+  });
 
   const { setUser, setToken, setIsAuthenticated } = useAppStore();
   const navigate = useNavigate();
@@ -143,12 +150,32 @@ export default function LoginPage() {
    * Real Google Account Chooser:
    * Uses prompt='select_account' so the user is presented with Google's account selection modal
    */
+  const getEffectiveGoogleClientId = () => {
+    return (
+      (window as any).VITE_GOOGLE_CLIENT_ID ||
+      (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID ||
+      localStorage.getItem('jnet_google_client_id') ||
+      ''
+    );
+  };
+
+  /**
+   * Real Google Account Chooser:
+   * Uses prompt='select_account' so the user is presented with Google's account selection modal
+   */
   const handleGoogleAccountChooser = () => {
+    const clientId = getEffectiveGoogleClientId();
+
+    if (!clientId) {
+      setIsGoogleLoading(false);
+      setShowGoogleConfigModal(true);
+      return;
+    }
+
     setIsGoogleLoading(true);
-    const clientId = (import.meta as any).env?.VITE_GOOGLE_CLIENT_ID || (window as any).VITE_GOOGLE_CLIENT_ID;
 
     // If client ID is configured and GIS oauth2 is loaded, trigger popup account chooser
-    if (clientId && (window as any).google?.accounts?.oauth2) {
+    if ((window as any).google?.accounts?.oauth2) {
       try {
         const client = (window as any).google.accounts.oauth2.initTokenClient({
           client_id: clientId,
@@ -206,9 +233,24 @@ export default function LoginPage() {
       }
     }
 
-    // Fallback: If VITE_GOOGLE_CLIENT_ID is not configured in client environment, notify user cleanly
     setIsGoogleLoading(false);
-    toast.error('Google OAuth Client ID is required for live Google account chooser. Please configure VITE_GOOGLE_CLIENT_ID.');
+    toast.error('Google Identity Services is loading. Please retry in 2 seconds.');
+  };
+
+  const handleSaveGoogleClientId = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanId = customClientId.trim();
+    if (!cleanId) {
+      toast.error('Please enter a valid Google OAuth Client ID');
+      return;
+    }
+    localStorage.setItem('jnet_google_client_id', cleanId);
+    (window as any).VITE_GOOGLE_CLIENT_ID = cleanId;
+    setShowGoogleConfigModal(false);
+    toast.success('Google OAuth Client ID configured successfully!');
+    setTimeout(() => {
+      handleGoogleAccountChooser();
+    }, 250);
   };
 
   const handleQuickLogin = async (quickEmail: string, quickPass: string) => {
@@ -441,6 +483,87 @@ export default function LoginPage() {
         )}
       </AnimatePresence>
 
+      {/* Google OAuth Client ID Configuration Modal */}
+      <AnimatePresence>
+        {showGoogleConfigModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="w-full max-w-lg bg-[#18213A] border border-cyan-500/30 rounded-3xl p-6 shadow-2xl relative"
+            >
+              <button
+                type="button"
+                onClick={() => setShowGoogleConfigModal(false)}
+                className="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                  <Settings className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">Google OAuth Client ID</h3>
+                  <p className="text-xs text-slate-400">JNET Testing System Google Account Chooser</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-300 mb-4">
+                To launch the live Google Account Chooser (<code className="text-cyan-400 bg-[#10182A] px-1.5 py-0.5 rounded text-xs">prompt=select_account</code>), enter your Google OAuth 2.0 Web Client ID:
+              </p>
+
+              <form onSubmit={handleSaveGoogleClientId} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                    Google Client ID
+                  </label>
+                  <input
+                    type="text"
+                    value={customClientId}
+                    onChange={(e) => setCustomClientId(e.target.value)}
+                    placeholder="e.g. 123456789-xxxxxxxx.apps.googleusercontent.com"
+                    className="w-full px-4 py-3.5 bg-[#232B45] border border-cyan-500/30 rounded-xl text-white placeholder-slate-500 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+                    required
+                  />
+                </div>
+
+                <div className="bg-[#10182A]/80 border border-[#232B45] rounded-xl p-3 text-xs text-slate-300 space-y-1.5">
+                  <p className="font-semibold text-cyan-400">Google Cloud Console Setup:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-slate-400">
+                    <li>Create OAuth 2.0 Client ID (Type: Web Application)</li>
+                    <li>
+                      Add Authorized JavaScript Origins:
+                      <div className="mt-1 font-mono text-[11px] text-cyan-300 bg-[#18213A] p-1.5 rounded break-all">
+                        https://generative-ai-based-intelligent-aut-delta.vercel.app
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowGoogleConfigModal(false)}
+                    className="flex-1 py-3 bg-[#232B45] text-slate-300 font-bold rounded-xl hover:bg-[#2A3756] transition-all cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 bg-gradient-to-r from-cyan-400 to-blue-600 text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-cyan-500/20 cursor-pointer"
+                  >
+                    Save & Connect
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <div className="w-full max-w-md relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -542,28 +665,38 @@ export default function LoginPage() {
               {/* Real Google Account Chooser */}
               <div className="mb-6">
                 <div id="google-btn-container" className="w-full flex justify-center mb-2" />
-                <motion.button
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="button"
-                  onClick={handleGoogleAccountChooser}
-                  disabled={isGoogleLoading}
-                  className="w-full py-3.5 px-4 bg-[#232B45] hover:bg-[#2A3455] border border-cyan-500/20 hover:border-cyan-400/50 rounded-2xl text-white font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-3 shadow-md disabled:opacity-60 cursor-pointer"
-                >
-                  {isGoogleLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin text-cyan-400" />
-                  ) : (
-                    <>
-                      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
-                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                      </svg>
-                      <span>Continue with Google</span>
-                    </>
-                  )}
-                </motion.button>
+                <div className="flex items-center gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={handleGoogleAccountChooser}
+                    disabled={isGoogleLoading}
+                    className="flex-1 py-3.5 px-4 bg-[#232B45] hover:bg-[#2A3455] border border-cyan-500/20 hover:border-cyan-400/50 rounded-2xl text-white font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-3 shadow-md disabled:opacity-60 cursor-pointer"
+                  >
+                    {isGoogleLoading ? (
+                      <Loader2 className="w-5 h-5 animate-spin text-cyan-400" />
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                        </svg>
+                        <span>Continue with Google</span>
+                      </>
+                    )}
+                  </motion.button>
+                  <button
+                    type="button"
+                    onClick={() => setShowGoogleConfigModal(true)}
+                    title="Configure Google OAuth Client ID"
+                    className="p-3.5 bg-[#232B45] hover:bg-[#2A3455] border border-cyan-500/20 hover:border-cyan-400/50 rounded-2xl text-slate-400 hover:text-cyan-400 transition-all cursor-pointer shrink-0"
+                  >
+                    <Settings className="w-5 h-5" />
+                  </button>
+                </div>
 
                 <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">
