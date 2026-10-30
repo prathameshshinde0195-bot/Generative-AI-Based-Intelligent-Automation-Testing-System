@@ -100,21 +100,21 @@ export default function NegativeEdgeCases() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-white dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-border">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center text-red-600">
             <ShieldAlert className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
               Negative & Boundary Edge Case Generator
               <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border border-red-200">
                 Adversarial & Fault Injection
               </span>
             </h2>
-            <p className="text-xs text-muted">Generate boundary limits, missing/null parameters, session timeout, role violations, and security payloads</p>
+            <p className="text-xs text-[#64748b]">Generate boundary limits, missing/null parameters, session timeout, role violations, and security payloads</p>
           </div>
         </div>
 
@@ -123,9 +123,9 @@ export default function NegativeEdgeCases() {
           <button
             onClick={handleGenerateEdgeCases}
             disabled={isGenerating}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface border border-border text-foreground hover:border-[#7c3aed] text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#0f172a] dark:text-white hover:border-[#0ea5e9] text-xs font-semibold shadow-xs transition-colors"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isGenerating ? 'animate-spin text-[#7c3aed]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isGenerating ? 'animate-spin text-[#0ea5e9]' : ''}`} />
             <span>Generate Edge Cases</span>
           </button>
 
@@ -142,7 +142,7 @@ export default function NegativeEdgeCases() {
 
               <button
                 onClick={handleExportExcel}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-xs font-semibold shadow-xs transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Export Excel</span>

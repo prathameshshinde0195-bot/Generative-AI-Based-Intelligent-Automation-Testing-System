@@ -415,11 +415,11 @@ export default function TestDataGenerator() {
   }, [allAvailableTestCases, tcSearchQuery]);
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f8fafc] dark:bg-slate-900 transition-colors">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900 transition-colors">
       {/* Header Banner */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-[#172033] dark:text-white flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
             <span className="p-2 rounded-xl bg-[#e0f2fe] dark:bg-sky-950/50 text-[#0ea5e9]">
               <FlaskConical className="w-6 h-6" />
             </span>

@@ -413,55 +413,55 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#10182A] flex items-center justify-center p-4 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-[#F0F9FF] flex items-center justify-center p-4 relative overflow-hidden font-sans">
       {/* Decorative Gradients */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-700/30 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-800/30 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-sky-200/50 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-200/40 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Forgot Password Modal */}
       <AnimatePresence>
         {showForgotModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-md bg-[#18213A] border border-[#232B45] rounded-3xl p-6 shadow-2xl relative"
+              className="w-full max-w-md bg-white border border-[#E2E8F0] rounded-3xl p-6 shadow-2xl relative"
             >
               <button
                 onClick={() => setShowForgotModal(false)}
-                className="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-sky-50 text-[#0EA5E9] flex items-center justify-center border border-sky-100">
                   <KeyRound className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Reset Password</h3>
-                  <p className="text-xs text-slate-400">Gen AI Testing System Password Recovery</p>
+                  <h3 className="text-lg font-bold text-[#0F172A]">Reset Password</h3>
+                  <p className="text-xs text-[#64748B]">JNET Testing System Password Recovery</p>
                 </div>
               </div>
 
-              <p className="text-sm text-slate-300 mb-5">
+              <p className="text-sm text-[#64748B] mb-5">
                 Enter your registered email address. We will send you a secure, single-use link to choose a new password.
               </p>
 
               <form onSubmit={handleForgotPasswordSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                  <label className="block text-xs font-bold text-[#64748B] uppercase tracking-widest mb-2">
                     Email Address
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
                       type="email"
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
                       placeholder="name@company.com"
-                      className="w-full pl-12 pr-4 py-3.5 bg-[#232B45] border border-[#232B45] rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+                      className="w-full pl-12 pr-4 py-3.5 bg-white border border-[#E2E8F0] rounded-xl text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/30 focus:border-[#0EA5E9]"
                       required
                     />
                   </div>
@@ -471,14 +471,14 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowForgotModal(false)}
-                    className="flex-1 py-3 bg-[#232B45] text-slate-300 font-bold rounded-xl hover:bg-[#2A3756] transition-all cursor-pointer"
+                    className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-all cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSendingReset}
-                    className="flex-1 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold rounded-xl shadow-lg hover:shadow-cyan-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="flex-1 py-3 bg-[#0EA5E9] hover:bg-[#0284C7] text-white font-bold rounded-xl shadow-lg hover:shadow-sky-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     {isSendingReset ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Send Reset Link'}
                   </button>
@@ -492,38 +492,38 @@ export default function LoginPage() {
       {/* Google OAuth Client ID Configuration Modal */}
       <AnimatePresence>
         {showGoogleConfigModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="w-full max-w-lg bg-[#18213A] border border-cyan-500/30 rounded-3xl p-6 shadow-2xl relative"
+              className="w-full max-w-lg bg-white border border-[#E2E8F0] rounded-3xl p-6 shadow-2xl relative"
             >
               <button
                 type="button"
                 onClick={() => setShowGoogleConfigModal(false)}
-                className="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-sky-50 text-[#0EA5E9] flex items-center justify-center border border-sky-100">
                   <Settings className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Google OAuth Client ID</h3>
-                  <p className="text-xs text-slate-400">Gen AI Testing System Google Account Chooser</p>
+                  <h3 className="text-lg font-bold text-[#0F172A]">Google OAuth Client ID</h3>
+                  <p className="text-xs text-[#64748B]">JNET Testing System Google Account Chooser</p>
                 </div>
               </div>
 
-              <p className="text-sm text-slate-300 mb-4">
-                To launch the live Google Account Chooser (<code className="text-cyan-400 bg-[#10182A] px-1.5 py-0.5 rounded text-xs">prompt=select_account</code>), enter your Google OAuth 2.0 Web Client ID:
+              <p className="text-sm text-[#64748B] mb-4">
+                To launch the live Google Account Chooser (<code className="text-[#0284C7] bg-sky-50 px-1.5 py-0.5 rounded text-xs border border-sky-100">prompt=select_account</code>), enter your Google OAuth 2.0 Web Client ID:
               </p>
 
               <form onSubmit={handleSaveGoogleClientId} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                  <label className="block text-xs font-bold text-[#64748B] uppercase tracking-widest mb-2">
                     Google Client ID
                   </label>
                   <input
@@ -531,18 +531,18 @@ export default function LoginPage() {
                     value={customClientId}
                     onChange={(e) => setCustomClientId(e.target.value)}
                     placeholder="e.g. 123456789-xxxxxxxx.apps.googleusercontent.com"
-                    className="w-full px-4 py-3.5 bg-[#232B45] border border-cyan-500/30 rounded-xl text-white placeholder-slate-500 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+                    className="w-full px-4 py-3.5 bg-white border border-[#E2E8F0] rounded-xl text-[#0F172A] placeholder-slate-400 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/30 focus:border-[#0EA5E9]"
                     required
                   />
                 </div>
 
-                <div className="bg-[#10182A]/80 border border-[#232B45] rounded-xl p-3 text-xs text-slate-300 space-y-1.5">
-                  <p className="font-semibold text-cyan-400">Google Cloud Console Setup:</p>
-                  <ol className="list-decimal list-inside space-y-1 text-slate-400">
+                <div className="bg-[#F8FCFF] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#64748B] space-y-1.5">
+                  <p className="font-semibold text-[#0284C7]">Google Cloud Console Setup:</p>
+                  <ol className="list-decimal list-inside space-y-1 text-slate-500">
                     <li>Create OAuth 2.0 Client ID (Type: Web Application)</li>
                     <li>
                       Add Authorized JavaScript Origins:
-                      <div className="mt-1 font-mono text-[11px] text-cyan-300 bg-[#18213A] p-1.5 rounded break-all">
+                      <div className="mt-1 font-mono text-[11px] text-[#0284C7] bg-white border border-sky-100 p-1.5 rounded break-all">
                         https://generative-ai-based-intelligent-aut-delta.vercel.app
                       </div>
                     </li>
@@ -553,13 +553,13 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowGoogleConfigModal(false)}
-                    className="flex-1 py-3 bg-[#232B45] text-slate-300 font-bold rounded-xl hover:bg-[#2A3756] transition-all cursor-pointer"
+                    className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-all cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 bg-gradient-to-r from-cyan-400 to-blue-600 text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-lg shadow-cyan-500/20 cursor-pointer"
+                    className="flex-1 py-3 bg-[#0EA5E9] hover:bg-[#0284C7] text-white font-bold rounded-xl hover:opacity-90 transition-all shadow-md cursor-pointer"
                   >
                     Save & Connect
                   </button>
@@ -575,7 +575,7 @@ export default function LoginPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-[#18213A] border border-[#232B45] rounded-3xl p-8 shadow-2xl backdrop-blur-xl relative"
+          className="bg-white border border-[#E2E8F0] rounded-3xl p-8 shadow-2xl relative"
         >
           {/* Header & Logo */}
           <div className="text-center mb-8">
@@ -583,14 +583,14 @@ export default function LoginPage() {
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 shadow-lg shadow-cyan-500/20 mb-4"
+              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#0EA5E9] to-[#0284C7] shadow-lg shadow-sky-500/20 mb-4"
             >
               <Brain className="w-8 h-8 text-white" />
             </motion.div>
-            <h1 className="text-3xl font-black text-white tracking-tight">
-              Gen AI <span className="text-blue-500">Testing</span>
+            <h1 className="text-3xl font-black text-[#0F172A] tracking-tight">
+              Gen AI <span className="text-[#0EA5E9]">Testing</span>
             </h1>
-            <p className="text-xs text-slate-400 mt-1 font-medium">
+            <p className="text-xs text-[#64748B] mt-1 font-medium">
               Enter the future of autonomous quality assurance
             </p>
           </div>
@@ -598,30 +598,30 @@ export default function LoginPage() {
           {/* If ?reset=<token> is in URL, render the Reset Password Form directly */}
           {resetToken ? (
             <form onSubmit={handleResetPasswordSubmit} className="space-y-5">
-              <div className="p-4 bg-cyan-950/40 border border-cyan-500/30 rounded-2xl mb-4 text-center">
-                <KeyRound className="w-6 h-6 text-cyan-400 mx-auto mb-1.5" />
-                <h3 className="text-sm font-bold text-white">Create New Password</h3>
-                <p className="text-xs text-slate-400">Choose a strong password for your account</p>
+              <div className="p-4 bg-sky-50 border border-sky-100 rounded-2xl mb-4 text-center">
+                <KeyRound className="w-6 h-6 text-[#0EA5E9] mx-auto mb-1.5" />
+                <h3 className="text-sm font-bold text-[#0F172A]">Create New Password</h3>
+                <p className="text-xs text-[#64748B]">Choose a strong password for your account</p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-bold text-[#64748B] uppercase tracking-widest mb-2">
                   New Password
                 </label>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full pl-12 pr-12 py-4 bg-[#232B45] border border-[#232B45] rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-400"
+                    className="w-full pl-12 pr-12 py-4 bg-white border border-[#E2E8F0] rounded-2xl text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 focus:border-[#0EA5E9]"
                     placeholder="At least 6 characters"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -631,7 +631,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isResettingPassword}
-                className="w-full py-4 rounded-2xl text-white font-bold text-lg bg-gradient-to-r from-cyan-400 to-blue-600 shadow-xl transition-all flex items-center justify-center gap-3 disabled:opacity-70 cursor-pointer"
+                className="w-full py-4 rounded-2xl text-white font-bold text-lg bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] shadow-xl transition-all flex items-center justify-center gap-3 disabled:opacity-70 cursor-pointer"
               >
                 {isResettingPassword ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Set New Password'}
               </button>
@@ -639,7 +639,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setResetToken(null)}
-                className="w-full text-center text-xs text-slate-400 hover:text-white pt-2 cursor-pointer"
+                className="w-full text-center text-xs text-[#64748B] hover:text-[#0F172A] pt-2 cursor-pointer"
               >
                 Back to Sign In
               </button>
@@ -647,12 +647,12 @@ export default function LoginPage() {
           ) : (
             <>
               {/* Tab Selector: Sign In / Sign Up */}
-              <div className="flex bg-[#10182A] p-1.5 rounded-2xl mb-6 border border-[#232B45]">
+              <div className="flex bg-[#F0F9FF] p-1.5 rounded-2xl mb-6 border border-[#E2E8F0]">
                 <button
                   type="button"
                   onClick={() => setIsLogin(true)}
                   className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
-                    isLogin ? 'bg-[#18213A] text-cyan-400 shadow' : 'text-slate-400 hover:text-white'
+                    isLogin ? 'bg-white text-[#0EA5E9] shadow-sm' : 'text-[#64748B] hover:text-[#0F172A]'
                   }`}
                 >
                   Sign In
@@ -661,7 +661,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setIsLogin(false)}
                   className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${
-                    !isLogin ? 'bg-[#18213A] text-purple-400 shadow' : 'text-slate-400 hover:text-white'
+                    !isLogin ? 'bg-white text-[#8B5CF6] shadow-sm' : 'text-[#64748B] hover:text-[#0F172A]'
                   }`}
                 >
                   Sign Up
@@ -678,10 +678,10 @@ export default function LoginPage() {
                     type="button"
                     onClick={handleGoogleAccountChooser}
                     disabled={isGoogleLoading}
-                    className="flex-1 py-3 px-4 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-800 font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-3 shadow-md disabled:opacity-60 cursor-pointer"
+                    className="flex-1 py-3 px-4 bg-white hover:bg-slate-50 border border-[#E2E8F0] rounded-xl text-slate-800 font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-3 shadow-sm disabled:opacity-60 cursor-pointer"
                   >
                     {isGoogleLoading ? (
-                      <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
+                      <Loader2 className="w-5 h-5 animate-spin text-[#0EA5E9]" />
                     ) : (
                       <>
                         <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
@@ -698,7 +698,7 @@ export default function LoginPage() {
                     type="button"
                     onClick={() => setShowGoogleConfigModal(true)}
                     title="Configure Google OAuth Client ID"
-                    className="p-3 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-600 hover:text-blue-600 transition-all cursor-pointer shrink-0 shadow-md"
+                    className="p-3 bg-white hover:bg-slate-50 border border-[#E2E8F0] rounded-xl text-[#64748B] hover:text-[#0EA5E9] transition-all cursor-pointer shrink-0 shadow-sm"
                   >
                     <Settings className="w-5 h-5" />
                   </button>
@@ -706,10 +706,10 @@ export default function LoginPage() {
 
                 <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-[#232B45]" />
+                    <div className="w-full border-t border-[#E2E8F0]" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-[#18213A] px-3 text-slate-400 font-semibold tracking-wider">
+                    <span className="bg-white px-3 text-[#64748B] font-semibold tracking-wider">
                       or continue with email
                     </span>
                   </div>
@@ -727,16 +727,16 @@ export default function LoginPage() {
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+                      <label className="block text-xs font-bold text-[#64748B] uppercase tracking-widest mb-2 ml-1">
                         Full Name
                       </label>
                       <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#8B5CF6] transition-colors" />
                         <input
                           type="text"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="w-full pl-12 pr-4 py-4 bg-[#232B45] border border-[#232B45] rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-400 focus:bg-[#232B45] transition-all"
+                          className="w-full pl-12 pr-4 py-4 bg-white border border-[#E2E8F0] rounded-2xl text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]/20 focus:border-[#8B5CF6] transition-all"
                           placeholder="John Doe"
                           required={!isLogin}
                         />
@@ -746,16 +746,16 @@ export default function LoginPage() {
                 </AnimatePresence>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
+                  <label className="block text-xs font-bold text-[#64748B] uppercase tracking-widest mb-2 ml-1">
                     Email Address
                   </label>
                   <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#0EA5E9] transition-colors" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 bg-[#232B45] border border-[#232B45] rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-400 focus:bg-[#232B45] transition-all"
+                      className="w-full pl-12 pr-4 py-4 bg-white border border-[#E2E8F0] rounded-2xl text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 focus:border-[#0EA5E9] transition-all"
                       placeholder="name@company.com"
                       required
                     />
@@ -764,7 +764,7 @@ export default function LoginPage() {
 
                 <div>
                   <div className="flex justify-between items-center mb-2 ml-1">
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    <label className="block text-xs font-bold text-[#64748B] uppercase tracking-widest">
                       Password
                     </label>
                     {isLogin && (
@@ -774,26 +774,26 @@ export default function LoginPage() {
                           setForgotEmail(email);
                           setShowForgotModal(true);
                         }}
-                        className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
+                        className="text-xs font-semibold text-[#0EA5E9] hover:text-[#0284C7] transition-colors cursor-pointer"
                       >
                         Forgot Password?
                       </button>
                     )}
                   </div>
                   <div className="relative group">
-                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-cyan-400 transition-colors" />
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-[#0EA5E9] transition-colors" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-12 pr-12 py-4 bg-[#232B45] border border-[#232B45] rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-400 focus:bg-[#232B45] transition-all"
+                      className="w-full pl-12 pr-12 py-4 bg-white border border-[#E2E8F0] rounded-2xl text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 focus:border-[#0EA5E9] transition-all"
                       placeholder="••••••••"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
                       title={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -808,8 +808,8 @@ export default function LoginPage() {
                   disabled={isLoading}
                   className={`w-full py-3.5 rounded-xl text-white font-bold text-base shadow-xl transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-70 cursor-pointer ${
                     isLogin
-                      ? 'bg-[#1d4ed8] hover:bg-[#1e40af] shadow-blue-700/30'
-                      : 'bg-gradient-to-r from-purple-600 to-indigo-700 shadow-purple-800/30 hover:opacity-95'
+                      ? 'bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] shadow-sky-500/25 hover:opacity-95'
+                      : 'bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] shadow-purple-500/25 hover:opacity-95'
                   }`}
                 >
                   {isLoading ? (
@@ -829,8 +829,8 @@ export default function LoginPage() {
               </form>
 
               {/* Quick Demo Access for Testing & Viva */}
-              <div className="mt-6 pt-5 border-t border-[#232B45]">
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center mb-3">
+              <div className="mt-6 pt-5 border-t border-[#E2E8F0]">
+                <p className="text-[11px] font-bold text-[#64748B] uppercase tracking-widest text-center mb-3">
                   One-Click Viva Demo Accounts
                 </p>
                 <div className="grid grid-cols-2 gap-3">
@@ -838,27 +838,27 @@ export default function LoginPage() {
                     type="button"
                     disabled={isLoading}
                     onClick={() => void handleQuickLogin('admin@test.com', 'Admin@123')}
-                    className="p-3 bg-[#232B45]/90 hover:bg-[#2A3756] border border-blue-500/30 hover:border-blue-400 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
+                    className="p-3 bg-[#F0F9FF] hover:bg-sky-100/60 border border-sky-200 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
                   >
-                    <div className="text-xs font-bold text-blue-400 group-hover:text-blue-300">Admin Demo</div>
-                    <div className="text-[11px] text-slate-400 truncate">admin@test.com</div>
+                    <div className="text-xs font-bold text-[#0284C7] group-hover:text-[#0369A1]">Admin Demo</div>
+                    <div className="text-[11px] text-[#64748B] truncate">admin@test.com</div>
                   </button>
                   <button
                     type="button"
                     disabled={isLoading}
                     onClick={() => void handleQuickLogin('qa@test.com', 'QA@123')}
-                    className="p-3 bg-[#232B45]/90 hover:bg-[#2A3756] border border-purple-500/30 hover:border-purple-400 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
+                    className="p-3 bg-[#FAF5FF] hover:bg-purple-100/60 border border-purple-200 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
                   >
-                    <div className="text-xs font-bold text-purple-400 group-hover:text-purple-300">QA Lead Demo</div>
-                    <div className="text-[11px] text-slate-400 truncate">qa@test.com</div>
+                    <div className="text-xs font-bold text-[#8B5CF6] group-hover:text-[#7C3AED]">QA Lead Demo</div>
+                    <div className="text-[11px] text-[#64748B] truncate">qa@test.com</div>
                   </button>
                 </div>
               </div>
 
               {/* Social / Security Info */}
               <div className="mt-6 flex flex-col items-center gap-4">
-                <div className="flex items-center gap-2 text-slate-500 text-xs">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <div className="flex items-center gap-2 text-[#64748B] text-xs">
+                  <ShieldCheck className="w-4 h-4 text-[#16A34A]" />
                   <span>Enterprise-grade AI-powered test automation platform</span>
                 </div>
               </div>
@@ -872,13 +872,13 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
-            className="text-center text-slate-500 text-sm mt-8"
+            className="text-center text-[#64748B] text-sm mt-8"
           >
             {isLogin ? "New to Gen AI Testing?" : "Existing user?"}{' '}
             <button
               type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-[#2563eb] dark:text-blue-400 font-bold hover:underline cursor-pointer"
+              className="text-[#0EA5E9] font-bold hover:underline cursor-pointer"
             >
               {isLogin ? 'Create an account' : 'Sign In Here'}
             </button>

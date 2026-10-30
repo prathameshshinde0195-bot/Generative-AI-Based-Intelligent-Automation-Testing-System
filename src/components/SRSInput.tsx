@@ -414,12 +414,12 @@ export default function SRSInput() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f8fafc] dark:bg-slate-900 transition-colors">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900 transition-colors">
       {/* Header Banner */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-[#172033] dark:text-white flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-[#f3e8ff] dark:bg-purple-950/50 text-[#7c3aed]">
+          <h2 className="text-2xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
+            <span className="p-2 rounded-xl bg-[#e0f2fe] dark:bg-sky-950/50 text-[#0ea5e9]">
               <FileText className="w-6 h-6" />
             </span>
             SRS Input & Intelligent Test Case Generator
@@ -734,7 +734,7 @@ export default function SRSInput() {
             <button
               onClick={handleGenerate}
               disabled={isProcessing || !srsText.trim() || selectedTypes.length === 0}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] hover:from-[#6d28d9] hover:to-[#4c1d95] text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md shadow-purple-600/25 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#0ea5e9] to-[#0284c7] hover:from-[#0284c7] hover:to-[#0369a1] text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md shadow-sky-600/25 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isProcessing ? (
                 <>

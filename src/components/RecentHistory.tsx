@@ -94,28 +94,28 @@ export default function RecentHistory() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-white dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-border">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/40 flex items-center justify-center text-[#7c3aed]">
+          <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/40 flex items-center justify-center text-[#0ea5e9]">
             <History className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
               Execution & Audit History
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-purple-50 text-[#7c3aed] dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200">
+              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-sky-50 text-[#0ea5e9] dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200">
                 Snapshots & Audit Log
               </span>
             </h2>
-            <p className="text-xs text-muted">Immutable historical versions of SRS requirements and generated test suites</p>
+            <p className="text-xs text-[#64748b]">Immutable historical versions of SRS requirements and generated test suites</p>
           </div>
         </div>
 
         {srsHistory.length > 0 && (
           <button
             onClick={handleExportHistory}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export History Excel</span>

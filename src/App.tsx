@@ -113,14 +113,14 @@ export default function App() {
   const ActiveComponent = featureComponents[activeFeature] || Dashboard;
 
   return (
-    <div className={`flex h-screen bg-slate-50 dark:bg-slate-900 transition-colors overflow-hidden ${theme === 'dark' ? 'dark' : ''}`}>
+    <div className={`flex h-screen bg-white dark:bg-slate-900 transition-colors overflow-hidden ${theme === 'dark' ? 'dark' : ''}`}>
       <Toaster richColors position="top-right" />
       <Sidebar />
-      <main className="flex-1 overflow-hidden flex flex-col">
+      <main className="flex-1 overflow-hidden flex flex-col bg-[#f0f9ff] dark:bg-slate-900">
         {/* Header with theme toggle */}
-        <div className="relative flex items-center justify-between px-6 py-4 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+        <div className="relative flex items-center justify-between px-6 py-4 bg-white dark:bg-slate-800 border-b border-[#e2e8f0] dark:border-slate-700 shadow-2xs">
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+            <h2 className="text-lg font-semibold text-[#0f172a] dark:text-white">
               {featureTitles[activeFeature] || 'Testing Intelligence Dashboard'}
             </h2>
           </div>
@@ -128,7 +128,7 @@ export default function App() {
             <ProjectSwitcher />
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition"
+              className="p-2 hover:bg-[#f0f9ff] dark:hover:bg-slate-700 rounded-lg transition"
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? (
@@ -139,7 +139,7 @@ export default function App() {
             </button>
           </div>
         </div>
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto bg-[#f0f9ff] dark:bg-slate-900">
           <ActiveComponent />
         </div>
       </main>

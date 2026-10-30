@@ -141,22 +141,22 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-white dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
       {/* Top Header Bar */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-border">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/50 flex items-center justify-center text-[#7c3aed]">
+            <div className="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-950/50 flex items-center justify-center text-[#0ea5e9]">
               <TrendingUp className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+              <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
                 Testing Intelligence Dashboard
-                <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200">
+                <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-sky-50 text-[#0ea5e9] dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200">
                   Project: {projectId || 'default'}
                 </span>
               </h2>
-              <p className="text-xs text-muted">Real-time AI automation analytics, test execution telemetry, and quality radar</p>
+              <p className="text-xs text-[#64748b]">Real-time AI automation analytics, test execution telemetry, and quality radar</p>
             </div>
           </div>
         </div>
@@ -170,16 +170,16 @@ export default function Dashboard() {
           </div>
 
           {/* Date Range Selector */}
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 border border-border text-xs">
-            <Calendar className="w-3.5 h-3.5 text-muted ml-2 mr-1" />
+          <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg p-1 border border-[#e2e8f0] dark:border-slate-700 text-xs shadow-2xs">
+            <Calendar className="w-3.5 h-3.5 text-[#64748b] ml-2 mr-1" />
             {(['all', 'today', '7d', '30d'] as const).map((r) => (
               <button
                 key={r}
                 onClick={() => setDateRange(r)}
                 className={`px-2.5 py-1 rounded-md capitalize font-medium transition-colors ${
                   dateRange === r
-                    ? 'bg-white dark:bg-slate-700 text-[#7c3aed] shadow-xs'
-                    : 'text-muted hover:text-foreground'
+                    ? 'bg-[#0ea5e9] text-white shadow-xs'
+                    : 'text-[#64748b] hover:text-[#0f172a]'
                 }`}
               >
                 {r === 'all' ? 'All Time' : r === '7d' ? '7 Days' : r === '30d' ? '30 Days' : 'Today'}
@@ -191,16 +191,16 @@ export default function Dashboard() {
           <button
             onClick={refreshMetrics}
             disabled={loading}
-            className="p-2 rounded-lg bg-surface border border-border text-muted hover:text-foreground hover:border-border-bright transition-colors"
+            className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#64748b] hover:text-[#0f172a] hover:border-[#0ea5e9] transition-colors shadow-2xs"
             title="Refresh Metrics"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#7c3aed]' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#0ea5e9]' : ''}`} />
           </button>
 
           {/* Export Report */}
           <button
             onClick={handleExportDashboard}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export Report</span>

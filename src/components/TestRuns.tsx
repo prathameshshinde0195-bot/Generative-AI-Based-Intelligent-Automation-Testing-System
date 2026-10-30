@@ -582,7 +582,7 @@ export default function TestRuns() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff]">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <Terminal className="w-6 h-6 text-accent" />

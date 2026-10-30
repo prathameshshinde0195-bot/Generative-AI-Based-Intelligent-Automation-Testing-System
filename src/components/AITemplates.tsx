@@ -126,7 +126,7 @@ export default function AITemplates() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff]">
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <Sparkles className="w-6 h-6 text-primary" />
@@ -203,7 +203,7 @@ export default function AITemplates() {
           <div className="flex justify-end">
             <button
               onClick={() => void saveSettings()}
-              className="h-10 px-4 rounded-lg bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-semibold inline-flex items-center gap-2 shadow-xs transition-colors"
+              className="h-10 px-4 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-semibold inline-flex items-center gap-2 shadow-xs transition-colors"
             >
               <Save className="w-4 h-4" /> Save settings
             </button>
@@ -277,7 +277,7 @@ export default function AITemplates() {
               <button
                 onClick={() => void createTemplate()}
                 disabled={!newName.trim() || !newTemplate.trim()}
-                className="h-10 px-4 rounded-lg bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-semibold shadow-xs disabled:opacity-40 transition-colors"
+                className="h-10 px-4 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-semibold shadow-xs disabled:opacity-40 transition-colors"
               >
                 Create template
               </button>

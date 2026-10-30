@@ -125,21 +125,21 @@ export default function AmbiguityDetection() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-white dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-border">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/40 flex items-center justify-center text-amber-600">
             <AlertTriangle className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
               Requirement Ambiguity Detection
               <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200">
                 NLP Quality Gate
               </span>
             </h2>
-            <p className="text-xs text-muted">Identify vague terminology, missing quantifiable metrics, and ungrounded statements</p>
+            <p className="text-xs text-[#64748b]">Identify vague terminology, missing quantifiable metrics, and ungrounded statements</p>
           </div>
         </div>
 
@@ -148,9 +148,9 @@ export default function AmbiguityDetection() {
           <button
             onClick={handleReanalyze}
             disabled={isReanalyzing}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface border border-border text-foreground hover:border-primary text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#0f172a] dark:text-white hover:border-[#0ea5e9] text-xs font-semibold shadow-xs transition-colors"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isReanalyzing ? 'animate-spin text-[#7c3aed]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isReanalyzing ? 'animate-spin text-[#0ea5e9]' : ''}`} />
             <span>{isReanalyzing ? 'Re-analyzing...' : 'Re-run Analysis'}</span>
           </button>
 
@@ -167,7 +167,7 @@ export default function AmbiguityDetection() {
 
               <button
                 onClick={handleExportReport}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-xs font-semibold shadow-xs transition-colors"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Export Report</span>

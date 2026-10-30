@@ -348,24 +348,24 @@ export default function TestCaseChatbot() {
   });
 
   return (
-    <div className="h-full flex gap-4 p-4 lg:p-6">
+    <div className="h-full flex gap-4 p-4 lg:p-6 bg-[#f0f9ff] dark:bg-slate-900">
       {/* ─── Chat Area ─── */}
-      <div className="flex-1 flex flex-col bg-surface border border-border rounded-2xl overflow-hidden shadow-lg relative">
+      <div className="flex-1 flex flex-col bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded-2xl overflow-hidden shadow-xs relative">
         {/* Header */}
-        <div className="px-5 py-3.5 border-b border-border bg-gradient-to-r from-surface to-surface-alt flex items-center justify-between shrink-0">
+        <div className="px-5 py-3.5 border-b border-[#e2e8f0] dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0ea5e9] to-[#8b5cf6] flex items-center justify-center shadow-xs">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-success rounded-full border-2 border-surface animate-pulse" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#16a34a] rounded-full border-2 border-white dark:border-slate-800 animate-pulse" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <h2 className="text-sm font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
                 AI QA Assistant
-                <span className="text-[10px] px-1.5 py-0.5 bg-success/10 text-success rounded-full font-medium">Online</span>
+                <span className="text-[10px] px-1.5 py-0.5 bg-[#dcfce7] text-[#16a34a] rounded-full font-medium">Online</span>
               </h2>
-              <p className="text-[11px] text-muted">Conversational Test Case Generator • Powered by AI</p>
+              <p className="text-[11px] text-[#64748b]">Conversational Test Case Generator • Powered by AI</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
@@ -542,19 +542,19 @@ export default function TestCaseChatbot() {
             <button
               onClick={() => handleSendPrompt(input)}
               disabled={loading || !input.trim()}
-              className="shrink-0 w-9 h-9 flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-lg hover:shadow-lg hover:shadow-pink-500/25 disabled:opacity-30 disabled:hover:shadow-none transition-all"
+              className="shrink-0 w-9 h-9 flex items-center justify-center bg-gradient-to-r from-[#0ea5e9] to-[#0284c7] text-white rounded-lg hover:shadow-md hover:shadow-sky-500/25 disabled:opacity-30 disabled:hover:shadow-none transition-all cursor-pointer"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>
           </div>
           <div className="flex justify-between items-center px-1">
-            <p className="text-[10px] text-muted/50">
-              <kbd className="px-1 py-0.5 bg-surface border border-border/50 rounded text-[9px]">Enter</kbd> send
+            <p className="text-[10px] text-[#64748b]">
+              <kbd className="px-1 py-0.5 bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded text-[9px]">Enter</kbd> send
               <span className="mx-1">•</span>
-              <kbd className="px-1 py-0.5 bg-surface border border-border/50 rounded text-[9px]">Shift+Enter</kbd> newline
+              <kbd className="px-1 py-0.5 bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded text-[9px]">Shift+Enter</kbd> newline
             </p>
-            <div className="flex items-center gap-1 text-[10px] text-muted/50">
-              <Zap className="w-2.5 h-2.5 text-pink-400" />
+            <div className="flex items-center gap-1 text-[10px] text-[#64748b]">
+              <Zap className="w-2.5 h-2.5 text-[#0ea5e9]" />
               Real-time streaming active
             </div>
           </div>
@@ -562,11 +562,11 @@ export default function TestCaseChatbot() {
       </div>
 
       {/* ─── Test Cases Preview Panel ─── */}
-      <div className="w-[44%] flex flex-col bg-surface border border-border rounded-2xl overflow-hidden shadow-lg">
+      <div className="w-[44%] flex flex-col bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded-2xl overflow-hidden shadow-xs">
         {/* Preview Header */}
-        <div className="px-5 py-3.5 border-b border-border bg-gradient-to-r from-surface to-surface-alt flex items-center justify-between shrink-0">
-          <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-success" />
+        <div className="px-5 py-3.5 border-b border-[#e2e8f0] dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between shrink-0">
+          <h2 className="text-sm font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-[#16a34a]" />
             Generated Test Cases
             {testCases.length > 0 && (
               <span className="ml-1 text-[10px] px-2 py-0.5 bg-primary/10 text-primary rounded-full font-semibold">

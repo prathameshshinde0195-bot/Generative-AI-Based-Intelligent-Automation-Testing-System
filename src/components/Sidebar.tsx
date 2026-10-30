@@ -37,30 +37,30 @@ export default function Sidebar() {
     <motion.aside
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      className={`relative flex flex-col h-screen bg-surface border-r border-border transition-all duration-300 ${
+      className={`relative flex flex-col h-screen bg-white dark:bg-slate-900 border-r border-[#e2e8f0] dark:border-slate-800 transition-all duration-300 ${
         collapsed ? 'w-[68px]' : 'w-[260px]'
       }`}
     >
-      <div className="flex items-center gap-2.5 px-4 h-16 border-b border-border shrink-0">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-sky-500 flex items-center justify-center shrink-0 shadow-sm">
+      <div className="flex items-center gap-2.5 px-4 h-16 border-b border-[#e2e8f0] dark:border-slate-800 shrink-0">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0ea5e9] to-[#0284c7] flex items-center justify-center shrink-0 shadow-sm">
           <Beaker className="w-4 h-4 text-white" />
         </div>
         {!collapsed && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="overflow-hidden">
-            <h1 className="text-sm font-bold text-foreground tracking-tight leading-tight flex items-center gap-1">
+            <h1 className="text-sm font-bold text-[#0f172a] dark:text-white tracking-tight leading-tight flex items-center gap-1">
               <span>Gen AI</span>
-              <span className="text-[#7c3aed] dark:text-purple-400">Testing</span>
+              <span className="text-[#0ea5e9] dark:text-sky-400">Testing</span>
             </h1>
-            <p className="text-[10px] text-muted font-medium">Intelligent Automation System</p>
+            <p className="text-[10px] text-[#64748b] font-medium">Intelligent Automation System</p>
           </motion.div>
         )}
       </div>
 
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-surface border border-border flex items-center justify-center hover:border-primary shadow-xs transition-colors z-10"
+        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 flex items-center justify-center hover:border-[#0ea5e9] shadow-xs transition-colors z-10"
       >
-        {collapsed ? <ChevronRight className="w-3 h-3 text-muted" /> : <ChevronLeft className="w-3 h-3 text-muted" />}
+        {collapsed ? <ChevronRight className="w-3 h-3 text-[#64748b]" /> : <ChevronLeft className="w-3 h-3 text-[#64748b]" />}
       </button>
 
       <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
@@ -73,19 +73,19 @@ export default function Sidebar() {
               onClick={() => setActiveFeature(item.id)}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-left transition-all duration-200 group ${
                 isActive
-                  ? 'bg-[#f3e8ff] dark:bg-purple-950/40 text-[#7c3aed] dark:text-purple-300 border border-purple-200 dark:border-purple-800/50 font-semibold shadow-xs'
-                  : 'text-slate-600 dark:text-muted hover:text-slate-900 dark:hover:text-foreground hover:bg-[#f8fafc] dark:hover:bg-slate-800 border border-transparent'
+                  ? 'bg-[#f0f9ff] dark:bg-sky-950/40 text-[#0284c7] dark:text-sky-300 border border-sky-200 dark:border-sky-800/50 font-semibold shadow-xs'
+                  : 'text-[#64748b] hover:text-[#0f172a] dark:hover:text-white hover:bg-[#f8fcff] dark:hover:bg-slate-800 border border-transparent'
               }`}
               title={collapsed ? item.label : undefined}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#7c3aed] dark:text-purple-400' : 'text-slate-500 dark:text-muted group-hover:text-slate-900 dark:group-hover:text-foreground'}`} />
+              <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#0ea5e9] dark:text-sky-400' : 'text-[#64748b] group-hover:text-[#0f172a] dark:group-hover:text-white'}`} />
               {!collapsed && (
                 <span className="text-[13px] font-medium truncate">{item.label}</span>
               )}
               {isActive && !collapsed && (
                 <motion.div
                   layoutId="activeIndicator"
-                  className="ml-auto w-1.5 h-1.5 rounded-full bg-[#7c3aed] dark:bg-purple-400"
+                  className="ml-auto w-1.5 h-1.5 rounded-full bg-[#0ea5e9]"
                 />
               )}
             </button>
@@ -93,16 +93,16 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="p-3 border-t border-border shrink-0 space-y-3">
+      <div className="p-3 border-t border-[#e2e8f0] dark:border-slate-800 shrink-0 space-y-3">
         {!collapsed && (
           <div className="flex items-center gap-2 px-2">
             <Zap className="w-3.5 h-3.5 text-warning" />
-            <span className="text-[11px] text-muted font-medium">AI Engine Active</span>
-            <div className="ml-auto w-2 h-2 rounded-full bg-success animate-pulse" />
+            <span className="text-[11px] text-[#64748b] font-medium">AI Engine Active</span>
+            <div className="ml-auto w-2 h-2 rounded-full bg-[#16a34a] animate-pulse" />
           </div>
         )}
 
-        <div className={`p-2 rounded-xl transition-all duration-200 ${collapsed ? 'bg-transparent' : 'bg-surface-alt border border-border/50'}`}>
+        <div className={`p-2 rounded-xl transition-all duration-200 ${collapsed ? 'bg-transparent' : 'bg-[#f8fcff] dark:bg-slate-800/60 border border-[#e2e8f0] dark:border-slate-700/60'}`}>
           <div className={`flex items-center gap-3 ${collapsed ? 'justify-center' : 'px-1'}`}>
             {user?.profilePicture ? (
               <img
