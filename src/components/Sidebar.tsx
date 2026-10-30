@@ -42,23 +42,23 @@ export default function Sidebar() {
       }`}
     >
       <div className="flex items-center gap-2.5 px-4 h-16 border-b border-border shrink-0">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-sky-500 flex items-center justify-center shrink-0 shadow-sm">
           <Beaker className="w-4 h-4 text-white" />
         </div>
         {!collapsed && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="overflow-hidden">
             <h1 className="text-sm font-bold text-foreground tracking-tight leading-tight flex items-center gap-1">
               <span>Gen AI</span>
-              <span className="text-[#2563eb] dark:text-blue-400">Testing</span>
+              <span className="text-[#7c3aed] dark:text-purple-400">Testing</span>
             </h1>
-            <p className="text-[10px] text-muted font-medium">Automation System</p>
+            <p className="text-[10px] text-muted font-medium">Intelligent Automation System</p>
           </motion.div>
         )}
       </div>
 
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-surface-alt border border-border flex items-center justify-center hover:border-primary transition-colors z-10"
+        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-surface border border-border flex items-center justify-center hover:border-primary shadow-xs transition-colors z-10"
       >
         {collapsed ? <ChevronRight className="w-3 h-3 text-muted" /> : <ChevronLeft className="w-3 h-3 text-muted" />}
       </button>
@@ -73,19 +73,19 @@ export default function Sidebar() {
               onClick={() => setActiveFeature(item.id)}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-left transition-all duration-200 group ${
                 isActive
-                  ? 'bg-[#eff6ff] dark:bg-blue-950/40 text-[#2563eb] dark:text-blue-400 border border-blue-200 dark:border-blue-800/40 font-semibold shadow-xs'
-                  : 'text-slate-600 dark:text-muted hover:text-slate-900 dark:hover:text-foreground hover:bg-slate-100 dark:hover:bg-surface-alt border border-transparent'
+                  ? 'bg-[#f3e8ff] dark:bg-purple-950/40 text-[#7c3aed] dark:text-purple-300 border border-purple-200 dark:border-purple-800/50 font-semibold shadow-xs'
+                  : 'text-slate-600 dark:text-muted hover:text-slate-900 dark:hover:text-foreground hover:bg-[#f8fafc] dark:hover:bg-slate-800 border border-transparent'
               }`}
               title={collapsed ? item.label : undefined}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#2563eb] dark:text-blue-400' : 'text-slate-500 dark:text-muted group-hover:text-slate-900 dark:group-hover:text-foreground'}`} />
+              <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#7c3aed] dark:text-purple-400' : 'text-slate-500 dark:text-muted group-hover:text-slate-900 dark:group-hover:text-foreground'}`} />
               {!collapsed && (
                 <span className="text-[13px] font-medium truncate">{item.label}</span>
               )}
               {isActive && !collapsed && (
                 <motion.div
                   layoutId="activeIndicator"
-                  className="ml-auto w-1.5 h-1.5 rounded-full bg-[#2563eb] dark:bg-blue-400"
+                  className="ml-auto w-1.5 h-1.5 rounded-full bg-[#7c3aed] dark:bg-purple-400"
                 />
               )}
             </button>

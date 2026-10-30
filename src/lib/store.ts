@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { TestCase, AmbiguityIssue, RiskAssessment, TraceabilityEntry, DuplicatePair, CoverageData } from './types';
+import type { TestCase, AmbiguityIssue, RiskAssessment, TraceabilityEntry, DuplicatePair, CoverageData, ExtractedRequirement } from './types';
 
 export interface User {
   id: string;
@@ -44,9 +44,18 @@ interface AppState {
   isProcessing: boolean;
   setIsProcessing: (val: boolean) => void;
 
-  // SRS Input
+  // SRS Input & Requirements
   srsText: string;
   setSrsText: (text: string) => void;
+  extractedRequirements: ExtractedRequirement[];
+  setExtractedRequirements: (reqs: ExtractedRequirement[]) => void;
+  updateExtractedRequirement: (id: string, updates: Partial<ExtractedRequirement>) => void;
+
+  // Connected Test Case & Test Data workflow
+  selectedTestCaseForDataGen: TestCase | null;
+  setSelectedTestCaseForDataGen: (tc: TestCase | null) => void;
+  activeTestTypes: string[];
+  setActiveTestTypes: (types: string[]) => void;
 
   // SRS History
   srsHistory: SRSHistory[];
@@ -60,6 +69,7 @@ interface AppState {
   testCases: TestCase[];
   setTestCases: (cases: TestCase[]) => void;
   addTestCases: (cases: TestCase[]) => void;
+  updateTestCase: (testCaseId: string, updates: Partial<TestCase>) => void;
   removeTestCase: (testCaseId: string) => void;
   negativeTestCases: TestCase[];
   setNegativeTestCases: (cases: TestCase[]) => void;
@@ -96,16 +106,29 @@ export const useAppStore = create<AppState>()(
       setIsAuthenticated: (val) => set({ isAuthenticated: val }),
 
       // UI
-      theme: 'dark',
+      theme: 'light',
       setTheme: (theme) => set({ theme }),
       activeFeature: 'dashboard',
       setActiveFeature: (feature) => set({ activeFeature: feature }),
       isProcessing: false,
       setIsProcessing: (val) => set({ isProcessing: val }),
 
-      // SRS
+      // SRS & Requirements
       srsText: '',
       setSrsText: (text) => set({ srsText: text }),
+      extractedRequirements: [],
+      setExtractedRequirements: (reqs) => set({ extractedRequirements: reqs }),
+      updateExtractedRequirement: (id, updates) => set((state) => ({
+        extractedRequirements: state.extractedRequirements.map((r) =>
+          r.id === id || r.requirementId === id ? { ...r, ...updates } : r
+        ),
+      })),
+
+      // Connected Workflow Selection
+      selectedTestCaseForDataGen: null,
+      setSelectedTestCaseForDataGen: (tc) => set({ selectedTestCaseForDataGen: tc }),
+      activeTestTypes: ['functional', 'security', 'boundary', 'negative'],
+      setActiveTestTypes: (types) => set({ activeTestTypes: types }),
 
       // SRS History
       srsHistory: [],
@@ -125,6 +148,8 @@ export const useAppStore = create<AppState>()(
         set({
           srsHistory: [],
           srsText: '',
+          extractedRequirements: [],
+          selectedTestCaseForDataGen: null,
           testCases: [],
           negativeTestCases: [],
           ambiguities: [],
@@ -138,8 +163,13 @@ export const useAppStore = create<AppState>()(
       testCases: [],
       setTestCases: (cases) => set({ testCases: cases }),
       addTestCases: (cases) => set((state) => ({ testCases: [...state.testCases, ...cases] })),
+      updateTestCase: (testCaseId, updates) => set((state) => ({
+        testCases: state.testCases.map((tc) => tc.testCaseId === testCaseId ? { ...tc, ...updates } : tc),
+        negativeTestCases: state.negativeTestCases.map((tc) => tc.testCaseId === testCaseId ? { ...tc, ...updates } : tc),
+      })),
       removeTestCase: (testCaseId) => set((state) => ({
         testCases: state.testCases.filter(tc => tc.testCaseId !== testCaseId),
+        negativeTestCases: state.negativeTestCases.filter(tc => tc.testCaseId !== testCaseId),
         duplicates: state.duplicates.filter(d => d.testCase1Id !== testCaseId && d.testCase2Id !== testCaseId)
       })),
       negativeTestCases: [],
@@ -181,6 +211,8 @@ export const useAppStore = create<AppState>()(
             // Clear per-project data to avoid mixing results between projects
             srsText: '',
             srsHistory: [],
+            extractedRequirements: [],
+            selectedTestCaseForDataGen: null,
             testCases: [],
             negativeTestCases: [],
             ambiguities: [],
@@ -193,6 +225,8 @@ export const useAppStore = create<AppState>()(
       resetProjectData: () =>
         set({
           srsText: '',
+          extractedRequirements: [],
+          selectedTestCaseForDataGen: null,
           testCases: [],
           negativeTestCases: [],
           ambiguities: [],

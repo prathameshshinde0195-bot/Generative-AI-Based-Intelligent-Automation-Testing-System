@@ -26,18 +26,54 @@ const testCaseSchema = new mongoose.Schema(
     requirementId: {
       type: String,
     },
+    requirementDescription: {
+      type: String,
+    },
+    title: {
+      type: String,
+    },
     scenario: {
       type: String,
       required: true,
     },
+    description: String,
     preconditions: [String],
     steps: [String],
+    testData: String,
     expectedResults: String,
     actualResults: String,
     priority: {
       type: String,
-      enum: ['High', 'Medium', 'Low'],
+      enum: ['Critical', 'High', 'Medium', 'Low'],
       default: 'Medium',
+    },
+    severity: {
+      type: String,
+      enum: ['Blocker', 'Critical', 'Major', 'Minor', 'Trivial'],
+      default: 'Major',
+    },
+    testType: {
+      type: String,
+      default: 'Functional',
+    },
+    executionStatus: {
+      type: String,
+      enum: ['Not Run', 'Pass', 'Fail', 'Blocked'],
+      default: 'Not Run',
+    },
+    classification: {
+      type: String,
+      enum: ['Positive', 'Negative'],
+      default: 'Positive',
+    },
+    automationFeasibility: {
+      type: String,
+      enum: ['Automated', 'Feasible', 'Manual Only'],
+      default: 'Automated',
+    },
+    suggestedTool: {
+      type: String,
+      default: 'Playwright',
     },
     riskScore: {
       type: Number,
@@ -45,9 +81,19 @@ const testCaseSchema = new mongoose.Schema(
       max: 100,
       default: 50,
     },
+    riskLevel: {
+      type: String,
+      enum: ['Critical', 'High', 'Medium', 'Low'],
+      default: 'Medium',
+    },
+    requirementCoverage: {
+      type: String,
+      default: 'Full',
+    },
+    dependencies: [String],
+    assumptions: String,
     category: {
       type: String,
-      enum: ['functional', 'negative', 'edge', 'security', 'boundary', 'performance', 'integration'],
       default: 'functional',
     },
     tags: [String],

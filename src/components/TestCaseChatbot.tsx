@@ -102,7 +102,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function TestCaseChatbot() {
-  const { projectId, user, addTestCases } = useAppStore();
+  const { projectId, user, addTestCases, srsText, extractedRequirements, setSelectedTestCaseForDataGen, setActiveFeature } = useAppStore();
 
   const chatStorageKey = (pid: string, uid?: string | null) =>
     `chatSessionId_${uid || 'anon'}_${pid || 'default'}`;
@@ -207,7 +207,13 @@ export default function TestCaseChatbot() {
 
     try {
       await aiAPI.chatTestCaseStream(
-        { sessionId, message: userMsg, projectId: projectId || 'default' },
+        {
+          sessionId,
+          message: userMsg,
+          projectId: projectId || 'default',
+          srsContext: srsText ? srsText.slice(0, 1500) : undefined,
+          reqCount: extractedRequirements.length
+        },
         (chunk: string) => {
           setStreamingText(prev => prev + chunk);
         },
@@ -650,6 +656,62 @@ export default function TestCaseChatbot() {
                     </div>
 
                     <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        onClick={() => {
+                          const convertedTc = {
+                            id: `tc-chat-${Date.now()}-${idx}`,
+                            testCaseId: `TC-CHAT-${Date.now().toString().slice(-4)}-${idx + 1}`,
+                            title: tc.scenario,
+                            scenario: tc.scenario,
+                            requirementId: 'REQ-CHAT',
+                            requirementDescription: 'Generated via AI Testing Assistant Chatbot',
+                            preconditions: tc.preconditions.join('. '),
+                            steps: tc.steps,
+                            expectedResults: tc.expectedResults,
+                            priority: tc.priority,
+                            category: tc.category || 'functional',
+                            riskScore: 50,
+                            tags: ['chatbot', tc.category || 'chat'],
+                            createdAt: new Date().toISOString(),
+                          };
+                          addTestCases([convertedTc]);
+                          toast.success(`Saved ${convertedTc.testCaseId} to project test suite!`);
+                        }}
+                        className="p-1.5 text-muted hover:text-[#16a34a] hover:bg-emerald-50 rounded-md transition-all text-xs flex items-center gap-1 font-semibold"
+                        title="Save to Project Suite"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Save</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          const convertedTc = {
+                            id: `tc-chat-${Date.now()}-${idx}`,
+                            testCaseId: `TC-CHAT-${Date.now().toString().slice(-4)}-${idx + 1}`,
+                            title: tc.scenario,
+                            scenario: tc.scenario,
+                            requirementId: 'REQ-CHAT',
+                            requirementDescription: 'Generated via AI Testing Assistant Chatbot',
+                            preconditions: tc.preconditions.join('. '),
+                            steps: tc.steps,
+                            expectedResults: tc.expectedResults,
+                            priority: tc.priority,
+                            category: tc.category || 'functional',
+                            riskScore: 50,
+                            tags: ['chatbot', tc.category || 'chat'],
+                            createdAt: new Date().toISOString(),
+                          };
+                          addTestCases([convertedTc]);
+                          setSelectedTestCaseForDataGen(convertedTc);
+                          setActiveFeature('test-data');
+                          toast.info(`Sent ${convertedTc.testCaseId} to Test Data Generator`);
+                        }}
+                        className="p-1.5 text-muted hover:text-[#0ea5e9] hover:bg-sky-50 rounded-md transition-all text-xs flex items-center gap-1 font-semibold"
+                        title="Generate Test Data for this case"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span className="hidden sm:inline">Data Gen</span>
+                      </button>
                       <button
                         onClick={() => handleCopyTC(tc, idx)}
                         className="p-1.5 text-muted hover:text-primary hover:bg-surface rounded-md transition-all"

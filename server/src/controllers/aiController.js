@@ -301,25 +301,31 @@ export const getChangeImpactHistory = catchAsync(async (req, res) => {
 
 // ─── Feature 2: AI Test Data Generator ────────────────────────────────────────
 export const generateTestData = catchAsync(async (req, res) => {
-  const { requirement, projectId: bodyProjectId } = req.body;
+  const { requirement, testCaseId, testCaseTitle, selectedCategories, projectId: bodyProjectId } = req.body;
   const projectId = bodyProjectId || req.projectId;
 
-  if (!requirement) {
+  if (!requirement && !testCaseId) {
     return res.status(400).json({
       success: false,
-      message: 'requirement is required',
+      message: 'requirement or testCaseId is required',
     });
   }
 
-  const result = await aiService.generateTestData(requirement, req.user.id, projectId);
+  const effectiveReq = requirement || `Generate comprehensive test data for Test Case ${testCaseId}: ${testCaseTitle || 'Scenario'}`;
+
+  const result = await aiService.generateTestData(effectiveReq, req.user.id, projectId, {
+    testCaseId,
+    testCaseTitle,
+    selectedCategories,
+  });
 
   const totalItems =
-    result.valid.length + result.invalid.length + result.boundary.length +
-    result.edge.length + result.security.length;
+    (result.valid?.length || 0) + (result.invalid?.length || 0) + (result.boundary?.length || 0) +
+    (result.edge?.length || 0) + (result.security?.length || 0);
 
   res.status(201).json({
     success: true,
-    message: `Generated ${totalItems} test data items across 5 categories`,
+    message: `Generated ${totalItems} test data items across categories`,
     data: result,
   });
 });

@@ -17,6 +17,29 @@ const generatedTestDataSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    testCaseId: {
+      type: String,
+      index: true,
+      default: '',
+    },
+    testCaseTitle: {
+      type: String,
+      default: '',
+    },
+    selectedCategories: [String],
+    structuredItems: [
+      {
+        testDataId: String,
+        relatedTestCaseId: String,
+        fieldName: String,
+        value: String,
+        category: String,
+        expectedValidation: String,
+        expectedOutcome: String,
+        boundaryClassification: String,
+        requirementReference: String,
+      },
+    ],
     valid: [String],
     invalid: [String],
     boundary: [String],
@@ -27,6 +50,7 @@ const generatedTestDataSchema = new mongoose.Schema(
     timestamps: true,
     indexes: [
       { userId: 1, projectId: 1, createdAt: -1 },
+      { userId: 1, testCaseId: 1 },
     ],
   }
 );

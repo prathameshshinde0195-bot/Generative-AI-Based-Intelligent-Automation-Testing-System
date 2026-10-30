@@ -203,7 +203,7 @@ export default function AITemplates() {
           <div className="flex justify-end">
             <button
               onClick={() => void saveSettings()}
-              className="h-10 px-4 rounded-lg bg-gradient-to-r from-primary to-accent text-white font-semibold inline-flex items-center gap-2"
+              className="h-10 px-4 rounded-lg bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-semibold inline-flex items-center gap-2 shadow-xs transition-colors"
             >
               <Save className="w-4 h-4" /> Save settings
             </button>
@@ -277,7 +277,7 @@ export default function AITemplates() {
               <button
                 onClick={() => void createTemplate()}
                 disabled={!newName.trim() || !newTemplate.trim()}
-                className="h-10 px-4 rounded-lg bg-gradient-to-r from-primary to-accent text-white font-semibold disabled:opacity-40"
+                className="h-10 px-4 rounded-lg bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-semibold shadow-xs disabled:opacity-40 transition-colors"
               >
                 Create template
               </button>

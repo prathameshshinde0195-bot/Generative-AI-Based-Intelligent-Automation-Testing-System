@@ -147,7 +147,7 @@ export default function ProjectSwitcher() {
             <button
               onClick={() => void create()}
               disabled={!newName.trim()}
-              className="h-9 px-3 rounded-lg bg-gradient-to-r from-primary to-accent text-white text-sm font-semibold disabled:opacity-40"
+              className="h-9 px-4 rounded-lg bg-[#7c3aed] hover:bg-[#6d28d9] text-white text-sm font-semibold shadow-xs disabled:opacity-40 transition-colors"
             >
               Create
             </button>

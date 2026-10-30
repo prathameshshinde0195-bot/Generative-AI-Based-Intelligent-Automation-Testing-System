@@ -407,19 +407,21 @@ If no test cases are affected return an empty "affected" array with impactLevel 
 };
 
 // ─── Feature 2: AI Test Data Generator ────────────────────────────────────────
-export const generateTestData = async (requirement, userId, projectId) => {
+export const generateTestData = async (requirement, userId, projectId, extraOptions = {}) => {
   const startTime = Date.now();
+  const { testCaseId = '', testCaseTitle = '', selectedCategories = [] } = extraOptions;
 
   try {
     const settings = await getAISettings(userId, projectId);
 
     const defaultPrompt = `
-You are an expert software testing specialist. Given the following requirement, generate comprehensive test data across five categories.
+You are an expert software testing specialist. Given the following requirement and test case context, generate comprehensive, realistic test data across categories.
 
-REQUIREMENT:
+TEST CASE: "${testCaseId || 'TC-DATA'} - ${testCaseTitle || 'Target Scenario'}"
+REQUIREMENT CONTEXT:
 "{{requirement}}"
 
-Generate realistic, specific, and useful test data values (not descriptions — actual data strings/values).
+Generate realistic, specific, and useful test data values (not descriptions — actual concrete strings/values).
 
 Return ONLY a valid JSON object with exactly these keys:
 {
@@ -451,16 +453,49 @@ Each array must have 4-6 concrete data values. For "security", include payloads 
     }
 
     const safeArr = (v) => (Array.isArray(v) ? v.map(String) : []);
+    const validArr = safeArr(parsed.valid);
+    const invalidArr = safeArr(parsed.invalid);
+    const boundaryArr = safeArr(parsed.boundary);
+    const edgeArr = safeArr(parsed.edge);
+    const securityArr = safeArr(parsed.security);
+
+    // Build structured items
+    const structuredItems = [];
+    let tdIdx = 1;
+
+    const pushItem = (val, cat, expVal, expOut, bnd) => {
+      structuredItems.push({
+        testDataId: `TD-${String(tdIdx++).padStart(4, '0')}`,
+        relatedTestCaseId: testCaseId || 'TC-001',
+        fieldName: /email/i.test(val) ? 'email' : /pass/i.test(val) ? 'password' : 'inputField',
+        value: String(val),
+        category: cat,
+        expectedValidation: expVal,
+        expectedOutcome: expOut,
+        boundaryClassification: bnd,
+        requirementReference: requirement.substring(0, 100),
+      });
+    };
+
+    validArr.forEach((v) => pushItem(v, 'Valid Inputs', 'Accept valid format', '200 OK / Success State', 'Within Limits'));
+    invalidArr.forEach((v) => pushItem(v, 'Invalid Inputs', 'Reject with 400 Bad Request', 'Validation Error Displayed', 'Invalid Schema'));
+    boundaryArr.forEach((v) => pushItem(v, 'Boundary Values', 'Validate boundary thresholds', 'Boundary Accepted or Guarded', 'Exact Edge'));
+    edgeArr.forEach((v) => pushItem(v, 'Edge Cases', 'Handle unexpected input lengths/types', 'Graceful Error Recovery', 'Corner Case'));
+    securityArr.forEach((v) => pushItem(v, 'Security Payloads', 'Sanitize / Block injection', '403 Forbidden / Neutralized', 'Inert Vector'));
 
     const doc = await GeneratedTestData.create({
       userId,
       projectId,
       requirement,
-      valid: safeArr(parsed.valid),
-      invalid: safeArr(parsed.invalid),
-      boundary: safeArr(parsed.boundary),
-      edge: safeArr(parsed.edge),
-      security: safeArr(parsed.security),
+      testCaseId: testCaseId || '',
+      testCaseTitle: testCaseTitle || '',
+      selectedCategories: selectedCategories || [],
+      structuredItems,
+      valid: validArr,
+      invalid: invalidArr,
+      boundary: boundaryArr,
+      edge: edgeArr,
+      security: securityArr,
     });
 
     await AILog.create({
@@ -476,7 +511,7 @@ Each array must have 4-6 concrete data values. For "security", include payloads 
 
     const totalItems =
       doc.valid.length + doc.invalid.length + doc.boundary.length + doc.edge.length + doc.security.length;
-    logger.info(`Generated ${totalItems} test data items`);
+    logger.info(`Generated ${totalItems} test data items (with ${structuredItems.length} structured items)`);
     return doc;
   } catch (error) {
     logger.error(`Error generating test data: ${error.message}`);
