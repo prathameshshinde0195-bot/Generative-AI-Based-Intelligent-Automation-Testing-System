@@ -143,20 +143,20 @@ export default function Dashboard() {
   return (
     <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Top Header Bar */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b-2 border-sky-100">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-950/50 flex items-center justify-center text-[#0ea5e9]">
+            <div className="w-10 h-10 rounded-2xl bg-white border-2 border-sky-200 flex items-center justify-center text-[#0EA5E9] shadow-xs">
               <TrendingUp className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
+              <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2">
                 Testing Intelligence Dashboard
-                <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-sky-50 text-[#0ea5e9] dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200">
+                <span className="text-xs px-2.5 py-0.5 rounded-full font-black bg-[#F0F9FF] text-[#0284C7] border border-sky-200">
                   Project: {projectId || 'default'}
                 </span>
               </h2>
-              <p className="text-xs text-[#64748b]">Real-time AI automation analytics, test execution telemetry, and quality radar</p>
+              <p className="text-xs font-bold text-[#64748B]">Real-time AI automation analytics, test execution telemetry, and quality radar</p>
             </div>
           </div>
         </div>
@@ -164,22 +164,22 @@ export default function Dashboard() {
         {/* Controls: Date Filter, Health Status, Refresh, Export */}
         <div className="flex flex-wrap items-center gap-2.5">
           {/* AI Health Status */}
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 text-xs text-[#16a34a] font-medium">
-            <span className="w-2 h-2 rounded-full bg-[#16a34a] animate-pulse" />
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border-2 border-emerald-200 text-xs text-[#16A34A] font-black shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
             <span>AI Service: {aiHealth === 'online' ? 'Connected' : 'Active'}</span>
           </div>
 
           {/* Date Range Selector */}
-          <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg p-1 border border-[#e2e8f0] dark:border-slate-700 text-xs shadow-2xs">
-            <Calendar className="w-3.5 h-3.5 text-[#64748b] ml-2 mr-1" />
+          <div className="flex items-center bg-white rounded-xl p-1 border-2 border-sky-200 text-xs shadow-2xs">
+            <Calendar className="w-3.5 h-3.5 text-[#0EA5E9] ml-2 mr-1" />
             {(['all', 'today', '7d', '30d'] as const).map((r) => (
               <button
                 key={r}
                 onClick={() => setDateRange(r)}
-                className={`px-2.5 py-1 rounded-md capitalize font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer ${
                   dateRange === r
-                    ? 'bg-[#0ea5e9] text-white shadow-xs'
-                    : 'text-[#64748b] hover:text-[#0f172a]'
+                    ? 'bg-[#0EA5E9] text-white shadow-xs'
+                    : 'text-[#64748B] hover:text-[#0F172A] hover:bg-sky-50'
                 }`}
               >
                 {r === 'all' ? 'All Time' : r === '7d' ? '7 Days' : r === '30d' ? '30 Days' : 'Today'}
@@ -191,18 +191,18 @@ export default function Dashboard() {
           <button
             onClick={refreshMetrics}
             disabled={loading}
-            className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#64748b] hover:text-[#0f172a] hover:border-[#0ea5e9] transition-colors shadow-2xs"
+            className="p-2.5 rounded-xl bg-white border-2 border-sky-200 text-[#0EA5E9] hover:bg-sky-50 transition-colors shadow-2xs cursor-pointer"
             title="Refresh Metrics"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#0ea5e9]' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-[#0EA5E9]' : ''}`} />
           </button>
 
           {/* Export Report */}
           <button
             onClick={handleExportDashboard}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] hover:opacity-95 text-white text-xs font-black shadow-md shadow-sky-500/20 cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-4 h-4" />
             <span>Export Report</span>
           </button>
         </div>
@@ -240,50 +240,52 @@ export default function Dashboard() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs"
+        className="bg-white border-2 border-sky-300 rounded-2xl p-5 shadow-sm"
       >
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-[#0ea5e9]" />
-            <h3 className="text-sm font-bold text-foreground">Execution Telemetry</h3>
-            <span className="text-[11px] text-muted font-medium">({filteredCases.length} total test cases)</span>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center text-[#0EA5E9] border border-sky-200">
+              <Activity className="w-4 h-4" />
+            </div>
+            <h3 className="text-base font-black text-[#0F172A]">Execution Telemetry</h3>
+            <span className="text-xs text-[#64748B] font-bold">({filteredCases.length} total test cases)</span>
           </div>
           <button
             onClick={() => setActiveFeature('test-runs')}
-            className="text-xs text-[#7c3aed] hover:underline font-semibold flex items-center gap-1"
+            className="text-xs text-[#7C3AED] hover:underline font-black flex items-center gap-1 cursor-pointer"
           >
             <span>Live Runner</span>
-            <ArrowRight className="w-3 h-3" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-          <div className="bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl p-3.5 flex items-center gap-3">
+          <div className="bg-white border-2 border-emerald-300 rounded-xl p-3.5 flex items-center gap-3 shadow-2xs">
             <CheckCircle2 className="w-5 h-5 text-[#16A34A]" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-[#166534]">Passed</p>
-              <p className="text-xl font-extrabold text-[#16A34A]">{passedCases.length}</p>
+              <p className="text-[11px] uppercase font-black text-[#166534]">Passed</p>
+              <p className="text-2xl font-black text-[#16A34A]">{passedCases.length}</p>
             </div>
           </div>
-          <div className="bg-[#FDF2F8] border border-[#FCE7F3] rounded-xl p-3.5 flex items-center gap-3">
+          <div className="bg-white border-2 border-pink-300 rounded-xl p-3.5 flex items-center gap-3 shadow-2xs">
             <XCircle className="w-5 h-5 text-[#EC4899]" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-[#BE185D]">Failed</p>
-              <p className="text-xl font-extrabold text-[#BE185D]">{failedCases.length}</p>
+              <p className="text-[11px] uppercase font-black text-[#BE185D]">Failed</p>
+              <p className="text-2xl font-black text-[#BE185D]">{failedCases.length}</p>
             </div>
           </div>
-          <div className="bg-[#FAF5FF] border border-[#EDE9FE] rounded-xl p-3.5 flex items-center gap-3">
+          <div className="bg-white border-2 border-purple-300 rounded-xl p-3.5 flex items-center gap-3 shadow-2xs">
             <AlertTriangle className="w-5 h-5 text-[#8B5CF6]" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-[#7C3AED]">Blocked</p>
-              <p className="text-xl font-extrabold text-[#7C3AED]">{blockedCases.length}</p>
+              <p className="text-[11px] uppercase font-black text-[#7C3AED]">Blocked</p>
+              <p className="text-2xl font-black text-[#7C3AED]">{blockedCases.length}</p>
             </div>
           </div>
-          <div className="bg-[#F0F9FF] border border-[#E0F2FE] rounded-xl p-3.5 flex items-center gap-3">
+          <div className="bg-white border-2 border-sky-300 rounded-xl p-3.5 flex items-center gap-3 shadow-2xs">
             <Clock className="w-5 h-5 text-[#0EA5E9]" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-[#0284C7]">Not Executed</p>
-              <p className="text-xl font-extrabold text-[#0284C7]">{notRunCases.length}</p>
+              <p className="text-[11px] uppercase font-black text-[#0284C7]">Not Executed</p>
+              <p className="text-2xl font-black text-[#0284C7]">{notRunCases.length}</p>
             </div>
           </div>
         </div>
@@ -294,38 +296,38 @@ export default function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 space-y-4 shadow-xs"
+          className="bg-white border-2 border-purple-200 rounded-2xl p-5 space-y-4 shadow-sm"
         >
-          <div className="flex items-center gap-2 border-b border-border/50 pb-2">
+          <div className="flex items-center gap-2 border-b-2 border-slate-100 pb-2.5">
             <MessageSquare className="w-4 h-4 text-purple-600" />
-            <h3 className="text-sm font-semibold text-foreground">Conversational Chatbot Analytics</h3>
+            <h3 className="text-base font-black text-[#0F172A]">Conversational Chatbot Analytics</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200/60 rounded-lg p-3.5 flex items-center gap-3">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900/40 rounded-lg text-[#7c3aed]">
+            <div className="bg-white border-2 border-purple-200 rounded-xl p-3.5 flex items-center gap-3 shadow-2xs">
+              <div className="p-2.5 bg-purple-50 rounded-xl text-[#7C3AED] border border-purple-100 font-bold">
                 <MessagesSquare className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-wider text-muted font-semibold">Total Chat Sessions</p>
-                <p className="text-2xl font-bold text-foreground">{metrics.totalChatSessions}</p>
+                <p className="text-[11px] uppercase tracking-wider text-[#64748B] font-black">Total Chat Sessions</p>
+                <p className="text-2xl font-black text-[#0F172A]">{metrics.totalChatSessions}</p>
               </div>
             </div>
-            <div className="bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/60 rounded-lg p-3.5 flex items-center gap-3">
-              <div className="p-2 bg-sky-100 dark:bg-sky-900/40 rounded-lg text-[#0ea5e9]">
+            <div className="bg-white border-2 border-sky-200 rounded-xl p-3.5 flex items-center gap-3 shadow-2xs">
+              <div className="p-2.5 bg-sky-50 rounded-xl text-[#0EA5E9] border border-sky-100 font-bold">
                 <ClipboardCheck className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-wider text-muted font-semibold">Test Cases via Chat</p>
-                <p className="text-2xl font-bold text-foreground">{metrics.chatTestCasesCount}</p>
+                <p className="text-[11px] uppercase tracking-wider text-[#64748B] font-black">Test Cases via Chat</p>
+                <p className="text-2xl font-black text-[#0F172A]">{metrics.chatTestCasesCount}</p>
               </div>
             </div>
-            <div className="bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 rounded-lg p-3.5 flex items-center gap-3">
-              <div className="p-2 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg text-[#16a34a]">
+            <div className="bg-white border-2 border-emerald-200 rounded-xl p-3.5 flex items-center gap-3 shadow-2xs">
+              <div className="p-2.5 bg-emerald-50 rounded-xl text-[#16A34A] border border-emerald-100 font-bold">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-wider text-muted font-semibold">Avg Conversation Length</p>
-                <p className="text-2xl font-bold text-foreground">{metrics.avgConversationLength} <span className="text-xs text-muted font-normal">msgs</span></p>
+                <p className="text-[11px] uppercase tracking-wider text-[#64748B] font-black">Avg Conversation Length</p>
+                <p className="text-2xl font-black text-[#0F172A]">{metrics.avgConversationLength} <span className="text-xs text-[#64748B] font-bold">msgs</span></p>
               </div>
             </div>
           </div>
@@ -338,25 +340,25 @@ export default function Dashboard() {
           {/* Priority Distribution */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }}
-            className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs"
+            className="bg-white border-2 border-purple-200 rounded-2xl p-5 shadow-sm"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-foreground">Priority Distribution</h3>
-              <button onClick={() => setActiveFeature('prioritization')} className="text-xs text-[#7c3aed] hover:underline font-semibold">Details</button>
+              <h3 className="text-base font-black text-[#0F172A]">Priority Distribution</h3>
+              <button onClick={() => setActiveFeature('prioritization')} className="text-xs text-[#7C3AED] hover:underline font-black cursor-pointer">Details</button>
             </div>
             <ResponsiveContainer width="100%" height={180}>
               <PieChart>
                 <Pie data={priorityData} cx="50%" cy="50%" innerRadius={45} outerRadius={72} dataKey="value" stroke="none">
                   {priorityData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                 </Pie>
-                <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', color: '#172033', fontSize: '12px' }} />
+                <Tooltip contentStyle={{ background: '#ffffff', border: '2px solid #8B5CF6', borderRadius: '12px', color: '#0F172A', fontWeight: 'bold', fontSize: '12px' }} />
               </PieChart>
             </ResponsiveContainer>
             <div className="flex justify-center gap-4 mt-2">
               {priorityData.map(d => (
                 <div key={d.name} className="flex items-center gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ background: d.color }} />
-                  <span className="text-xs text-muted font-medium">{d.name} ({d.value})</span>
+                  <span className="text-xs text-[#64748B] font-bold">{d.name} ({d.value})</span>
                 </div>
               ))}
             </div>
@@ -365,18 +367,18 @@ export default function Dashboard() {
           {/* Category / Test Type Breakdown */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs"
+            className="bg-white border-2 border-sky-200 rounded-2xl p-5 shadow-sm"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-foreground">Category Breakdown</h3>
-              <button onClick={() => setActiveFeature('coverage')} className="text-xs text-[#0ea5e9] hover:underline font-semibold">Coverage</button>
+              <h3 className="text-base font-black text-[#0F172A]">Category Breakdown</h3>
+              <button onClick={() => setActiveFeature('coverage')} className="text-xs text-[#0EA5E9] hover:underline font-black cursor-pointer">Coverage</button>
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={categoryData.slice(0, 5)}>
-                <XAxis dataKey="category" tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', color: '#172033', fontSize: '12px' }} />
-                <Bar dataKey="count" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                <XAxis dataKey="category" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ background: '#ffffff', border: '2px solid #0EA5E9', borderRadius: '12px', color: '#0F172A', fontWeight: 'bold', fontSize: '12px' }} />
+                <Bar dataKey="count" fill="#0EA5E9" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </motion.div>
@@ -384,11 +386,11 @@ export default function Dashboard() {
           {/* Risk & Quality Radar */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3 }}
-            className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs"
+            className="bg-white border-2 border-pink-200 rounded-2xl p-5 shadow-sm"
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-foreground">Risk & Quality Radar</h3>
-              <button onClick={() => setActiveFeature('risk')} className="text-xs text-[#ea580c] hover:underline font-semibold">Risk Analysis</button>
+              <h3 className="text-base font-black text-[#0F172A]">Risk & Quality Radar</h3>
+              <button onClick={() => setActiveFeature('risk')} className="text-xs text-[#BE185D] hover:underline font-black cursor-pointer">Risk Analysis</button>
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <RadarChart data={radarData.length > 0 ? radarData : [
@@ -399,8 +401,8 @@ export default function Dashboard() {
                 { subject: 'Quality', value: 94 },
               ]}>
                 <PolarGrid stroke="#e2e8f0" />
-                <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10 }} />
-                <Radar dataKey="value" stroke="#7c3aed" fill="#7c3aed" fillOpacity={0.25} />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }} />
+                <Radar dataKey="value" stroke="#7C3AED" fill="#8B5CF6" fillOpacity={0.25} />
               </RadarChart>
             </ResponsiveContainer>
           </motion.div>
@@ -410,14 +412,14 @@ export default function Dashboard() {
       {/* Critical Issues & Recent Activity Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Unresolved Issues & Ambiguities */}
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+        <div className="bg-white border-2 border-pink-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b-2 border-slate-100">
+            <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-500" />
               <span>Critical Items & Ambiguities</span>
             </h3>
             {ambiguities.length > 0 && (
-              <button onClick={() => setActiveFeature('ambiguity')} className="text-xs text-[#7c3aed] font-medium hover:underline">
+              <button onClick={() => setActiveFeature('ambiguity')} className="text-xs text-[#7C3AED] font-black hover:underline cursor-pointer">
                 Resolve ({ambiguities.length})
               </button>
             )}
@@ -425,20 +427,22 @@ export default function Dashboard() {
 
           {ambiguities.length === 0 ? (
             <div className="text-center py-6 text-muted text-xs flex flex-col items-center gap-1.5">
-              <Check className="w-6 h-6 text-[#16a34a]" />
-              <p className="font-semibold text-foreground">No unresolved ambiguities detected</p>
-              <p>Your current SRS requirements adhere to clear testable metrics.</p>
+              <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center">
+                <Check className="w-5 h-5 text-[#16A34A]" />
+              </div>
+              <p className="font-black text-sm text-[#0F172A]">No unresolved ambiguities detected</p>
+              <p className="text-xs text-[#64748B] font-medium">Your current SRS requirements adhere to clear testable metrics.</p>
             </div>
           ) : (
             <div className="space-y-2 max-h-48 overflow-y-auto">
               {ambiguities.slice(0, 4).map((amb, i) => (
-                <div key={i} className="p-2.5 rounded-lg border border-amber-200 dark:border-amber-900/40 bg-amber-50/40 dark:bg-amber-950/20 text-xs flex items-start justify-between gap-2">
+                <div key={i} className="p-3 rounded-xl border-2 border-amber-200 bg-white text-xs flex items-start justify-between gap-2 shadow-2xs">
                   <div className="min-w-0">
-                    <p className="font-semibold text-foreground truncate">{amb.phrase}</p>
-                    <p className="text-[11px] text-muted truncate">{amb.reason || amb.suggestion}</p>
+                    <p className="font-black text-[#0F172A] truncate">{amb.phrase}</p>
+                    <p className="text-[11px] text-[#64748B] font-medium truncate">{amb.reason || amb.suggestion}</p>
                   </div>
-                  <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase shrink-0 ${
-                    amb.severity === 'high' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800'
+                  <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-black uppercase shrink-0 ${
+                    amb.severity === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-amber-50 text-amber-800 border border-amber-200'
                   }`}>
                     {amb.severity}
                   </span>
@@ -449,14 +453,14 @@ export default function Dashboard() {
         </div>
 
         {/* Recent SRS Generation Activity Feed */}
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#0ea5e9]" />
+        <div className="bg-white border-2 border-sky-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b-2 border-slate-100">
+            <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#0EA5E9]" />
               <span>Recent SRS Activity Feed</span>
             </h3>
             {srsHistory.length > 0 && (
-              <button onClick={() => setActiveFeature('history')} className="text-xs text-[#0ea5e9] font-medium hover:underline">
+              <button onClick={() => setActiveFeature('history')} className="text-xs text-[#0EA5E9] font-black hover:underline cursor-pointer">
                 View All
               </button>
             )}
@@ -464,17 +468,19 @@ export default function Dashboard() {
 
           {srsHistory.length === 0 ? (
             <div className="text-center py-6 text-muted text-xs flex flex-col items-center gap-1.5">
-              <FileText className="w-6 h-6 text-slate-300" />
-              <p className="font-semibold text-foreground">No generation activity yet</p>
-              <p>Generate test cases in the SRS Input module to record activity snapshots.</p>
+              <div className="w-10 h-10 rounded-full bg-sky-50 border border-sky-200 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[#0EA5E9]" />
+              </div>
+              <p className="font-black text-sm text-[#0F172A]">No generation activity yet</p>
+              <p className="text-xs text-[#64748B] font-medium">Generate test cases in the SRS Input module to record activity snapshots.</p>
             </div>
           ) : (
             <div className="space-y-2 max-h-48 overflow-y-auto">
               {srsHistory.slice(0, 4).map((h) => (
-                <div key={h.id} className="p-2.5 rounded-lg border border-border bg-slate-50/60 dark:bg-slate-800/40 text-xs flex items-center justify-between gap-2">
+                <div key={h.id} className="p-3 rounded-xl border-2 border-slate-200 bg-white text-xs flex items-center justify-between gap-2 shadow-2xs">
                   <div className="min-w-0">
-                    <p className="font-semibold text-foreground truncate">{h.title || 'SRS Document Suite'}</p>
-                    <p className="text-[11px] text-muted">{new Date(h.createdAt).toLocaleString()} • {h.testCaseCount} Test Cases</p>
+                    <p className="font-black text-[#0F172A] truncate">{h.title || 'SRS Document Suite'}</p>
+                    <p className="text-[11px] text-[#64748B] font-bold">{new Date(h.createdAt).toLocaleString()} • {h.testCaseCount} Test Cases</p>
                   </div>
                   <button
                     onClick={() => {
@@ -482,7 +488,7 @@ export default function Dashboard() {
                       loadSrsHistory(h);
                       setActiveFeature('srs-input');
                     }}
-                    className="text-[11px] font-semibold text-[#7c3aed] hover:underline shrink-0"
+                    className="text-xs font-black text-[#7C3AED] hover:underline shrink-0 cursor-pointer"
                   >
                     Restore
                   </button>

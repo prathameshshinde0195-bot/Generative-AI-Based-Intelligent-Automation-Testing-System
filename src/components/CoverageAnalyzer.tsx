@@ -269,32 +269,32 @@ export default function CoverageAnalyzer() {
 
       {/* Per-Requirement Coverage Progress List */}
       {traceability.length > 0 && (
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-foreground">Per-Requirement Traceability Progress</h3>
+        <div className="bg-white border-2 border-purple-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b-2 border-slate-100">
+            <h3 className="text-base font-black text-[#0F172A]">Per-Requirement Traceability Progress</h3>
             <button
               onClick={() => setActiveFeature('traceability')}
-              className="text-xs text-[#7c3aed] font-semibold hover:underline flex items-center gap-1"
+              className="text-xs text-[#7C3AED] font-black hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>View Full RTM</span>
-              <ArrowRight className="w-3 h-3" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
             {traceability.map(entry => (
-              <div key={entry.requirementId} className="flex items-center gap-3 text-xs">
-                <span className="font-mono font-bold text-[#7c3aed] w-24 shrink-0">{entry.requirementId}</span>
-                <span className="text-slate-700 dark:text-slate-300 truncate w-64 shrink-0">{entry.requirementText}</span>
-                <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div key={entry.requirementId} className="flex items-center gap-3 text-xs bg-white p-2.5 rounded-xl border border-slate-100 shadow-2xs">
+                <span className="font-mono font-black text-[#7C3AED] bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-200 w-24 shrink-0">{entry.requirementId}</span>
+                <span className="text-[#0F172A] font-bold truncate w-64 shrink-0">{entry.requirementText}</span>
+                <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div
-                    className={`h-full rounded-full transition-all ${entry.coverage >= 80 ? 'bg-[#16a34a]' : entry.coverage >= 50 ? 'bg-amber-500' : 'bg-[#dc2626]'}`}
+                    className={`h-full rounded-full transition-all ${entry.coverage >= 80 ? 'bg-[#16A34A]' : entry.coverage >= 50 ? 'bg-amber-500' : 'bg-[#DC2626]'}`}
                     style={{ width: `${entry.coverage}%` }}
                   />
                 </div>
-                <span className="font-mono font-bold w-12 text-right">{entry.coverage}%</span>
+                <span className="font-mono font-black w-12 text-right text-[#0F172A]">{entry.coverage}%</span>
                 {entry.coverage >= 80 ? (
-                  <CheckCircle2 className="w-4 h-4 text-[#16a34a]" />
+                  <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
                 ) : (
                   <AlertCircle className="w-4 h-4 text-red-500" />
                 )}

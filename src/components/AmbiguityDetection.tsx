@@ -142,9 +142,9 @@ export default function AmbiguityDetection() {
           <button
             onClick={handleReanalyze}
             disabled={isReanalyzing}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#0f172a] dark:text-white hover:border-[#0ea5e9] text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border-2 border-sky-200 text-[#0F172A] hover:bg-sky-50 text-xs font-black shadow-2xs transition-colors cursor-pointer"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isReanalyzing ? 'animate-spin text-[#0ea5e9]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isReanalyzing ? 'animate-spin text-[#0EA5E9]' : ''}`} />
             <span>{isReanalyzing ? 'Re-analyzing...' : 'Re-run Analysis'}</span>
           </button>
 
@@ -152,7 +152,7 @@ export default function AmbiguityDetection() {
             <>
               <button
                 onClick={handleBatchAccept}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 text-[#16a34a] text-xs font-semibold hover:bg-emerald-100 transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border-2 border-emerald-300 text-[#16A34A] text-xs font-black hover:bg-emerald-50 transition-colors shadow-2xs cursor-pointer"
                 title="Batch accept all suggested rewritten requirements"
               >
                 <Sparkles className="w-3.5 h-3.5" />
@@ -161,7 +161,7 @@ export default function AmbiguityDetection() {
 
               <button
                 onClick={handleExportReport}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] hover:opacity-95 text-white text-xs font-black shadow-md shadow-sky-500/20 transition-colors cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Export Report</span>
@@ -172,16 +172,16 @@ export default function AmbiguityDetection() {
       </motion.div>
 
       {ambiguities.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-slate-50 dark:bg-slate-800/40 border border-dashed border-border rounded-2xl">
-          <ShieldCheck className="w-16 h-16 text-emerald-400 mb-3" />
-          <h3 className="text-base font-bold text-foreground">No Ambiguities Detected</h3>
-          <p className="text-xs text-muted mt-1 max-w-md text-center">
+        <div className="flex flex-col items-center justify-center py-20 bg-white border-2 border-dashed border-emerald-200 rounded-3xl shadow-sm">
+          <ShieldCheck className="w-16 h-16 text-[#16A34A] mb-3" />
+          <h3 className="text-base font-black text-[#0F172A]">No Ambiguities Detected</h3>
+          <p className="text-xs text-[#64748B] font-bold mt-1 max-w-md text-center">
             Your SRS text meets testable quality criteria, or test cases have not yet been extracted. Enter requirements in SRS Input and generate cases to run analysis.
           </p>
           <button
             onClick={handleReanalyze}
             disabled={isReanalyzing || !srsText.trim()}
-            className="mt-4 px-4 py-2 rounded-lg bg-[#7c3aed] text-white text-xs font-semibold hover:bg-[#6d28d9] transition-colors"
+            className="mt-4 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] text-white text-xs font-black shadow-md shadow-purple-500/20 cursor-pointer"
           >
             Run Ambiguity Check Now
           </button>

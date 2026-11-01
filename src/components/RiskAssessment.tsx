@@ -129,9 +129,9 @@ export default function RiskAssessment() {
           <button
             onClick={handleReassess}
             disabled={isReassessing}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#0f172a] dark:text-white hover:border-[#0ea5e9] text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border-2 border-sky-200 text-[#0F172A] hover:bg-sky-50 text-xs font-black shadow-2xs transition-colors cursor-pointer"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isReassessing ? 'animate-spin text-[#0ea5e9]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isReassessing ? 'animate-spin text-[#0EA5E9]' : ''}`} />
             <span>Recalculate Risk</span>
           </button>
 

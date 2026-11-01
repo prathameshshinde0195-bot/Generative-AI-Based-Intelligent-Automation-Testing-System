@@ -19,10 +19,10 @@ export default function CICDApi() {
   };
 
   const getMethodColor = (method: string) => {
-    if (method === 'GET') return 'bg-emerald-50 text-[#16a34a] border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300';
-    if (method === 'POST') return 'bg-purple-50 text-[#7c3aed] border-purple-200 dark:bg-purple-950/40 dark:text-purple-300';
-    if (method === 'PUT') return 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300';
-    return 'bg-red-50 text-[#dc2626] border-red-200 dark:bg-red-950/40 dark:text-red-300';
+    if (method === 'GET') return 'bg-emerald-50 text-[#16A34A] border-2 border-emerald-200';
+    if (method === 'POST') return 'bg-purple-50 text-[#7C3AED] border-2 border-purple-200';
+    if (method === 'PUT') return 'bg-amber-50 text-amber-700 border-2 border-amber-200';
+    return 'bg-red-50 text-[#DC2626] border-2 border-red-200';
   };
 
   const githubActionsWorkflow = `name: AI Test Suite Quality Gate
@@ -112,24 +112,24 @@ jobs:
 
       {activeTab === 'github-actions' ? (
         /* GitHub Actions Tab */
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <GitBranch className="w-4 h-4 text-[#7c3aed]" />
+        <div className="bg-white border-2 border-purple-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b-2 border-slate-100">
+            <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2">
+              <GitBranch className="w-4 h-4 text-[#7C3AED]" />
               <span>Ready-to-Use GitHub Actions CI Workflow</span>
             </h3>
             <button
               onClick={() => handleCopy(githubActionsWorkflow, 999)}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-purple-50 text-[#7c3aed] border border-purple-200 hover:bg-purple-100"
+              className="flex items-center gap-1.5 text-xs font-black px-3.5 py-1.5 rounded-xl bg-purple-50 text-[#7C3AED] border border-purple-200 hover:bg-purple-100 cursor-pointer"
             >
               {copiedIdx === 999 ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
               <span>Copy Workflow YAML</span>
             </button>
           </div>
-          <p className="text-xs text-muted">
-            Add this file to <code className="text-xs font-mono bg-slate-100 dark:bg-slate-700 px-1 py-0.5 rounded">.github/workflows/jnet-testing.yml</code> to run AI testing checks on pull requests.
+          <p className="text-xs text-[#64748B] font-bold">
+            Add this file to <code className="text-xs font-mono bg-sky-50 text-[#0284C7] border border-sky-100 px-1.5 py-0.5 rounded-md">.github/workflows/jnet-testing.yml</code> to run AI testing checks on pull requests.
           </p>
-          <pre className="p-4 rounded-xl bg-[#0f172a] text-slate-100 font-mono text-xs overflow-x-auto leading-relaxed">
+          <pre className="p-4 rounded-2xl bg-white border-2 border-slate-200 text-[#0F172A] font-mono text-xs overflow-x-auto leading-relaxed shadow-2xs font-semibold">
             <code>{githubActionsWorkflow}</code>
           </pre>
         </div>
@@ -137,13 +137,13 @@ jobs:
         /* Webhooks Tab */
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-muted uppercase tracking-wider">Configured Webhook Triggers</h3>
+            <h3 className="text-xs font-black text-[#0F172A] uppercase tracking-wider">Configured Webhook Triggers</h3>
             <button
               onClick={() => {
                 setWebhookSimStatus('Dispatched ping test payload to webhook listener: HTTP 200 OK');
                 toast.success('Dispatched test webhook payload');
               }}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-50 text-[#16a34a] border border-emerald-200 hover:bg-emerald-100"
+              className="flex items-center gap-1.5 text-xs font-black px-3.5 py-1.5 rounded-xl bg-emerald-50 text-[#16A34A] border-2 border-emerald-200 hover:bg-emerald-100 cursor-pointer shadow-2xs"
             >
               <Play className="w-3.5 h-3.5" />
               <span>Test Ping Webhook</span>
@@ -151,24 +151,24 @@ jobs:
           </div>
 
           {webhookSimStatus && (
-            <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-[#16a34a] font-medium">
+            <div className="p-3.5 rounded-xl bg-emerald-50 border-2 border-emerald-200 text-xs text-[#16A34A] font-black">
               {webhookSimStatus}
             </div>
           )}
 
           <div className="space-y-3">
             {Object.entries(apiSpec.webhooks).map(([key, wh]: [string, any]) => (
-              <div key={key} className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs space-y-2">
+              <div key={key} className="bg-white border-2 border-sky-200 rounded-2xl p-5 shadow-sm space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-[#7c3aed]" />
-                    <span className="text-xs font-bold text-foreground">{key}</span>
+                    <Zap className="w-4 h-4 text-[#7C3AED]" />
+                    <span className="text-xs font-black text-[#0F172A]">{key}</span>
                   </div>
-                  <code className="text-xs font-mono text-[#0ea5e9] bg-sky-50 dark:bg-sky-950/40 px-2 py-0.5 rounded border border-sky-200">
+                  <code className="text-xs font-mono font-bold text-[#0EA5E9] bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
                     {wh.url}
                   </code>
                 </div>
-                <div className="bg-[#0f172a] rounded-lg p-3 text-slate-200 text-xs font-mono">
+                <div className="bg-white border-2 border-slate-200 rounded-xl p-3 text-[#0F172A] text-xs font-mono font-semibold shadow-2xs">
                   <pre>{JSON.stringify(wh.payload, null, 2)}</pre>
                 </div>
               </div>
@@ -178,35 +178,35 @@ jobs:
       ) : (
         /* Endpoints Tab */
         <div className="space-y-3">
-          <h3 className="text-xs font-bold text-muted uppercase tracking-wider">REST Endpoints ({apiSpec.endpoints.length})</h3>
+          <h3 className="text-xs font-black text-[#0F172A] uppercase tracking-wider">REST Endpoints ({apiSpec.endpoints.length})</h3>
           {apiSpec.endpoints.map((ep: any, i: number) => (
             <div
               key={i}
-              className="bg-white dark:bg-slate-800 border border-border rounded-xl overflow-hidden shadow-xs hover:border-border-bright transition-colors"
+              className="bg-white border-2 border-slate-200 rounded-2xl overflow-hidden shadow-xs hover:border-[#8B5CF6] transition-colors"
             >
               <button
                 onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}
-                className="w-full flex items-center gap-3 p-3.5 text-left text-xs"
+                className="w-full flex items-center gap-3 p-4 text-left text-xs cursor-pointer"
               >
-                <span className={`text-[10px] font-bold px-2.5 py-1 rounded border font-mono ${getMethodColor(ep.method)}`}>
+                <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg border font-mono ${getMethodColor(ep.method)}`}>
                   {ep.method}
                 </span>
-                <code className="text-xs font-mono font-bold text-[#7c3aed] flex-1">{ep.path}</code>
-                <span className="text-xs text-muted hidden sm:block font-medium">{ep.description}</span>
-                {expandedIdx === i ? <ChevronDown className="w-4 h-4 text-muted" /> : <ChevronRight className="w-4 h-4 text-muted" />}
+                <code className="text-xs font-mono font-black text-[#7C3AED] flex-1">{ep.path}</code>
+                <span className="text-xs text-[#64748B] hidden sm:block font-bold">{ep.description}</span>
+                {expandedIdx === i ? <ChevronDown className="w-4 h-4 text-[#64748B]" /> : <ChevronRight className="w-4 h-4 text-[#64748B]" />}
               </button>
 
               {expandedIdx === i && (
-                <div className="border-t border-border p-4 space-y-3 bg-slate-50/50 dark:bg-slate-850 text-xs">
-                  <p className="text-foreground font-medium">{ep.description}</p>
+                <div className="border-t-2 border-slate-100 p-4 space-y-3 bg-white text-xs">
+                  <p className="text-[#0F172A] font-bold">{ep.description}</p>
                   {ep.body && (
                     <div>
-                      <span className="text-[10px] font-bold text-muted uppercase">Sample Request Body</span>
-                      <div className="mt-1 bg-[#0f172a] rounded-lg p-3 relative text-slate-200 font-mono">
+                      <span className="text-[10px] font-black text-[#64748B] uppercase">Sample Request Body</span>
+                      <div className="mt-1 bg-white border-2 border-slate-200 rounded-xl p-3 relative text-[#0F172A] font-mono font-semibold shadow-2xs">
                         <pre>{JSON.stringify(ep.body, null, 2)}</pre>
                         <button
                           onClick={() => handleCopy(JSON.stringify(ep.body, null, 2), i)}
-                          className="absolute top-2 right-2 text-slate-400 hover:text-white"
+                          className="absolute top-2 right-2 text-slate-400 hover:text-[#0EA5E9] cursor-pointer"
                         >
                           {copiedIdx === i ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
                         </button>
@@ -215,19 +215,19 @@ jobs:
                   )}
 
                   <div>
-                    <span className="text-[10px] font-bold text-muted uppercase">Sample Response</span>
-                    <div className="mt-1 bg-[#0f172a] rounded-lg p-3 text-slate-200 font-mono">
+                    <span className="text-[10px] font-black text-[#64748B] uppercase">Sample Response</span>
+                    <div className="mt-1 bg-white border-2 border-slate-200 rounded-xl p-3 text-[#0F172A] font-mono font-semibold shadow-2xs">
                       <pre>{JSON.stringify(ep.response, null, 2)}</pre>
                     </div>
                   </div>
 
                   <div>
-                    <span className="text-[10px] font-bold text-muted uppercase">cURL Example</span>
-                    <div className="mt-1 bg-[#0f172a] rounded-lg p-3 relative text-emerald-400 font-mono">
+                    <span className="text-[10px] font-black text-[#64748B] uppercase">cURL Example</span>
+                    <div className="mt-1 bg-white border-2 border-emerald-200 rounded-xl p-3 relative text-[#0F172A] font-mono font-semibold shadow-2xs">
                       <pre className="whitespace-pre-wrap">{`curl -X ${ep.method} \\\n  ${apiSpec.baseUrl}${ep.path} \\\n  -H "Content-Type: application/json" \\\n  -H "Authorization: Bearer <token>"${ep.body ? ` \\\n  -d '${JSON.stringify(ep.body)}'` : ''}`}</pre>
                       <button
                         onClick={() => handleCopy(`curl -X ${ep.method} ${apiSpec.baseUrl}${ep.path} -H "Content-Type: application/json" -H "Authorization: Bearer <token>"`, i + 100)}
-                        className="absolute top-2 right-2 text-slate-400 hover:text-white"
+                        className="absolute top-2 right-2 text-slate-400 hover:text-[#0EA5E9] cursor-pointer"
                       >
                         {copiedIdx === i + 100 ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
                       </button>

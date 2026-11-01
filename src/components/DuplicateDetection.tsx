@@ -83,9 +83,9 @@ export default function DuplicateDetection() {
   };
 
   const getSimilarityBadge = (sim: number) => {
-    if (sim >= 85) return 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border border-red-200';
-    if (sim >= 70) return 'bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200';
-    return 'bg-purple-50 text-[#7c3aed] dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200';
+    if (sim >= 85) return 'bg-red-50 text-red-700 border-2 border-red-200';
+    if (sim >= 70) return 'bg-amber-50 text-amber-800 border-2 border-amber-200';
+    return 'bg-purple-50 text-[#7c3aed] border-2 border-purple-200';
   };
 
   // Safe removal of a single test case
@@ -280,10 +280,10 @@ export default function DuplicateDetection() {
 
       {/* Main List */}
       {filteredDuplicates.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-slate-50 dark:bg-slate-800/40 border border-dashed border-border rounded-2xl">
-          <CheckCircle2 className="w-16 h-16 text-[#16a34a] mb-3" />
-          <h3 className="text-base font-bold text-foreground">No Duplicate Cases Found</h3>
-          <p className="text-xs text-muted mt-1 max-w-md text-center">
+        <div className="flex flex-col items-center justify-center py-20 bg-white border-2 border-dashed border-sky-200 rounded-3xl shadow-sm">
+          <CheckCircle2 className="w-16 h-16 text-[#16A34A] mb-3" />
+          <h3 className="text-base font-black text-[#0F172A]">No Duplicate Cases Found</h3>
+          <p className="text-xs text-[#64748B] font-bold mt-1 max-w-md text-center">
             At the current {threshold}% similarity threshold, all test cases in your project are unique with verified behavioral differentiation.
           </p>
         </div>
@@ -377,25 +377,25 @@ export default function DuplicateDetection() {
 
       {/* Audit Trail: Recently Removed with Restore Action */}
       {removedHistory.length > 0 && (
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs space-y-3">
-          <div className="flex items-center justify-between">
-            <h4 className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-1.5">
-              <Undo2 className="w-3.5 h-3.5 text-[#0ea5e9]" />
+        <div className="bg-white border-2 border-sky-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b-2 border-slate-100">
+            <h4 className="text-xs font-black text-[#0F172A] uppercase tracking-wider flex items-center gap-1.5">
+              <Undo2 className="w-3.5 h-3.5 text-[#0EA5E9]" />
               <span>Audit Trail: Safely Removed Test Cases ({removedHistory.length})</span>
             </h4>
-            <span className="text-[11px] text-muted">Click restore to reinstate any test case</span>
+            <span className="text-[11px] text-[#64748B] font-bold">Click restore to reinstate any test case</span>
           </div>
 
-          <div className="divide-y divide-border/50 max-h-48 overflow-y-auto">
+          <div className="divide-y divide-slate-100 max-h-48 overflow-y-auto">
             {removedHistory.map((tc) => (
-              <div key={tc.testCaseId} className="py-2 flex items-center justify-between text-xs gap-2">
+              <div key={tc.testCaseId} className="py-2.5 flex items-center justify-between text-xs gap-2">
                 <div className="min-w-0">
-                  <span className="font-mono font-bold text-slate-700 dark:text-slate-300 mr-2">{tc.testCaseId}</span>
-                  <span className="text-muted truncate">{tc.title || tc.scenario}</span>
+                  <span className="font-mono font-black text-[#0F172A] mr-2 bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">{tc.testCaseId}</span>
+                  <span className="text-[#64748B] font-bold truncate">{tc.title || tc.scenario}</span>
                 </div>
                 <button
                   onClick={() => handleRestore(tc)}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-sky-50 text-[#0ea5e9] hover:bg-sky-100 font-semibold text-xs transition-colors shrink-0"
+                  className="flex items-center gap-1 px-3 py-1 rounded-xl bg-sky-50 text-[#0EA5E9] hover:bg-sky-100 border border-sky-200 font-black text-xs transition-colors shrink-0 cursor-pointer"
                 >
                   <Undo2 className="w-3 h-3" />
                   <span>Restore</span>
@@ -408,26 +408,26 @@ export default function DuplicateDetection() {
 
       {/* Single Delete Confirmation Modal */}
       {deleteConfirmTcId && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-800 border border-border rounded-2xl max-w-md w-full p-5 space-y-4 shadow-xl">
-            <div className="flex items-center gap-2 text-red-600 font-bold text-sm">
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-red-300 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center gap-2 text-red-600 font-black text-base">
               <ShieldAlert className="w-5 h-5" />
               <span>Confirm Test Case Removal</span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
-              Are you sure you want to remove <span className="font-bold text-foreground">{deleteConfirmTcId}</span> as a redundant duplicate?
+            <p className="text-xs text-[#64748B] font-bold">
+              Are you sure you want to remove <span className="font-black text-[#0F172A]">{deleteConfirmTcId}</span> as a redundant duplicate?
               This action is logged in the audit trail and can be restored at any time.
             </p>
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t-2 border-slate-100">
               <button
                 onClick={() => setDeleteConfirmTcId(null)}
-                className="px-3 py-1.5 text-xs rounded-lg border border-border text-muted hover:text-foreground"
+                className="px-4 py-2 text-xs font-black rounded-xl border-2 border-slate-200 text-[#64748B] hover:text-[#0F172A] hover:bg-slate-50 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={() => executeRemoveDuplicate(deleteConfirmTcId)}
-                className="px-4 py-1.5 text-xs rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700"
+                className="px-4 py-2 text-xs font-black rounded-xl bg-red-600 text-white hover:bg-red-700 shadow-md cursor-pointer"
               >
                 Confirm Delete
               </button>
@@ -438,26 +438,26 @@ export default function DuplicateDetection() {
 
       {/* Bulk Delete Confirmation Modal */}
       {bulkConfirmOpen && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-800 border border-border rounded-2xl max-w-md w-full p-5 space-y-4 shadow-xl">
-            <div className="flex items-center gap-2 text-red-600 font-bold text-sm">
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-red-300 rounded-3xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center gap-2 text-red-600 font-black text-base">
               <Trash2 className="w-5 h-5" />
               <span>Confirm Bulk Cleanup</span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
-              This will remove <span className="font-bold text-foreground">{filteredDuplicates.length}</span> redundant secondary test case(s)
+            <p className="text-xs text-[#64748B] font-bold">
+              This will remove <span className="font-black text-[#0F172A]">{filteredDuplicates.length}</span> redundant secondary test case(s)
               meeting the {threshold}% similarity threshold while preserving all unique base cases. All removed cases can be restored.
             </p>
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+            <div className="flex items-center justify-end gap-2 pt-3 border-t-2 border-slate-100">
               <button
                 onClick={() => setBulkConfirmOpen(false)}
-                className="px-3 py-1.5 text-xs rounded-lg border border-border text-muted hover:text-foreground"
+                className="px-4 py-2 text-xs font-black rounded-xl border-2 border-slate-200 text-[#64748B] hover:text-[#0F172A] hover:bg-slate-50 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={executeBulkRemove}
-                className="px-4 py-1.5 text-xs rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700"
+                className="px-4 py-2 text-xs font-black rounded-xl bg-red-600 text-white hover:bg-red-700 shadow-md cursor-pointer"
               >
                 Execute Bulk Cleanup
               </button>
@@ -468,38 +468,38 @@ export default function DuplicateDetection() {
 
       {/* Merge Modal */}
       {mergingPair && mergingPair.suggestedMergedCase && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-800 border border-border rounded-2xl max-w-lg w-full p-5 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between pb-2 border-b border-border">
-              <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                <Merge className="w-4 h-4 text-[#7c3aed]" />
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-purple-300 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-slate-100">
+              <h3 className="text-base font-black text-[#0F172A] flex items-center gap-2">
+                <Merge className="w-4 h-4 text-[#7C3AED]" />
                 <span>Consolidate {mergingPair.testCase1Id} & {mergingPair.testCase2Id}</span>
               </h3>
-              <button onClick={() => setMergingPair(null)} className="text-muted hover:text-foreground">
+              <button onClick={() => setMergingPair(null)} className="text-[#64748B] hover:text-[#0F172A] cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <p className="text-xs text-muted">
+            <p className="text-xs text-[#64748B] font-bold">
               Consolidate overlapping test scenarios into a unified, non-redundant test case:
             </p>
 
-            <div className="p-3 bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200 rounded-xl space-y-2 text-xs">
+            <div className="p-4 bg-white border-2 border-purple-200 rounded-2xl space-y-2 text-xs shadow-2xs">
               <div>
-                <span className="font-bold text-muted text-[10px] uppercase">Consolidated Title:</span>
-                <p className="font-semibold text-foreground">{mergingPair.suggestedMergedCase.title}</p>
+                <span className="font-black text-[#64748B] text-[10px] uppercase">Consolidated Title:</span>
+                <p className="font-black text-[#0F172A]">{mergingPair.suggestedMergedCase.title}</p>
               </div>
               <div>
-                <span className="font-bold text-muted text-[10px] uppercase">Unified Steps:</span>
-                <ol className="list-decimal list-inside space-y-0.5 text-slate-700 dark:text-slate-300">
+                <span className="font-black text-[#64748B] text-[10px] uppercase">Unified Steps:</span>
+                <ol className="list-decimal list-inside space-y-0.5 text-[#0F172A] font-medium">
                   {mergingPair.suggestedMergedCase.steps?.map((s, i) => (
                     <li key={i}>{s}</li>
                   ))}
                 </ol>
               </div>
               <div>
-                <span className="font-bold text-muted text-[10px] uppercase">Unified Expected Result:</span>
-                <p className="text-[#16a34a] font-medium">{mergingPair.suggestedMergedCase.expectedResults}</p>
+                <span className="font-black text-[#64748B] text-[10px] uppercase">Unified Expected Result:</span>
+                <p className="text-[#16A34A] font-black">{mergingPair.suggestedMergedCase.expectedResults}</p>
               </div>
             </div>
 

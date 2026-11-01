@@ -490,26 +490,26 @@ export default function TestDataGenerator() {
 
             {/* Test Case Selection Menu */}
             {allAvailableTestCases.length === 0 ? (
-              <div className="p-4 rounded-xl bg-[#fff7ed] dark:bg-amber-950/30 border border-orange-200 dark:border-amber-800/40 text-xs text-[#f97316]">
+              <div className="p-4 rounded-xl bg-amber-50 border-2 border-amber-200 text-xs text-amber-800 font-bold">
                 No generated test cases found in this project. Go to <strong>SRS Input & Generator</strong> to create test cases first.
               </div>
             ) : (
               <div className="space-y-2">
                 <div className="relative">
-                  <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#64748b]" />
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#64748B]" />
                   <input
                     type="text"
                     placeholder="Search test cases by ID or scenario..."
                     value={tcSearchQuery}
                     onChange={(e) => setTcSearchQuery(e.target.value)}
-                    className="w-full bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#172033] dark:text-white"
+                    className="w-full bg-white border-2 border-sky-200 rounded-xl pl-8 pr-3 py-2 text-xs text-[#0F172A] font-bold placeholder-slate-400 focus:outline-none focus:border-[#0EA5E9]"
                   />
                 </div>
 
                 <select
                   value={selectedTcId}
                   onChange={(e) => setSelectedTcId(e.target.value)}
-                  className="w-full bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 rounded-xl p-2.5 text-xs text-[#172033] dark:text-white font-medium focus:ring-2 focus:ring-[#0ea5e9]/20 focus:border-[#0ea5e9]"
+                  className="w-full bg-white border-2 border-sky-200 rounded-xl p-2.5 text-xs text-[#0F172A] font-bold focus:outline-none focus:border-[#0EA5E9]"
                 >
                   {dropdownFilteredTCs.map((tc) => (
                     <option key={tc.testCaseId} value={tc.testCaseId}>

@@ -359,23 +359,23 @@ export default function AutomationScriptGen() {
               )}
             </div>
 
-            <div className="bg-[#0f172a] text-slate-100 border border-border rounded-xl overflow-hidden min-h-[460px] shadow-sm">
+            <div className="bg-white text-[#0F172A] border-2 border-purple-200 rounded-2xl overflow-hidden min-h-[460px] shadow-sm">
               {generating && !generatedScript ? (
                 <div className="flex items-center justify-center py-36 gap-2 text-muted">
-                  <Loader2 className="w-5 h-5 animate-spin text-[#7c3aed]" />
-                  <span className="text-xs text-slate-300">Synthesizing runnable automation code...</span>
+                  <Loader2 className="w-5 h-5 animate-spin text-[#7C3AED]" />
+                  <span className="text-xs font-bold text-[#64748B]">Synthesizing runnable automation code...</span>
                 </div>
               ) : generatedScript ? (
                 <div>
-                  <div className="flex items-center justify-between px-4 py-2.5 bg-[#1e293b] border-b border-slate-700 text-xs">
+                  <div className="flex items-center justify-between px-4 py-3 bg-[#F8FCFF] border-b-2 border-purple-100 text-xs">
                     <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full" style={{ background: frameworks.find((f) => f.id === generatedScript.framework)?.color }} />
-                      <span className="text-[11px] text-slate-300 font-mono">{generatedScript.language} • {generatedScript.framework}</span>
+                      <span className="text-[11px] text-[#0F172A] font-mono font-black">{generatedScript.language} • {generatedScript.framework}</span>
                     </div>
                     {isEditing ? (
-                      <span className="text-[10px] text-amber-400 font-bold uppercase">Editing Enabled</span>
+                      <span className="text-[10px] text-[#BE185D] font-black uppercase bg-[#FDF2F8] px-2.5 py-0.5 rounded-full border border-pink-200">Editing Enabled</span>
                     ) : (
-                      <span className="text-[10px] text-slate-400">Read-Only</span>
+                      <span className="text-[10px] text-[#64748B] font-bold bg-slate-100 px-2.5 py-0.5 rounded-full">Read-Only</span>
                     )}
                   </div>
 
@@ -383,11 +383,11 @@ export default function AutomationScriptGen() {
                     <textarea
                       value={editedCode}
                       onChange={(e) => setEditedCode(e.target.value)}
-                      className="w-full h-[520px] p-4 text-xs font-mono bg-[#0f172a] text-slate-100 resize-none outline-none leading-relaxed"
+                      className="w-full h-[520px] p-4 text-xs font-mono bg-white text-[#0F172A] font-bold resize-none outline-none leading-relaxed selection:bg-purple-100"
                       spellCheck={false}
                     />
                   ) : (
-                    <pre className="p-4 text-xs font-mono text-slate-200 overflow-auto max-h-[520px] leading-relaxed">
+                    <pre className="p-4 text-xs font-mono text-[#0F172A] font-semibold overflow-auto max-h-[520px] leading-relaxed bg-white selection:bg-purple-100">
                       <code>{editedCode || generatedScript.code}</code>
                     </pre>
                   )}
@@ -395,8 +395,8 @@ export default function AutomationScriptGen() {
               ) : (
                 <div className="flex items-center justify-center py-36 text-center">
                   <div>
-                    <Code2 className="w-10 h-10 text-slate-600 mx-auto mb-2" />
-                    <p className="text-xs text-slate-400">Select a test case to generate framework code</p>
+                    <Code2 className="w-10 h-10 text-purple-300 mx-auto mb-2" />
+                    <p className="text-xs text-[#64748B] font-bold">Select a test case to generate framework code</p>
                   </div>
                 </div>
               )}

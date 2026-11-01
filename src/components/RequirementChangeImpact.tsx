@@ -36,10 +36,10 @@ interface Requirement {
 }
 
 const impactColors: Record<string, string> = {
-  High:   'text-red-700 bg-red-50 border-red-200 dark:bg-red-950/40 dark:text-red-300 dark:border-red-900',
-  Medium: 'text-amber-700 bg-amber-50 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900',
-  Low:    'text-[#16a34a] bg-emerald-50 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900',
-  None:   'text-slate-600 bg-slate-50 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+  High:   'text-red-700 bg-red-50 border-2 border-red-200',
+  Medium: 'text-amber-700 bg-amber-50 border-2 border-amber-200',
+  Low:    'text-[#16a34a] bg-emerald-50 border-2 border-emerald-200',
+  None:   'text-slate-600 bg-slate-50 border-2 border-slate-200',
 };
 
 const priorityColors: Record<string, string> = {
@@ -297,49 +297,49 @@ export default function RequirementChangeImpact() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 space-y-4 shadow-xs"
+            className="bg-white border-2 border-purple-200 rounded-2xl p-5 space-y-4 shadow-sm"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-border">
-              <h3 className="text-sm font-bold text-foreground">Regression Impact Findings</h3>
+            <div className="flex items-center justify-between pb-3 border-b-2 border-slate-100">
+              <h3 className="text-base font-black text-[#0F172A]">Regression Impact Findings</h3>
               <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold ${impactColors[result.impactLevel]}`}>
                 <AlertTriangle className="w-3.5 h-3.5" />
                 <span>{result.impactLevel} Regression Impact</span>
               </div>
             </div>
 
-            <p className="text-xs text-slate-700 dark:text-slate-300 font-medium">{result.reason}</p>
+            <p className="text-xs text-[#0F172A] font-bold">{result.reason}</p>
 
             {result.affectedTestCases.length === 0 ? (
-              <div className="flex items-center gap-2 text-[#16a34a] text-xs bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+              <div className="flex items-center gap-2 text-[#16A34A] text-xs bg-emerald-50 border-2 border-emerald-200 rounded-xl p-3 font-bold">
                 <CheckCircle className="w-4 h-4 shrink-0" />
                 <span>No existing test cases require immediate modification.</span>
               </div>
             ) : (
               <div className="space-y-2">
-                <h4 className="text-xs font-bold text-muted uppercase tracking-wider">
+                <h4 className="text-xs font-black text-[#64748B] uppercase tracking-wider">
                   Impacted Test Cases ({result.affectedTestCases.length})
                 </h4>
                 {result.affectedTestCases.map((tc, idx) => (
                   <div
                     key={tc.testCaseId + idx}
-                    className="bg-slate-50 dark:bg-slate-850 border border-border rounded-lg p-3.5 text-xs space-y-1.5"
+                    className="bg-white border-2 border-slate-200 rounded-xl p-3.5 text-xs space-y-1.5 shadow-2xs"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-[#7c3aed] bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
+                        <span className="font-mono font-black text-[#7C3AED] bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-200">
                           {tc.testCaseId}
                         </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${impactColors[tc.impact]}`}>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${impactColors[tc.impact]}`}>
                           {tc.impact} Impact
                         </span>
                       </div>
-                      <span className={`text-[11px] ${priorityColors[tc.regressionPriority]}`}>
+                      <span className={`text-[11px] font-black ${priorityColors[tc.regressionPriority]}`}>
                         Priority: {tc.regressionPriority}
                       </span>
                     </div>
 
-                    <p className="font-semibold text-foreground">{tc.scenario}</p>
-                    <p className="text-[11px] text-muted">{tc.reason}</p>
+                    <p className="font-black text-[#0F172A]">{tc.scenario}</p>
+                    <p className="text-[11px] text-[#64748B] font-medium">{tc.reason}</p>
                   </div>
                 ))}
               </div>
@@ -350,25 +350,25 @@ export default function RequirementChangeImpact() {
 
       {/* History */}
       {history.length > 0 && (
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs space-y-3">
-          <h3 className="text-xs font-bold text-muted uppercase tracking-wider flex items-center gap-2">
-            <History className="w-4 h-4 text-[#7c3aed]" />
+        <div className="bg-white border-2 border-sky-200 rounded-2xl p-5 shadow-sm space-y-3">
+          <h3 className="text-xs font-black text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
+            <History className="w-4 h-4 text-[#7C3AED]" />
             <span>Past Impact Analysis History ({history.length})</span>
           </h3>
 
-          <div className="divide-y divide-border/50 max-h-56 overflow-y-auto">
+          <div className="divide-y divide-slate-100 max-h-56 overflow-y-auto">
             {history.map((h) => (
               <div key={h._id} className="py-2.5 text-xs space-y-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Clock className="w-3.5 h-3.5 text-muted" />
-                    <span className="text-[11px] text-muted font-medium">{new Date(h.createdAt).toLocaleString()}</span>
+                    <Clock className="w-3.5 h-3.5 text-[#0EA5E9]" />
+                    <span className="text-[11px] text-[#64748B] font-bold">{new Date(h.createdAt).toLocaleString()}</span>
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${impactColors[h.impactLevel]}`}>
+                  <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${impactColors[h.impactLevel]}`}>
                     {h.impactLevel} Impact • {h.totalAffected} affected
                   </span>
                 </div>
-                <p className="text-slate-700 dark:text-slate-300 truncate font-medium">{h.oldRequirement}</p>
+                <p className="text-[#0F172A] truncate font-bold">{h.oldRequirement}</p>
               </div>
             ))}
           </div>
