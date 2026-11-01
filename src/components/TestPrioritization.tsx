@@ -359,47 +359,47 @@ export default function TestPrioritization() {
 
         {/* Priority KPI breakdown Cards in White, Sky Blue, Purple, and Light Pink */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-white border border-[#FCE7F3] rounded-2xl p-4 shadow-sm flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#FDF2F8] text-[#BE185D] flex items-center justify-center font-bold">
-                <Flame className="w-5 h-5" />
+          <div className="bg-white border-2 border-[#FCE7F3] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-[#FDF2F8] text-[#BE185D] flex items-center justify-center font-black shadow-xs">
+                <Flame className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold">High / Critical Priority</p>
-                <p className="text-2xl font-black text-[#BE185D] mt-0.5">{highCount}</p>
+                <p className="text-xs text-[#BE185D] uppercase tracking-wider font-black">High / Critical Priority</p>
+                <p className="text-3xl font-black text-[#BE185D] mt-0.5 tracking-tight">{highCount}</p>
               </div>
             </div>
-            <span className="text-xs font-bold text-[#BE185D] bg-[#FDF2F8] px-2.5 py-1 rounded-lg border border-[#FCE7F3]">
+            <span className="text-xs font-black text-[#BE185D] bg-[#FDF2F8] px-3 py-1.5 rounded-xl border-2 border-[#FCE7F3]">
               {displayedCases.length > 0 ? `${Math.round((highCount / displayedCases.length) * 100)}%` : '0%'}
             </span>
           </div>
 
-          <div className="bg-white border border-[#EDE9FE] rounded-2xl p-4 shadow-sm flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#FAF5FF] text-[#7C3AED] flex items-center justify-center font-bold">
-                <Zap className="w-5 h-5" />
+          <div className="bg-white border-2 border-[#EDE9FE] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-[#FAF5FF] text-[#7C3AED] flex items-center justify-center font-black shadow-xs">
+                <Zap className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold">Medium Priority</p>
-                <p className="text-2xl font-black text-[#7C3AED] mt-0.5">{medCount}</p>
+                <p className="text-xs text-[#7C3AED] uppercase tracking-wider font-black">Medium Priority</p>
+                <p className="text-3xl font-black text-[#7C3AED] mt-0.5 tracking-tight">{medCount}</p>
               </div>
             </div>
-            <span className="text-xs font-bold text-[#7C3AED] bg-[#FAF5FF] px-2.5 py-1 rounded-lg border border-[#EDE9FE]">
+            <span className="text-xs font-black text-[#7C3AED] bg-[#FAF5FF] px-3 py-1.5 rounded-xl border-2 border-[#EDE9FE]">
               {displayedCases.length > 0 ? `${Math.round((medCount / displayedCases.length) * 100)}%` : '0%'}
             </span>
           </div>
 
-          <div className="bg-white border border-[#E0F2FE] rounded-2xl p-4 shadow-sm flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#F0F9FF] text-[#0284C7] flex items-center justify-center font-bold">
-                <ShieldCheck className="w-5 h-5" />
+          <div className="bg-white border-2 border-[#E0F2FE] rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex items-center justify-between">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-[#F0F9FF] text-[#0284C7] flex items-center justify-center font-black shadow-xs">
+                <ShieldCheck className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold">Low Priority</p>
-                <p className="text-2xl font-black text-[#0284C7] mt-0.5">{lowCount}</p>
+                <p className="text-xs text-[#0284C7] uppercase tracking-wider font-black">Low Priority</p>
+                <p className="text-3xl font-black text-[#0284C7] mt-0.5 tracking-tight">{lowCount}</p>
               </div>
             </div>
-            <span className="text-xs font-bold text-[#0284C7] bg-[#F0F9FF] px-2.5 py-1 rounded-lg border border-sky-100">
+            <span className="text-xs font-black text-[#0284C7] bg-[#F0F9FF] px-3 py-1.5 rounded-xl border-2 border-sky-200">
               {displayedCases.length > 0 ? `${Math.round((lowCount / displayedCases.length) * 100)}%` : '0%'}
             </span>
           </div>

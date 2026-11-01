@@ -415,51 +415,56 @@ export default function TestDataGenerator() {
   }, [allAvailableTestCases, tcSearchQuery]);
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900 transition-colors">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF] transition-colors">
       {/* Header Banner */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-[#e0f2fe] dark:bg-sky-950/50 text-[#0ea5e9]">
-              <FlaskConical className="w-6 h-6" />
-            </span>
-            AI Test Data Generator
-          </h2>
-          <p className="text-sm text-[#64748b] dark:text-slate-400 mt-1">
-            Generate context-aware synthetic test data linked directly to your test cases and requirements.
-          </p>
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl shadow-sm border border-[#E0F2FE]">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <FlaskConical className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
+              AI Test Data Generator
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
+                21 Test Vectors
+              </span>
+            </h2>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">
+              Generate context-aware synthetic test data linked directly to your test cases and requirements.
+            </p>
+          </div>
         </div>
 
         {/* Global Toolbar buttons */}
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setShowHistory(true)}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#172033] dark:text-white hover:bg-slate-50 transition-all shadow-xs"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-white border-2 border-slate-200 text-[#0F172A] hover:border-[#0EA5E9] transition-all shadow-xs cursor-pointer"
           >
-            <Clock className="w-3.5 h-3.5 text-[#0ea5e9]" />
+            <Clock className="w-4 h-4 text-[#0EA5E9]" />
             Saved Datasets {history.length > 0 && `(${history.length})`}
           </button>
           {generatedItems.length > 0 && (
             <>
               <button
                 onClick={handleSendToAutomation}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] text-white hover:opacity-95 shadow-xs transition-all"
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-black rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] text-white hover:opacity-95 shadow-xs transition-all cursor-pointer"
               >
-                <Code2 className="w-3.5 h-3.5" />
+                <Code2 className="w-4 h-4" />
                 Send to Automation Script Gen
               </button>
               <button
                 onClick={exportExcel}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-[#dcfce7] dark:bg-emerald-950/40 text-[#16a34a] border border-emerald-200 dark:border-emerald-800/40 hover:opacity-90 shadow-xs transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-black rounded-xl bg-[#DCFCE7] text-[#166534] border-2 border-emerald-200 hover:opacity-90 shadow-xs transition-all cursor-pointer"
               >
-                <FileSpreadsheet className="w-3.5 h-3.5" />
+                <FileSpreadsheet className="w-4 h-4" />
                 Export Excel
               </button>
               <button
                 onClick={exportJSON}
-                className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg bg-white dark:bg-slate-800 text-[#172033] dark:text-white border border-[#e2e8f0] dark:border-slate-700 hover:border-[#0ea5e9] shadow-xs transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-black rounded-xl bg-white text-[#0F172A] border-2 border-slate-200 hover:border-[#0EA5E9] shadow-xs transition-all cursor-pointer"
               >
-                <Download className="w-3.5 h-3.5" />
+                <Download className="w-4 h-4" />
                 JSON
               </button>
             </>
@@ -472,13 +477,13 @@ export default function TestDataGenerator() {
         {/* Left Column (5 cols): Test Case Selector & Category Chips */}
         <div className="xl:col-span-5 space-y-5">
           {/* 1. Select Generated Test Case Dropdown Card */}
-          <div className="bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded-2xl p-5 shadow-xs space-y-3">
+          <div className="bg-white border-2 border-sky-300 rounded-2xl p-5 shadow-sm space-y-3.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#172033] dark:text-slate-300 flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-[#0ea5e9]" />
+              <label className="text-xs font-black uppercase tracking-wider text-[#0F172A] flex items-center gap-1.5">
+                <FileText className="w-4 h-4 text-[#0EA5E9]" />
                 1. Select Generated Test Case
               </label>
-              <span className="text-[11px] text-[#64748b] font-medium">
+              <span className="text-xs font-bold text-[#0284C7] bg-[#F0F9FF] px-2.5 py-0.5 rounded-full border border-sky-200">
                 {allAvailableTestCases.length} Cases Available
               </span>
             </div>
@@ -517,50 +522,52 @@ export default function TestDataGenerator() {
 
             {/* Selected Test Case Inspection Card */}
             {selectedTC && (
-              <div className="p-3.5 rounded-xl bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 space-y-2 text-xs">
+              <div className="p-4 rounded-xl bg-[#F8FCFF] border-2 border-sky-200 space-y-2 text-xs">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="font-mono font-bold text-[#7c3aed]">{selectedTC.testCaseId}</span>
+                  <span className="font-mono font-black text-[#7C3AED] bg-purple-50 px-2 py-0.5 rounded border border-purple-200">{selectedTC.testCaseId}</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#e0f2fe] text-[#0ea5e9]">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-black bg-[#E0F2FE] text-[#0284C7] border border-sky-200">
                       {selectedTC.testType || selectedTC.category}
                     </span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#dcfce7] text-[#16a34a]">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-black bg-[#DCFCE7] text-[#16A34A] border border-emerald-200">
                       {selectedTC.priority}
                     </span>
                   </div>
                 </div>
 
-                <p className="font-semibold text-[#172033] dark:text-white line-clamp-2">
+                <p className="font-black text-[#0F172A] text-xs line-clamp-2">
                   {selectedTC.title || selectedTC.scenario}
                 </p>
 
-                <div className="text-[11px] text-[#64748b] space-y-1 pt-1 border-t border-[#e2e8f0] dark:border-slate-800">
-                  <p><strong className="text-[#172033] dark:text-slate-300">Requirement:</strong> {selectedTC.requirementId}</p>
-                  <p className="line-clamp-1"><strong className="text-[#172033] dark:text-slate-300">Preconditions:</strong> {selectedTC.preconditions}</p>
-                  <p className="line-clamp-1"><strong className="text-[#172033] dark:text-slate-300">Expected:</strong> {selectedTC.expectedResults}</p>
+                <div className="text-[11px] text-[#64748B] space-y-1 pt-1.5 border-t border-sky-100 font-bold">
+                  <p><strong className="text-[#0F172A] font-black">Requirement:</strong> {selectedTC.requirementId}</p>
+                  <p className="line-clamp-1"><strong className="text-[#0F172A] font-black">Preconditions:</strong> {selectedTC.preconditions}</p>
+                  <p className="line-clamp-1"><strong className="text-[#0F172A] font-black">Expected:</strong> {selectedTC.expectedResults}</p>
                 </div>
               </div>
             )}
           </div>
 
           {/* 2. Select Test Data Categories (All 21 Categories) */}
-          <div className="bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded-2xl p-5 shadow-xs space-y-3">
+          <div className="bg-white border-2 border-purple-200 rounded-2xl p-5 shadow-sm space-y-3.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold uppercase tracking-wider text-[#172033] dark:text-slate-300 flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5 text-[#7c3aed]" />
+              <label className="text-xs font-black uppercase tracking-wider text-[#0F172A] flex items-center gap-1.5">
+                <Layers className="w-4 h-4 text-[#8B5CF6]" />
                 2. Select Categories ({selectedCategoryIds.length} of {ALL_TEST_DATA_CATEGORIES.length})
               </label>
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => setSelectedCategoryIds(ALL_TEST_DATA_CATEGORIES.map(c => c.id))}
-                  className="text-xs text-[#7c3aed] font-semibold hover:underline"
+                  className="text-xs text-[#8B5CF6] font-black hover:underline cursor-pointer"
                 >
                   All
                 </button>
-                <span className="text-[#cbd5e1]">•</span>
+                <span className="text-slate-300">•</span>
                 <button
+                  type="button"
                   onClick={() => setSelectedCategoryIds([])}
-                  className="text-xs text-[#64748b] font-semibold hover:underline"
+                  className="text-xs text-[#64748B] font-black hover:underline cursor-pointer"
                 >
                   Clear
                 </button>
@@ -568,24 +575,25 @@ export default function TestDataGenerator() {
             </div>
 
             {/* 21 Categories Chips Grid */}
-            <div className="grid grid-cols-2 gap-1.5 max-h-56 overflow-y-auto pr-1">
+            <div className="grid grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
               {ALL_TEST_DATA_CATEGORIES.map((cat) => {
                 const isSelected = selectedCategoryIds.includes(cat.id);
                 return (
                   <button
                     key={cat.id}
+                    type="button"
                     onClick={() => toggleCategory(cat.id)}
-                    className={`flex items-center justify-between p-2 rounded-xl text-left border text-[11px] font-medium transition-all ${
+                    className={`flex items-center justify-between p-2.5 rounded-xl text-left border-2 text-xs font-bold transition-all cursor-pointer ${
                       isSelected
-                        ? 'bg-[#f3e8ff] dark:bg-purple-950/40 border-[#7c3aed] text-[#7c3aed] dark:text-purple-300 font-semibold shadow-2xs'
-                        : 'bg-[#f8fafc] dark:bg-slate-900 border-[#e2e8f0] dark:border-slate-700 text-[#64748b] hover:border-[#cbd5e1]'
+                        ? 'bg-[#FAF5FF] border-[#8B5CF6] text-[#7C3AED] font-black shadow-2xs'
+                        : 'bg-[#F8FCFF] border-slate-200 text-[#0F172A] hover:border-purple-300'
                     }`}
                   >
                     <span className="truncate">{cat.label}</span>
                     {isSelected ? (
-                      <Check className="w-3 h-3 text-[#7c3aed] shrink-0" />
+                      <Check className="w-3.5 h-3.5 text-[#8B5CF6] shrink-0" />
                     ) : (
-                      <span className="w-3 h-3 rounded-full border border-[#cbd5e1] shrink-0" />
+                      <span className="w-3.5 h-3.5 rounded-full border-2 border-slate-300 shrink-0" />
                     )}
                   </button>
                 );
@@ -594,22 +602,23 @@ export default function TestDataGenerator() {
 
             {/* Generation Button */}
             <button
+              type="button"
               onClick={handleGenerate}
               disabled={loading || selectedCategoryIds.length === 0}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#0ea5e9] to-[#0284c7] hover:from-[#0284c7] hover:to-[#0369a1] text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md shadow-sky-600/25 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] hover:opacity-95 text-white font-black text-sm py-4 px-6 rounded-2xl transition-all shadow-md shadow-sky-600/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? (
                 <>
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                    className="w-4.5 h-4.5 border-2 border-white/30 border-t-white rounded-full"
                   />
                   <span>Generating Synthetic Test Data...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4" />
+                  <Sparkles className="w-4.5 h-4.5" />
                   <span>Generate Test Data for {selectedTC?.testCaseId || 'Selected Test Case'}</span>
                 </>
               )}
@@ -619,14 +628,14 @@ export default function TestDataGenerator() {
 
         {/* Right Column (7 cols): Generated Test Data Records Table & Preview */}
         <div className="xl:col-span-7 space-y-4">
-          <div className="bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded-2xl p-4 shadow-xs space-y-3">
+          <div className="bg-white border-2 border-sky-200 rounded-2xl p-4.5 shadow-sm space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-sm text-[#172033] dark:text-white">
+                <span className="font-black text-base text-[#0F172A]">
                   Generated Test Data Records ({filteredItems.length})
                 </span>
                 {generatedItems.length > 0 && (
-                  <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#e0f2fe] text-[#0ea5e9]">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-[#E0F2FE] text-[#0284C7] border border-sky-200">
                     {selectedTC?.testCaseId || 'Active Set'}
                   </span>
                 )}
@@ -635,32 +644,33 @@ export default function TestDataGenerator() {
               {generatedItems.length > 0 && (
                 <div className="flex items-center gap-2">
                   <button
+                    type="button"
                     onClick={copyAll}
-                    className="text-xs px-2.5 py-1 rounded-lg bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] text-[#64748b] hover:text-[#172033] font-semibold flex items-center gap-1"
+                    className="text-xs px-3 py-1.5 rounded-xl bg-[#F8FCFF] border-2 border-slate-200 text-[#0F172A] hover:border-[#0EA5E9] font-black flex items-center gap-1.5 cursor-pointer shadow-2xs"
                   >
-                    <Copy className="w-3 h-3" /> Copy All
+                    <Copy className="w-3.5 h-3.5 text-[#0EA5E9]" /> Copy All
                   </button>
                 </div>
               )}
             </div>
 
             {/* Search and Category Filter */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div className="relative">
-                <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-[#64748b]" />
+                <Search className="w-4 h-4 absolute left-3 top-2.5 text-[#64748B]" />
                 <input
                   type="text"
                   placeholder="Filter records by field, value, category..."
                   value={searchFilter}
                   onChange={(e) => setSearchFilter(e.target.value)}
-                  className="w-full bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 rounded-xl pl-8 pr-3 py-1.5 text-xs text-[#172033] dark:text-white"
+                  className="w-full bg-[#F8FCFF] border-2 border-slate-200 focus:border-[#0EA5E9] rounded-xl pl-9 pr-3 py-2 text-xs font-bold text-[#0F172A] outline-none"
                 />
               </div>
 
               <select
                 value={activeCategoryFilter}
                 onChange={(e) => setActiveCategoryFilter(e.target.value)}
-                className="bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-[#172033] dark:text-white"
+                className="bg-[#F8FCFF] border-2 border-slate-200 focus:border-[#0EA5E9] rounded-xl px-3 py-2 text-xs font-bold text-[#0F172A] outline-none"
               >
                 <option value="all">All Categories</option>
                 <option value="valid">Valid / Positive</option>
@@ -673,12 +683,12 @@ export default function TestDataGenerator() {
           </div>
 
           {/* Test Data Records List */}
-          <div className="space-y-2.5 max-h-[620px] overflow-y-auto pr-1">
+          <div className="space-y-3 max-h-[640px] overflow-y-auto pr-1">
             {filteredItems.length === 0 ? (
-              <div className="bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded-2xl p-12 text-center">
-                <FlaskConical className="w-12 h-12 text-[#cbd5e1] mx-auto mb-3" />
-                <h4 className="text-sm font-bold text-[#172033] dark:text-white">No Test Data Generated Yet</h4>
-                <p className="text-xs text-[#64748b] mt-1">
+              <div className="bg-white border-2 border-dashed border-sky-300 rounded-2xl p-12 text-center shadow-xs">
+                <FlaskConical className="w-12 h-12 text-sky-400 mx-auto mb-3" />
+                <h4 className="text-base font-black text-[#0F172A]">No Test Data Generated Yet</h4>
+                <p className="text-xs font-bold text-[#64748B] mt-1 max-w-sm mx-auto">
                   Select a generated test case, choose desired categories, and click "Generate Test Data".
                 </p>
               </div>
@@ -686,63 +696,66 @@ export default function TestDataGenerator() {
               filteredItems.map((item) => (
                 <div
                   key={item.testDataId}
-                  className="bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded-xl p-3.5 hover:border-[#0ea5e9] transition-all shadow-xs space-y-2"
+                  className="bg-white border-2 border-slate-200 rounded-2xl p-4 hover:border-[#0EA5E9] transition-all shadow-xs hover:shadow-sm space-y-2.5"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-[#0ea5e9] bg-[#e0f2fe] dark:bg-sky-950/40 px-2 py-0.5 rounded">
+                      <span className="font-mono text-xs font-black text-[#0284C7] bg-[#E0F2FE] px-2.5 py-0.5 rounded-lg border border-sky-200">
                         {item.testDataId}
                       </span>
-                      <span className="font-mono text-xs font-semibold text-[#64748b]">
-                        Field: <strong className="text-[#172033] dark:text-white">{item.fieldName}</strong>
+                      <span className="text-xs font-black text-[#0F172A]">
+                        Field: <strong className="text-[#7C3AED]">{item.fieldName}</strong>
                       </span>
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#f3e8ff] dark:bg-purple-950/40 text-[#7c3aed]">
+                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#FAF5FF] text-[#7C3AED] border border-purple-200">
                         {item.category}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       <button
+                        type="button"
                         onClick={() => copyValue(item.value)}
-                        className="p-1 text-[#64748b] hover:text-[#0ea5e9] rounded"
+                        className="p-1.5 text-[#64748B] hover:text-[#0EA5E9] hover:bg-sky-50 rounded-lg cursor-pointer"
                         title="Copy value"
                       >
-                        <Copy className="w-3.5 h-3.5" />
+                        <Copy className="w-4 h-4" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => setEditingItem(item)}
-                        className="p-1 text-[#64748b] hover:text-[#7c3aed] rounded"
+                        className="p-1.5 text-[#64748B] hover:text-[#7C3AED] hover:bg-purple-50 rounded-lg cursor-pointer"
                         title="Edit value"
                       >
-                        <Edit3 className="w-3.5 h-3.5" />
+                        <Edit3 className="w-4 h-4" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           setGeneratedItems(prev => prev.filter(it => it.testDataId !== item.testDataId));
                           toast.success('Removed test data item');
                         }}
-                        className="p-1 text-[#64748b] hover:text-[#dc2626] rounded"
+                        className="p-1.5 text-[#64748B] hover:text-[#BE185D] hover:bg-pink-50 rounded-lg cursor-pointer"
                         title="Delete item"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
 
                   {/* Value Card */}
-                  <div className="p-2.5 rounded-lg bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 font-mono text-xs text-[#172033] dark:text-white break-all">
+                  <div className="p-3 rounded-xl bg-[#F8FCFF] border-2 border-slate-200 font-mono text-xs font-bold text-[#0F172A] break-all">
                     {item.value}
                   </div>
 
                   {/* Validation and Outcome metadata */}
-                  <div className="grid grid-cols-2 gap-2 text-[11px] text-[#64748b] pt-1">
+                  <div className="grid grid-cols-2 gap-3 text-xs text-[#64748B] pt-1">
                     <div>
-                      <strong className="text-[#172033] dark:text-slate-300">Expected Validation: </strong>
-                      {item.expectedValidation}
+                      <strong className="text-[#0F172A] font-black">Expected Validation: </strong>
+                      <span className="font-bold text-slate-700">{item.expectedValidation}</span>
                     </div>
                     <div>
-                      <strong className="text-[#172033] dark:text-slate-300">Expected Outcome: </strong>
-                      <span className="text-[#16a34a] font-medium">{item.expectedOutcome}</span>
+                      <strong className="text-[#0F172A] font-black">Expected Outcome: </strong>
+                      <span className="text-[#16A34A] font-black">{item.expectedOutcome}</span>
                     </div>
                   </div>
                 </div>
@@ -754,64 +767,66 @@ export default function TestDataGenerator() {
 
       {/* Edit Test Data Modal */}
       {editingItem && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 border border-[#e2e8f0] dark:border-slate-700 text-xs"
+            className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border-2 border-purple-200 text-xs"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-[#e2e8f0] dark:border-slate-700">
-              <h3 className="text-sm font-bold text-[#172033] dark:text-white">Edit Test Data: {editingItem.testDataId}</h3>
-              <button onClick={() => setEditingItem(null)}>
-                <XCircle className="w-4 h-4 text-[#64748b]" />
+            <div className="flex items-center justify-between pb-3 border-b-2 border-purple-100">
+              <h3 className="text-base font-black text-[#0F172A]">Edit Test Data: {editingItem.testDataId}</h3>
+              <button type="button" onClick={() => setEditingItem(null)} className="cursor-pointer">
+                <XCircle className="w-5 h-5 text-[#64748B]" />
               </button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3.5">
               <div>
-                <label className="text-[10px] font-bold uppercase text-[#64748b] block mb-1">Field Name</label>
+                <label className="text-[11px] font-black uppercase text-[#64748B] block mb-1">Field Name</label>
                 <input
                   type="text"
                   value={editingItem.fieldName}
                   onChange={(e) => setEditingItem({ ...editingItem, fieldName: e.target.value })}
-                  className="w-full bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 rounded-xl p-2 text-xs text-[#172033] dark:text-white"
+                  className="w-full bg-[#F8FCFF] border-2 border-slate-200 focus:border-[#0EA5E9] rounded-xl p-2.5 text-xs font-bold text-[#0F172A] outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold uppercase text-[#64748b] block mb-1">Generated Value</label>
+                <label className="text-[11px] font-black uppercase text-[#64748B] block mb-1">Generated Value</label>
                 <textarea
                   value={editingItem.value}
                   onChange={(e) => setEditingItem({ ...editingItem, value: e.target.value })}
-                  className="w-full h-24 bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 rounded-xl p-2 text-xs font-mono text-[#172033] dark:text-white resize-none"
+                  className="w-full h-24 bg-[#F8FCFF] border-2 border-slate-200 focus:border-[#0EA5E9] rounded-xl p-2.5 text-xs font-mono font-bold text-[#0F172A] resize-none outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold uppercase text-[#64748b] block mb-1">Expected Outcome</label>
+                <label className="text-[11px] font-black uppercase text-[#64748B] block mb-1">Expected Outcome</label>
                 <input
                   type="text"
                   value={editingItem.expectedOutcome}
                   onChange={(e) => setEditingItem({ ...editingItem, expectedOutcome: e.target.value })}
-                  className="w-full bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 rounded-xl p-2 text-xs text-[#172033] dark:text-white"
+                  className="w-full bg-[#F8FCFF] border-2 border-slate-200 focus:border-[#0EA5E9] rounded-xl p-2.5 text-xs font-bold text-[#0F172A] outline-none"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2">
+            <div className="flex justify-end gap-2.5 pt-2 border-t-2 border-slate-100">
               <button
+                type="button"
                 onClick={() => setEditingItem(null)}
-                className="px-4 py-2 rounded-xl border border-[#e2e8f0] text-xs font-semibold text-[#64748b]"
+                className="px-4 py-2 rounded-xl border-2 border-slate-200 text-xs font-black text-[#64748B] hover:bg-slate-50 cursor-pointer"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setGeneratedItems(prev => prev.map(it => it.testDataId === editingItem.testDataId ? editingItem : it));
                   setEditingItem(null);
                   toast.success('Test data item updated');
                 }}
-                className="px-4 py-2 rounded-xl bg-[#0ea5e9] text-white text-xs font-semibold hover:bg-[#0284c7]"
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#8B5CF6] text-white text-xs font-black hover:opacity-95 shadow-md shadow-sky-500/20 cursor-pointer"
               >
                 Save Item
               </button>
@@ -819,32 +834,34 @@ export default function TestDataGenerator() {
           </motion.div>
         </div>
       )}
+
       {/* History Modal */}
       {showHistory && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-[#e2e8f0] dark:border-slate-700 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#e2e8f0] dark:border-slate-700">
-              <h3 className="font-bold text-sm text-[#172033] dark:text-white flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#0ea5e9]" />
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+          <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border-2 border-sky-300 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b-2 border-sky-100">
+              <h3 className="font-black text-base text-[#0F172A] flex items-center gap-2">
+                <Clock className="w-5 h-5 text-[#0EA5E9]" />
                 Saved Test Data History ({history.length})
               </h3>
-              <button onClick={() => setShowHistory(false)} className="text-[#64748b] hover:text-[#172033]">
+              <button type="button" onClick={() => setShowHistory(false)} className="text-[#64748B] hover:text-[#0F172A] cursor-pointer">
                 ✕
               </button>
             </div>
-            <div className="space-y-2 max-h-96 overflow-y-auto">
+            <div className="space-y-2.5 max-h-96 overflow-y-auto">
               {historyLoading ? (
-                <div className="text-center py-8 text-xs text-[#64748b]">Loading history...</div>
+                <div className="text-center py-8 text-xs text-[#64748B] font-bold">Loading history...</div>
               ) : history.length === 0 ? (
-                <div className="text-center py-8 text-xs text-[#64748b]">No saved test data snapshots found for this project yet.</div>
+                <div className="text-center py-8 text-xs text-[#64748B] font-bold">No saved test data snapshots found for this project yet.</div>
               ) : (
                 history.map((h, i) => (
-                  <div key={i} className="p-3 bg-[#f8fafc] dark:bg-slate-900 border border-[#e2e8f0] dark:border-slate-700 rounded-xl flex items-center justify-between">
+                  <div key={i} className="p-3.5 bg-[#F8FCFF] border-2 border-slate-200 rounded-xl flex items-center justify-between">
                     <div>
-                      <p className="font-bold text-xs text-[#172033] dark:text-white">{h.testCaseTitle || h.testCaseId || 'Synthetic Dataset'}</p>
-                      <p className="text-[11px] text-[#64748b]">{new Date(h.createdAt).toLocaleString()} • {h.structuredItems?.length || 0} fields generated</p>
+                      <p className="font-black text-xs text-[#0F172A]">{h.testCaseTitle || h.testCaseId || 'Synthetic Dataset'}</p>
+                      <p className="text-[11px] text-[#64748B] font-bold">{new Date(h.createdAt).toLocaleString()} • {h.structuredItems?.length || 0} fields generated</p>
                     </div>
                     <button
+                      type="button"
                       onClick={() => {
                         if (h.structuredItems && h.structuredItems.length > 0) {
                           setGeneratedItems(h.structuredItems);
@@ -852,7 +869,7 @@ export default function TestDataGenerator() {
                           toast.success('Loaded test data snapshot!');
                         }
                       }}
-                      className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#7c3aed] text-white hover:bg-[#6d28d9]"
+                      className="px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] text-white hover:opacity-95 shadow-xs cursor-pointer"
                     >
                       Restore Data
                     </button>
@@ -860,8 +877,8 @@ export default function TestDataGenerator() {
                 ))
               )}
             </div>
-            <div className="flex justify-end pt-2">
-              <button onClick={() => setShowHistory(false)} className="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 hover:bg-slate-200">
+            <div className="flex justify-end pt-2 border-t-2 border-slate-100">
+              <button type="button" onClick={() => setShowHistory(false)} className="px-5 py-2 text-xs font-black rounded-xl bg-slate-100 text-[#0F172A] hover:bg-slate-200 cursor-pointer">
                 Close
               </button>
             </div>

@@ -126,25 +126,35 @@ export default function AITemplates() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff]">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Sparkles className="w-6 h-6 text-primary" />
-          AI Templates & Settings
-        </h2>
-        <p className="text-sm text-muted mt-1">Customize prompts, model parameters, and defaults per project</p>
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
+      {/* Header Banner */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl shadow-sm border border-[#E0F2FE]">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <Sparkles className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
+              AI Prompt Templates & Settings
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
+                Model Tuning
+              </span>
+            </h2>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">Customize prompts, model parameters, and defaults per project</p>
+          </div>
+        </div>
       </motion.div>
 
       <div className="flex gap-2">
         {[
-          { id: 'settings', label: 'Settings' },
-          { id: 'templates', label: 'Templates' },
+          { id: 'settings', label: 'Engine Settings' },
+          { id: 'templates', label: 'Prompt Templates' },
         ].map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id as any)}
-            className={`px-4 py-2 rounded-lg border text-sm font-semibold transition-colors ${
-              tab === t.id ? 'border-primary/30 bg-primary/10 text-primary' : 'border-border bg-surface text-foreground hover:bg-surface-alt'
+            className={`px-4 py-2 rounded-xl border-2 text-xs font-black transition-colors cursor-pointer ${
+              tab === t.id ? 'border-[#8B5CF6] bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] text-white shadow-sm' : 'border-slate-200 bg-white text-slate-700 hover:border-[#8B5CF6]'
             }`}
           >
             {t.label}
@@ -153,13 +163,13 @@ export default function AITemplates() {
       </div>
 
       {tab === 'settings' ? (
-        <div className="bg-surface border border-border rounded-xl p-5 space-y-4 max-w-3xl">
+        <div className="bg-white border-2 border-purple-200 rounded-2xl p-6 space-y-5 max-w-3xl shadow-sm">
           <div>
-            <label className="block text-[11px] font-semibold text-muted uppercase tracking-wider mb-1">System prompt</label>
+            <label className="block text-xs font-black text-[#0F172A] uppercase tracking-wider mb-2">System prompt</label>
             <textarea
               value={settings.systemPrompt}
               onChange={(e) => setSettings((s) => ({ ...s, systemPrompt: e.target.value }))}
-              className="w-full min-h-[110px] bg-surface border border-border rounded-lg p-3 text-sm text-foreground focus:outline-none focus:border-primary/50"
+              className="w-full min-h-[110px] bg-[#F8FCFF] border-2 border-slate-200 rounded-xl p-3.5 text-xs text-[#0F172A] font-medium focus:outline-none focus:border-[#8B5CF6]"
               placeholder="System prompt for the AI assistant..."
             />
           </div>

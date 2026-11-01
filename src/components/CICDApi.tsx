@@ -49,34 +49,34 @@ jobs:
 `;
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/40 flex items-center justify-center text-[#0ea5e9]">
-            <Webhook className="w-5 h-5" />
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#E0F2FE] bg-white p-5 rounded-2xl shadow-sm border">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <Webhook className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
               CI/CD Integration API & Webhooks
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-sky-50 text-[#0ea5e9] dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200">
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
                 REST & Automation
               </span>
             </h2>
-            <p className="text-xs text-[#64748b]">Integrate automated test case generation and quality gates directly into GitHub Actions, GitLab CI, and Jenkins</p>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">Integrate automated test case generation and quality gates directly into GitHub Actions, GitLab CI, and Jenkins</p>
           </div>
         </div>
 
         {/* Tab switchers */}
-        <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg p-1 border border-[#e2e8f0] dark:border-slate-700 text-xs shadow-2xs">
+        <div className="flex items-center bg-white rounded-xl p-1 border-2 border-slate-200 text-xs shadow-xs">
           {(['endpoints', 'github-actions', 'webhooks'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-3 py-1.5 rounded-md font-semibold capitalize transition-colors ${
+              className={`px-3.5 py-1.5 rounded-lg font-black capitalize transition-colors cursor-pointer ${
                 activeTab === tab
-                  ? 'bg-[#0ea5e9] text-white shadow-xs'
-                  : 'text-[#64748b] hover:text-[#0f172a]'
+                  ? 'bg-[#0EA5E9] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-[#0F172A]'
               }`}
             >
               {tab === 'github-actions' ? 'GitHub Actions' : tab}
@@ -85,28 +85,28 @@ jobs:
         </div>
       </motion.div>
 
-      {/* Info Cards */}
+      {/* Info Cards in White, Sky Blue, Purple, and Light Pink */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs">
-          <div className="flex items-center gap-2 mb-1.5">
-            <Globe className="w-4 h-4 text-[#7c3aed]" />
-            <span className="text-[10px] font-bold text-muted uppercase">Base URL</span>
+        <div className="bg-white border-2 border-purple-200 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <Globe className="w-4 h-4 text-[#8B5CF6]" />
+            <span className="text-xs font-black text-[#0F172A] uppercase">Base URL</span>
           </div>
-          <code className="text-xs font-mono font-bold text-[#7c3aed]">{apiSpec.baseUrl}</code>
+          <code className="text-sm font-mono font-black text-[#7C3AED] bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-100 block truncate">{apiSpec.baseUrl}</code>
         </div>
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs">
-          <div className="flex items-center gap-2 mb-1.5">
-            <Zap className="w-4 h-4 text-amber-500" />
-            <span className="text-[10px] font-bold text-muted uppercase">API Version</span>
+        <div className="bg-white border-2 border-sky-300 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <Zap className="w-4 h-4 text-[#0EA5E9]" />
+            <span className="text-xs font-black text-[#0F172A] uppercase">API Version</span>
           </div>
-          <code className="text-xs font-mono font-bold text-foreground">{apiSpec.version} (Active)</code>
+          <code className="text-sm font-mono font-black text-[#0284C7] bg-sky-50 px-2.5 py-1 rounded-lg border border-sky-100 block truncate">{apiSpec.version} (Active)</code>
         </div>
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs">
-          <div className="flex items-center gap-2 mb-1.5">
-            <ShieldCheck className="w-4 h-4 text-[#16a34a]" />
-            <span className="text-[10px] font-bold text-muted uppercase">Authentication</span>
+        <div className="bg-white border-2 border-pink-300 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-2">
+            <ShieldCheck className="w-4 h-4 text-[#BE185D]" />
+            <span className="text-xs font-black text-[#0F172A] uppercase">Authentication</span>
           </div>
-          <code className="text-xs font-mono font-bold text-[#16a34a]">Bearer JWT Token</code>
+          <code className="text-sm font-mono font-black text-[#BE185D] bg-[#FDF2F8] px-2.5 py-1 rounded-lg border border-pink-100 block truncate">Bearer JWT Token</code>
         </div>
       </div>
 

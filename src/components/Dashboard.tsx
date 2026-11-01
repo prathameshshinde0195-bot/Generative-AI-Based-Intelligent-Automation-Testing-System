@@ -209,27 +209,29 @@ export default function Dashboard() {
       </motion.div>
 
       {/* Primary KPI Cards (Clickable to jump to corresponding module) */}
-      <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+      <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         {[
-          { label: 'Total Test Cases', value: filteredCases.length, target: 'srs-input', icon: FileText, color: 'text-[#7c3aed]', bg: 'hover:border-purple-300' },
-          { label: 'Unique Cases', value: filteredCases.length, target: 'duplicates', icon: Copy, color: 'text-[#0ea5e9]', bg: 'hover:border-sky-300' },
-          { label: 'Avg Quality Score', value: `${Math.max(60, 98 - ambiguities.length * 3)}/100`, target: 'ambiguity', icon: Shield, color: 'text-[#16a34a]', bg: 'hover:border-emerald-300' },
-          { label: 'Duplicate Rate', value: '0%', target: 'duplicates', icon: Copy, color: 'text-slate-500', bg: 'hover:border-slate-300' },
-          { label: 'Risk Score', value: riskAssessment?.overallScore ? `${riskAssessment.overallScore}/100` : '—', target: 'risk', icon: AlertTriangle, color: 'text-amber-500', bg: 'hover:border-amber-300' },
-          { label: 'Req Coverage', value: coverage ? `${coverage.coveragePercentage}%` : `${Math.min(100, filteredCases.length * 10)}%`, target: 'coverage', icon: BarChart3, color: 'text-[#0ea5e9]', bg: 'hover:border-sky-300' },
+          { label: 'Total Test Cases', value: filteredCases.length, target: 'srs-input', icon: FileText, color: 'text-[#0284C7]', border: 'border-sky-300 hover:border-sky-500', iconBg: 'bg-sky-50 text-[#0EA5E9]' },
+          { label: 'Unique Cases', value: filteredCases.length, target: 'duplicates', icon: Copy, color: 'text-[#7C3AED]', border: 'border-purple-300 hover:border-purple-500', iconBg: 'bg-purple-50 text-[#8B5CF6]' },
+          { label: 'Quality Score', value: `${Math.max(60, 98 - ambiguities.length * 3)}/100`, target: 'ambiguity', icon: Shield, color: 'text-[#16A34A]', border: 'border-emerald-300 hover:border-emerald-500', iconBg: 'bg-emerald-50 text-[#16A34A]' },
+          { label: 'Duplicate Rate', value: '0%', target: 'duplicates', icon: Copy, color: 'text-[#0F172A]', border: 'border-slate-300 hover:border-slate-500', iconBg: 'bg-slate-50 text-slate-600' },
+          { label: 'Overall Risk', value: riskAssessment?.overallScore ? `${riskAssessment.overallScore}/100` : 'Low', target: 'risk', icon: AlertTriangle, color: 'text-[#BE185D]', border: 'border-pink-300 hover:border-pink-500', iconBg: 'bg-pink-50 text-[#EC4899]' },
+          { label: 'Req Coverage', value: coverage ? `${coverage.coveragePercentage}%` : `${Math.min(100, filteredCases.length * 10)}%`, target: 'coverage', icon: BarChart3, color: 'text-[#0284C7]', border: 'border-sky-400 hover:border-sky-600', iconBg: 'bg-sky-100 text-[#0284C7]' },
         ].map((stat) => (
           <motion.div
             key={stat.label}
             variants={itemVariants}
             onClick={() => setActiveFeature(stat.target)}
-            className={`bg-white dark:bg-slate-800 border border-border rounded-xl p-3.5 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 shadow-xs ${stat.bg} group`}
+            className={`bg-white border-2 ${stat.border} rounded-2xl p-4 cursor-pointer transition-all duration-200 hover:-translate-y-1 shadow-sm hover:shadow-md group`}
           >
-            <div className="flex items-center justify-between mb-2">
-              <stat.icon className={`w-4 h-4 ${stat.color}`} />
-              <ArrowRight className="w-3 h-3 text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="flex items-center justify-between mb-2.5">
+              <div className={`w-8 h-8 rounded-xl ${stat.iconBg} flex items-center justify-center font-bold shadow-xs`}>
+                <stat.icon className="w-4.5 h-4.5" />
+              </div>
+              <ArrowRight className="w-4 h-4 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <div className="text-[10px] uppercase tracking-wider text-muted font-bold truncate mb-1">{stat.label}</div>
-            <div className={`text-2xl font-black ${stat.color}`}>{stat.value}</div>
+            <div className="text-xs uppercase tracking-wider text-[#64748B] font-extrabold truncate mb-1">{stat.label}</div>
+            <div className={`text-3xl font-black ${stat.color} tracking-tight`}>{stat.value}</div>
           </motion.div>
         ))}
       </motion.div>
@@ -493,22 +495,31 @@ export default function Dashboard() {
 
       {/* Feature Navigation Grid */}
       <div>
-        <h3 className="text-xs font-bold text-muted uppercase tracking-wider mb-3">All Intelligence Modules</h3>
-        <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <h3 className="text-sm font-black text-[#0F172A] uppercase tracking-wider mb-4 flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-[#0EA5E9] to-[#EC4899]" />
+          All Autonomous Quality Assurance Modules
+        </h3>
+        <motion.div variants={containerVariants} initial="hidden" animate="show" className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {features.map((feature) => (
             <motion.button
               key={feature.id}
               variants={itemVariants}
-              whileHover={{ scale: 1.02, y: -2 }}
+              whileHover={{ scale: 1.02, y: -3 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setActiveFeature(feature.id)}
-              className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 text-left hover:border-purple-300 dark:hover:border-purple-600 transition-all group shadow-xs cursor-pointer"
+              className="bg-white border-2 border-[#E2E8F0] hover:border-[#8B5CF6] rounded-2xl p-4.5 text-left transition-all group shadow-sm hover:shadow-md cursor-pointer flex flex-col justify-between"
             >
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-3" style={{ background: `${feature.color}15` }}>
-                <feature.icon className="w-4.5 h-4.5" style={{ color: feature.color }} />
+              <div>
+                <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-3.5 shadow-xs" style={{ background: `${feature.color}15` }}>
+                  <feature.icon className="w-5 h-5" style={{ color: feature.color }} />
+                </div>
+                <h4 className="text-sm font-black text-[#0F172A] mb-1.5 group-hover:text-[#7C3AED] transition-colors">{feature.label}</h4>
+                <p className="text-xs font-bold text-[#64748B] leading-relaxed line-clamp-2">{feature.desc}</p>
               </div>
-              <h4 className="text-xs font-semibold text-foreground mb-1 group-hover:text-[#7c3aed] transition-colors">{feature.label}</h4>
-              <p className="text-[10px] text-muted leading-relaxed line-clamp-2">{feature.desc}</p>
+              <div className="mt-3 pt-2.5 border-t border-[#F1F5F9] flex items-center justify-between text-xs font-extrabold text-[#0284C7] group-hover:text-[#7C3AED]">
+                <span>Open Module</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
             </motion.button>
           ))}
         </motion.div>

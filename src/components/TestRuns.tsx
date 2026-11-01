@@ -582,26 +582,36 @@ export default function TestRuns() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff]">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-          <Terminal className="w-6 h-6 text-accent" />
-          Test Runs
-        </h2>
-        <p className="text-sm text-muted mt-1">Run commands or validate test cases against realtime endpoints</p>
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
+      {/* Header Banner */}
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl shadow-sm border border-[#E0F2FE]">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <Terminal className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
+              Test Execution & Realtime Runner
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
+                Live Validation
+              </span>
+            </h2>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">Run Playwright, Cypress, and custom endpoint telemetry tests directly</p>
+          </div>
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <div className="bg-surface border border-border rounded-xl p-5 space-y-4">
-          <p className="text-sm font-semibold text-foreground">Start a run</p>
+        <div className="bg-white border-2 border-sky-300 rounded-2xl p-6 space-y-4 shadow-sm">
+          <p className="text-sm font-black text-[#0F172A] uppercase tracking-wider">Start a Test Run</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label className="block text-[11px] font-semibold text-muted uppercase tracking-wider mb-1">Run type</label>
+              <label className="block text-xs font-black text-[#0F172A] uppercase tracking-wider mb-1.5">Run type</label>
               <select
                 value={runType}
                 onChange={(e) => setRunType(e.target.value as 'command' | 'realtime-tc')}
-                className="w-full h-10 bg-surface border border-border rounded-lg px-3 text-sm text-foreground"
+                className="w-full h-10 bg-[#F8FCFF] border-2 border-slate-200 rounded-xl px-3 text-xs font-bold text-[#0F172A]"
               >
                 <option value="command">Command run</option>
                 <option value="realtime-tc">Realtime TC check</option>

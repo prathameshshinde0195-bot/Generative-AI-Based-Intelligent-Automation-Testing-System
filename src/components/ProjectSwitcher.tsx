@@ -64,16 +64,16 @@ export default function ProjectSwitcher() {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="hidden sm:flex items-center gap-2 text-xs text-muted">
-        <FolderKanban className="w-4 h-4 text-muted" />
-        <span className="font-semibold uppercase tracking-wider">Project</span>
+      <div className="hidden sm:flex items-center gap-2 text-xs text-[#0F172A] font-black uppercase tracking-wider">
+        <FolderKanban className="w-4 h-4 text-[#0EA5E9]" />
+        <span>Project:</span>
       </div>
 
       <div className="flex items-center gap-2">
         <select
           value={projectId}
           onChange={(e) => setProjectId(e.target.value)}
-          className="h-9 rounded-lg bg-surface border border-border px-3 text-sm text-foreground focus:outline-none focus:border-primary/50"
+          className="h-9 rounded-xl bg-white border-2 border-slate-200 px-3 text-xs font-bold text-[#0F172A] focus:outline-none focus:border-[#0EA5E9] cursor-pointer shadow-xs"
           aria-label="Select project"
           disabled={isLoading || projects.length === 0}
         >
@@ -90,25 +90,25 @@ export default function ProjectSwitcher() {
 
         <button
           onClick={() => void load()}
-          className="h-9 w-9 inline-flex items-center justify-center rounded-lg border border-border bg-surface hover:bg-surface-alt transition-colors"
+          className="h-9 w-9 inline-flex items-center justify-center rounded-xl border-2 border-slate-200 bg-white hover:border-[#0EA5E9] transition-colors cursor-pointer shadow-xs"
           aria-label="Refresh projects"
           title="Refresh projects"
         >
-          <RefreshCw className={`w-4 h-4 text-muted ${isLoading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-3.5 h-3.5 text-[#0EA5E9] ${isLoading ? 'animate-spin' : ''}`} />
         </button>
 
         <button
           onClick={() => setCreateOpen((v) => !v)}
-          className="h-9 inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3 text-sm text-foreground hover:bg-surface-alt transition-colors"
+          className="h-9 inline-flex items-center gap-1.5 rounded-xl border-2 border-purple-200 bg-[#FAF5FF] px-3 text-xs font-black text-[#7C3AED] hover:bg-purple-100 transition-colors cursor-pointer shadow-xs"
           aria-expanded={createOpen}
         >
-          <Plus className="w-4 h-4 text-primary" />
-          <span className="hidden md:inline">New</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span className="hidden md:inline">New Project</span>
         </button>
       </div>
 
       {createOpen && (
-        <div className="absolute right-6 top-[70px] z-50 w-[340px] bg-surface border border-border rounded-xl shadow-2xl p-4">
+        <div className="absolute right-6 top-[70px] z-50 w-[340px] bg-white border-2 border-purple-200 rounded-2xl shadow-2xl p-5">
           <div className="mb-3">
             <p className="text-sm font-semibold text-foreground">Create project</p>
             <p className="text-xs text-muted mt-0.5">

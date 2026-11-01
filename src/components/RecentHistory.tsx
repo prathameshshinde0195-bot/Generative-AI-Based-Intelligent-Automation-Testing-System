@@ -94,30 +94,30 @@ export default function RecentHistory() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/40 flex items-center justify-center text-[#0ea5e9]">
-            <History className="w-5 h-5" />
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#E0F2FE] bg-white p-5 rounded-2xl shadow-sm border">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <History className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
               Execution & Audit History
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-sky-50 text-[#0ea5e9] dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200">
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
                 Snapshots & Audit Log
               </span>
             </h2>
-            <p className="text-xs text-[#64748b]">Immutable historical versions of SRS requirements and generated test suites</p>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">Immutable historical versions of SRS requirements and generated test suites</p>
           </div>
         </div>
 
         {srsHistory.length > 0 && (
           <button
             onClick={handleExportHistory}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] hover:opacity-95 text-white text-xs font-black shadow-xs transition-all cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-4 h-4" />
             <span>Export History Excel</span>
           </button>
         )}
@@ -125,39 +125,39 @@ export default function RecentHistory() {
 
       {/* Search Bar */}
       {srsHistory.length > 0 && (
-        <div className="flex items-center gap-2 max-w-sm p-1.5 bg-slate-50 dark:bg-slate-800 rounded-lg border border-border">
-          <Search className="w-4 h-4 text-muted ml-2" />
+        <div className="flex items-center gap-2 max-w-md p-2 bg-white rounded-2xl border-2 border-slate-200 shadow-xs">
+          <Search className="w-4 h-4 text-slate-400 ml-2" />
           <input
             type="text"
             placeholder="Search saved SRS suites..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-transparent text-xs text-foreground outline-none w-full"
+            className="bg-transparent text-xs text-[#0F172A] font-bold outline-none w-full placeholder-slate-400"
           />
         </div>
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center py-20 text-muted gap-2">
-          <Loader2 className="w-5 h-5 animate-spin text-[#7c3aed]" />
-          <span className="text-xs font-medium">Retrieving audit history snapshots...</span>
+        <div className="flex items-center justify-center py-20 text-slate-500 gap-2">
+          <Loader2 className="w-6 h-6 animate-spin text-[#8B5CF6]" />
+          <span className="text-sm font-bold">Retrieving audit history snapshots...</span>
         </div>
       ) : srsHistory.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-slate-50 dark:bg-slate-800/40 border border-dashed border-border rounded-2xl">
-          <History className="w-16 h-16 text-slate-300 mb-3" />
-          <h3 className="text-base font-bold text-foreground">No History Snapshots Yet</h3>
-          <p className="text-xs text-muted mt-1 max-w-md text-center">
+        <div className="flex flex-col items-center justify-center py-20 bg-white border-2 border-dashed border-sky-200 rounded-2xl shadow-sm">
+          <History className="w-16 h-16 text-sky-300 mb-3" />
+          <h3 className="text-base font-black text-[#0F172A]">No History Snapshots Yet</h3>
+          <p className="text-xs text-slate-500 mt-1 max-w-md text-center font-medium">
             Your SRS inputs and generated test cases will be saved automatically as immutable snapshots.
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left: Snapshots List */}
-          <div className="lg:col-span-1 space-y-2">
-            <h3 className="text-xs font-bold text-muted uppercase tracking-wider px-1">
+          <div className="lg:col-span-1 space-y-3">
+            <h3 className="text-xs font-black text-[#0F172A] uppercase tracking-wider px-1">
               Historical Records ({filteredHistory.length})
             </h3>
-            <div className="space-y-2 max-h-[580px] overflow-y-auto pr-1">
+            <div className="space-y-2.5 max-h-[580px] overflow-y-auto pr-1">
               {filteredHistory.map((entry, idx) => {
                 const isSelected = selectedHistory?.id === entry.id;
                 return (
@@ -167,25 +167,25 @@ export default function RecentHistory() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.02 }}
                     onClick={() => setSelectedHistory(entry)}
-                    className={`w-full text-left p-3.5 rounded-xl border transition-all cursor-pointer shadow-xs ${
+                    className={`w-full text-left p-4 rounded-2xl border-2 transition-all cursor-pointer shadow-xs ${
                       isSelected
-                        ? 'bg-purple-50 dark:bg-purple-950/40 border-[#7c3aed]'
-                        : 'bg-white dark:bg-slate-800 border-border hover:border-border-bright'
+                        ? 'bg-[#FAF5FF] border-[#8B5CF6]'
+                        : 'bg-white border-slate-200 hover:border-[#8B5CF6]'
                     }`}
                   >
-                    <div className="flex items-start gap-2.5">
-                      <FileText className={`w-4 h-4 mt-0.5 shrink-0 ${isSelected ? 'text-[#7c3aed]' : 'text-slate-400'}`} />
+                    <div className="flex items-start gap-3">
+                      <FileText className={`w-5 h-5 mt-0.5 shrink-0 ${isSelected ? 'text-[#8B5CF6]' : 'text-slate-400'}`} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-foreground truncate">{entry.title}</p>
-                        <p className="text-[10px] text-muted flex items-center gap-1 mt-1 font-medium">
-                          <Clock className="w-3 h-3" />
+                        <p className="text-sm font-black text-[#0F172A] truncate">{entry.title}</p>
+                        <p className="text-xs text-slate-500 flex items-center gap-1 mt-1 font-semibold">
+                          <Clock className="w-3.5 h-3.5" />
                           <span>{formatDate(entry.createdAt)}</span>
                         </p>
-                        <span className="inline-block text-[10px] font-bold px-1.5 py-0.2 rounded bg-purple-100 text-[#7c3aed] mt-1.5">
+                        <span className="inline-block text-xs font-black px-2.5 py-0.5 rounded-full bg-purple-100 text-[#7C3AED] border border-purple-200 mt-2">
                           {entry.testCaseCount} Test Cases
                         </span>
                       </div>
-                      <ChevronRight className={`w-4 h-4 text-muted transition-transform ${isSelected ? 'rotate-90 text-[#7c3aed]' : ''}`} />
+                      <ChevronRight className={`w-4 h-4 text-slate-400 transition-transform ${isSelected ? 'rotate-90 text-[#8B5CF6]' : ''}`} />
                     </div>
                   </motion.div>
                 );
@@ -199,27 +199,27 @@ export default function RecentHistory() {
               <motion.div
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 space-y-4 shadow-xs"
+                className="bg-white border-2 border-purple-200 rounded-2xl p-6 space-y-5 shadow-sm"
               >
-                <div className="flex items-start justify-between pb-3 border-b border-border">
+                <div className="flex items-start justify-between pb-4 border-b border-purple-100">
                   <div>
-                    <h3 className="text-base font-bold text-foreground">{selectedHistory.title}</h3>
-                    <p className="text-xs text-muted flex items-center gap-1.5 mt-1">
-                      <Clock className="w-3.5 h-3.5" />
+                    <h3 className="text-lg font-black text-[#0F172A]">{selectedHistory.title}</h3>
+                    <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-1 font-bold">
+                      <Clock className="w-4 h-4 text-[#8B5CF6]" />
                       <span>Recorded on {new Date(selectedHistory.createdAt).toLocaleString()}</span>
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleLoadHistory(selectedHistory)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7c3aed] hover:bg-[#6d28d9] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] hover:opacity-95 text-white rounded-xl text-xs font-black shadow-xs transition-colors cursor-pointer"
                     >
-                      <Eye className="w-3.5 h-3.5" />
+                      <Eye className="w-4 h-4" />
                       <span>Restore to Editor</span>
                     </button>
                     <button
                       onClick={(e) => handleRemoveHistory(selectedHistory.id, e)}
-                      className="p-1.5 text-muted hover:text-red-600 rounded-lg border border-border hover:border-red-300 transition-colors"
+                      className="p-2 text-slate-400 hover:text-red-600 rounded-xl border-2 border-slate-200 hover:border-red-300 transition-colors cursor-pointer"
                       title="Delete Snapshot"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -227,28 +227,28 @@ export default function RecentHistory() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-slate-50 dark:bg-slate-850 border border-border rounded-lg p-3">
-                    <p className="text-[10px] text-muted uppercase font-bold">Total Test Cases in Snapshot</p>
-                    <p className="text-2xl font-black text-[#7c3aed] mt-0.5">{selectedHistory.testCaseCount}</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-[#FAF5FF] border-2 border-purple-100 rounded-2xl p-4">
+                    <p className="text-xs text-[#7C3AED] uppercase font-black tracking-wider">Total Test Cases in Snapshot</p>
+                    <p className="text-3xl font-black text-[#7C3AED] mt-1">{selectedHistory.testCaseCount}</p>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-850 border border-border rounded-lg p-3">
-                    <p className="text-[10px] text-muted uppercase font-bold">Specification Payload Size</p>
-                    <p className="text-2xl font-black text-[#16a34a] mt-0.5">{(selectedHistory.srsText.length / 1024).toFixed(1)} KB</p>
+                  <div className="bg-[#F0FDF4] border-2 border-emerald-100 rounded-2xl p-4">
+                    <p className="text-xs text-[#166534] uppercase font-black tracking-wider">Specification Payload Size</p>
+                    <p className="text-3xl font-black text-[#16A34A] mt-1">{(selectedHistory.srsText.length / 1024).toFixed(1)} KB</p>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-bold text-muted uppercase tracking-wider mb-2">Original SRS Excerpt</h4>
-                  <div className="bg-slate-50 dark:bg-slate-850 border border-border rounded-xl p-3.5 max-h-80 overflow-y-auto">
-                    <pre className="text-xs text-slate-700 dark:text-slate-300 font-mono whitespace-pre-wrap leading-relaxed">
+                  <h4 className="text-xs font-black text-[#0F172A] uppercase tracking-wider mb-2">Original SRS Excerpt</h4>
+                  <div className="bg-[#F8FCFF] border-2 border-sky-100 rounded-2xl p-4 max-h-80 overflow-y-auto">
+                    <pre className="text-xs text-slate-800 font-mono whitespace-pre-wrap leading-relaxed font-bold">
                       {selectedHistory.srsText}
                     </pre>
                   </div>
                 </div>
               </motion.div>
             ) : (
-              <div className="h-full min-h-[300px] flex items-center justify-center border border-dashed border-border rounded-xl text-center p-6 text-muted text-xs">
+              <div className="h-full min-h-[300px] flex items-center justify-center border-2 border-dashed border-sky-200 rounded-2xl text-center p-6 text-slate-500 font-bold text-sm bg-white">
                 Select an audit snapshot from the list to preview details or restore to workspace.
               </div>
             )}

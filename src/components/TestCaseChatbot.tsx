@@ -348,38 +348,38 @@ export default function TestCaseChatbot() {
   });
 
   return (
-    <div className="h-full flex gap-4 p-4 lg:p-6 bg-[#f0f9ff] dark:bg-slate-900">
+    <div className="h-full flex gap-4 p-4 lg:p-6 bg-[#F0F9FF]">
       {/* ─── Chat Area ─── */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded-2xl overflow-hidden shadow-xs relative">
+      <div className="flex-1 flex flex-col bg-white border-2 border-purple-200 rounded-2xl overflow-hidden shadow-sm relative">
         {/* Header */}
-        <div className="px-5 py-3.5 border-b border-[#e2e8f0] dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
+        <div className="px-6 py-4 border-b border-[#E0F2FE] bg-white flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3.5">
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0ea5e9] to-[#8b5cf6] flex items-center justify-center shadow-xs">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center shadow-xs">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#16a34a] rounded-full border-2 border-white dark:border-slate-800 animate-pulse" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#16A34A] rounded-full border-2 border-white animate-pulse" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
+              <h2 className="text-base font-black text-[#0F172A] flex items-center gap-2">
                 AI QA Assistant
-                <span className="text-[10px] px-1.5 py-0.5 bg-[#dcfce7] text-[#16a34a] rounded-full font-medium">Online</span>
+                <span className="text-[10px] px-2 py-0.5 bg-[#DCFCE7] text-[#16A34A] border border-emerald-200 rounded-full font-black">Online</span>
               </h2>
-              <p className="text-[11px] text-[#64748b]">Conversational Test Case Generator • Powered by AI</p>
+              <p className="text-xs text-[#64748B] font-semibold">Conversational Test Case Generator • Powered by AI</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => { setShowSessions(!showSessions); if (!showSessions) loadSessions(); }}
-              className="p-2 text-muted hover:text-foreground hover:bg-surface-alt rounded-lg transition-all flex items-center gap-1 text-xs"
+              className="px-3 py-1.5 text-slate-700 hover:text-[#0F172A] bg-white border-2 border-slate-200 hover:border-[#8B5CF6] rounded-xl transition-all flex items-center gap-1.5 text-xs font-bold cursor-pointer"
               title="Chat History"
             >
-              <History className="w-4 h-4" />
+              <History className="w-4 h-4 text-[#8B5CF6]" />
               <span className="hidden sm:inline">History</span>
             </button>
             <button
               onClick={clearConversation}
-              className="p-2 text-muted hover:text-danger hover:bg-danger/10 rounded-lg transition-all flex items-center gap-1 text-xs"
+              className="px-3 py-1.5 text-white bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] hover:opacity-95 rounded-xl transition-all flex items-center gap-1.5 text-xs font-black shadow-xs cursor-pointer"
               title="New Chat"
             >
               <Plus className="w-4 h-4" />
@@ -509,52 +509,54 @@ export default function TestCaseChatbot() {
         </AnimatePresence>
 
         {/* Suggestions & Input */}
-        <div className="px-4 py-3 bg-surface border-t border-border shrink-0 space-y-2.5">
+        <div className="px-4 py-3.5 bg-white border-t-2 border-slate-100 shrink-0 space-y-3">
           {/* Suggestion Chips */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
             {SUGGESTIONS.map((item, idx) => {
               const Icon = item.icon;
               return (
                 <button
                   key={idx}
+                  type="button"
                   onClick={() => handleSendPrompt(item.prompt)}
                   disabled={loading}
-                  className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-alt border border-border/70 hover:border-pink-500/40 text-muted hover:text-foreground text-[11px] transition-all disabled:opacity-40"
+                  className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#F8FCFF] border-2 border-slate-200 hover:border-[#8B5CF6] text-[#0F172A] font-black text-xs transition-all disabled:opacity-40 cursor-pointer shadow-2xs"
                 >
-                  <Icon className="w-3 h-3 text-pink-400" />
+                  <Icon className="w-3.5 h-3.5 text-[#8B5CF6]" />
                   {item.label}
                 </button>
               );
             })}
           </div>
 
-          <div className="relative flex items-end gap-2 bg-surface-alt border border-border rounded-xl px-3 py-2 focus-within:border-pink-500/50 focus-within:ring-1 focus-within:ring-pink-500/30 transition-all">
+          <div className="relative flex items-end gap-2 bg-[#F8FCFF] border-2 border-slate-200 rounded-2xl px-3.5 py-2.5 focus-within:border-[#0EA5E9] focus-within:ring-2 focus-within:ring-[#0EA5E9]/20 transition-all">
             <textarea
               ref={inputRef}
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder="Describe what you want to test or ask a QA question..."
-              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted/60 focus:outline-none resize-none min-h-[36px] max-h-[120px] py-1.5"
+              className="flex-1 bg-transparent text-xs font-bold text-[#0F172A] placeholder-[#64748B]/70 focus:outline-none resize-none min-h-[38px] max-h-[120px] py-1 leading-relaxed"
               rows={1}
               disabled={loading}
             />
             <button
+              type="button"
               onClick={() => handleSendPrompt(input)}
               disabled={loading || !input.trim()}
-              className="shrink-0 w-9 h-9 flex items-center justify-center bg-gradient-to-r from-[#0ea5e9] to-[#0284c7] text-white rounded-lg hover:shadow-md hover:shadow-sky-500/25 disabled:opacity-30 disabled:hover:shadow-none transition-all cursor-pointer"
+              className="shrink-0 w-10 h-10 flex items-center justify-center bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] text-white rounded-xl hover:shadow-md hover:shadow-sky-500/25 disabled:opacity-30 disabled:hover:shadow-none transition-all cursor-pointer font-black"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>
           </div>
           <div className="flex justify-between items-center px-1">
-            <p className="text-[10px] text-[#64748b]">
-              <kbd className="px-1 py-0.5 bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded text-[9px]">Enter</kbd> send
-              <span className="mx-1">•</span>
-              <kbd className="px-1 py-0.5 bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded text-[9px]">Shift+Enter</kbd> newline
+            <p className="text-[11px] text-[#64748B] font-bold">
+              <kbd className="px-1.5 py-0.5 bg-white border border-slate-300 rounded text-[10px] font-black">Enter</kbd> send
+              <span className="mx-1.5">•</span>
+              <kbd className="px-1.5 py-0.5 bg-white border border-slate-300 rounded text-[10px] font-black">Shift+Enter</kbd> newline
             </p>
-            <div className="flex items-center gap-1 text-[10px] text-[#64748b]">
-              <Zap className="w-2.5 h-2.5 text-[#0ea5e9]" />
+            <div className="flex items-center gap-1 text-[11px] text-[#0284C7] font-black">
+              <Zap className="w-3 h-3 text-[#0EA5E9]" />
               Real-time streaming active
             </div>
           </div>
@@ -562,22 +564,23 @@ export default function TestCaseChatbot() {
       </div>
 
       {/* ─── Test Cases Preview Panel ─── */}
-      <div className="w-[44%] flex flex-col bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 rounded-2xl overflow-hidden shadow-xs">
+      <div className="w-[44%] flex flex-col bg-white border-2 border-sky-300 rounded-2xl overflow-hidden shadow-sm">
         {/* Preview Header */}
-        <div className="px-5 py-3.5 border-b border-[#e2e8f0] dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center justify-between shrink-0">
-          <h2 className="text-sm font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-[#16a34a]" />
+        <div className="px-5 py-4 border-b-2 border-sky-100 bg-white flex items-center justify-between shrink-0">
+          <h2 className="text-sm font-black text-[#0F172A] flex items-center gap-2">
+            <CheckCircle2 className="w-4.5 h-4.5 text-[#16A34A]" />
             Generated Test Cases
             {testCases.length > 0 && (
-              <span className="ml-1 text-[10px] px-2 py-0.5 bg-primary/10 text-primary rounded-full font-semibold">
+              <span className="ml-1 text-xs px-2.5 py-0.5 bg-sky-100 text-[#0284C7] border border-sky-200 rounded-full font-black">
                 {testCases.length}
               </span>
             )}
           </h2>
           <button
+            type="button"
             onClick={handleSave}
             disabled={saving || testCases.length === 0}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-primary to-accent text-white text-xs font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/20 disabled:opacity-30 disabled:hover:shadow-none transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-[#0EA5E9] to-[#8B5CF6] text-white text-xs font-black rounded-xl hover:opacity-95 shadow-md shadow-sky-500/20 disabled:opacity-30 disabled:hover:shadow-none transition-all cursor-pointer"
           >
             {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
             Save All
@@ -586,16 +589,17 @@ export default function TestCaseChatbot() {
 
         {/* Filter Bar */}
         {testCases.length > 0 && (
-          <div className="px-4 py-2 border-b border-border/60 bg-surface-alt flex items-center gap-1.5 overflow-x-auto text-[11px] shrink-0">
-            <Filter className="w-3 h-3 text-muted shrink-0" />
+          <div className="px-4 py-2.5 border-b-2 border-slate-100 bg-[#F8FCFF] flex items-center gap-2 overflow-x-auto text-xs shrink-0">
+            <Filter className="w-3.5 h-3.5 text-[#64748B] shrink-0" />
             {['all', 'functional', 'security', 'negative', 'boundary'].map(cat => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setFilterCategory(cat)}
-                className={`px-2 py-0.5 rounded-md capitalize transition-all shrink-0 ${
+                className={`px-3 py-1 rounded-lg capitalize font-black transition-all shrink-0 cursor-pointer ${
                   filterCategory === cat
-                    ? 'bg-primary/20 text-primary font-semibold'
-                    : 'text-muted hover:text-foreground'
+                    ? 'bg-[#0EA5E9] text-white shadow-xs'
+                    : 'bg-white text-slate-700 border border-slate-200 hover:border-sky-300'
                 }`}
               >
                 {cat}
@@ -613,13 +617,13 @@ export default function TestCaseChatbot() {
                 animate={{ opacity: 1 }}
                 className="h-full flex flex-col items-center justify-center text-center p-8"
               >
-                <div className="w-16 h-16 rounded-2xl bg-surface-alt border border-border flex items-center justify-center mb-4">
-                  <AlertCircle className="w-7 h-7 text-muted/40" />
+                <div className="w-16 h-16 rounded-2xl bg-[#F0F9FF] border-2 border-sky-200 flex items-center justify-center mb-4">
+                  <AlertCircle className="w-7 h-7 text-[#0EA5E9]" />
                 </div>
-                <p className="text-sm font-semibold text-foreground/60">
+                <p className="text-sm font-black text-[#0F172A]">
                   {testCases.length === 0 ? 'No Test Cases Generated Yet' : 'No matching test cases'}
                 </p>
-                <p className="text-xs text-muted mt-1.5 max-w-[240px] leading-relaxed">
+                <p className="text-xs font-bold text-[#64748B] mt-1.5 max-w-[240px] leading-relaxed">
                   {testCases.length === 0
                     ? 'Ask the AI assistant to generate test cases and they will appear here live.'
                     : 'Try changing the category filter to view other test cases.'}
@@ -634,29 +638,30 @@ export default function TestCaseChatbot() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="bg-surface-alt border border-border rounded-xl overflow-hidden hover:border-border-bright transition-colors"
+                  className="bg-white border-2 border-slate-200 rounded-2xl overflow-hidden hover:border-[#8B5CF6] hover:shadow-sm transition-all"
                 >
-                  <div className="p-3.5 flex items-start justify-between gap-3">
+                  <div className="p-4 flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[13px] font-semibold text-foreground leading-snug">
+                      <h3 className="text-sm font-black text-[#0F172A] leading-snug">
                         {tc.scenario}
                       </h3>
                       <div className="flex items-center gap-2 mt-2">
-                        <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold border ${
-                          priorityColors[tc.priority] || 'bg-surface text-muted'
+                        <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-black border ${
+                          priorityColors[tc.priority] || 'bg-slate-100 text-[#0F172A]'
                         }`}>
                           {tc.priority}
                         </span>
-                        <span className={`text-[9px] px-2 py-0.5 rounded-full font-medium uppercase ${
-                          categoryColors[(tc.category || '').toLowerCase()] || 'bg-surface text-muted'
+                        <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-black uppercase ${
+                          categoryColors[(tc.category || '').toLowerCase()] || 'bg-slate-100 text-[#0F172A]'
                         }`}>
                           {tc.category}
                         </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0">
                       <button
+                        type="button"
                         onClick={() => {
                           const convertedTc = {
                             id: `tc-chat-${Date.now()}-${idx}`,
@@ -677,13 +682,14 @@ export default function TestCaseChatbot() {
                           addTestCases([convertedTc]);
                           toast.success(`Saved ${convertedTc.testCaseId} to project test suite!`);
                         }}
-                        className="p-1.5 text-muted hover:text-[#16a34a] hover:bg-emerald-50 rounded-md transition-all text-xs flex items-center gap-1 font-semibold"
+                        className="p-1.5 text-[#16A34A] bg-[#DCFCE7] border border-emerald-300 hover:bg-emerald-200 rounded-lg transition-all text-xs flex items-center gap-1 font-black cursor-pointer"
                         title="Save to Project Suite"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         <span className="hidden sm:inline">Save</span>
                       </button>
                       <button
+                        type="button"
                         onClick={() => {
                           const convertedTc = {
                             id: `tc-chat-${Date.now()}-${idx}`,
@@ -706,29 +712,32 @@ export default function TestCaseChatbot() {
                           setActiveFeature('test-data');
                           toast.info(`Sent ${convertedTc.testCaseId} to Test Data Generator`);
                         }}
-                        className="p-1.5 text-muted hover:text-[#0ea5e9] hover:bg-sky-50 rounded-md transition-all text-xs flex items-center gap-1 font-semibold"
+                        className="p-1.5 text-[#0284C7] bg-[#E0F2FE] border border-sky-300 hover:bg-sky-200 rounded-lg transition-all text-xs flex items-center gap-1 font-black cursor-pointer"
                         title="Generate Test Data for this case"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         <span className="hidden sm:inline">Data Gen</span>
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleCopyTC(tc, idx)}
-                        className="p-1.5 text-muted hover:text-primary hover:bg-surface rounded-md transition-all"
+                        className="p-1.5 text-[#64748B] hover:text-[#7C3AED] hover:bg-purple-50 rounded-lg transition-all cursor-pointer"
                         title="Copy Test Case"
                       >
-                        {copiedTC === idx ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
+                        {copiedTC === idx ? <Check className="w-3.5 h-3.5 text-[#16A34A]" /> : <Copy className="w-3.5 h-3.5" />}
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleDeleteTC(tc)}
-                        className="p-1.5 text-muted hover:text-danger hover:bg-danger/10 rounded-md transition-all"
+                        className="p-1.5 text-[#64748B] hover:text-[#BE185D] hover:bg-pink-50 rounded-lg transition-all cursor-pointer"
                         title="Remove Test Case"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => setExpandedTC(expandedTC === idx ? null : idx)}
-                        className="p-1.5 text-muted hover:text-foreground hover:bg-surface rounded-md transition-all text-xs font-semibold"
+                        className="p-1.5 text-[#0F172A] hover:bg-slate-100 rounded-lg transition-all text-xs font-black cursor-pointer"
                       >
                         {expandedTC === idx ? 'Hide' : 'Details'}
                       </button>
@@ -744,14 +753,14 @@ export default function TestCaseChatbot() {
                         transition={{ duration: 0.2 }}
                         className="overflow-hidden"
                       >
-                        <div className="px-3.5 pb-3.5 space-y-3 border-t border-border/50 pt-3">
+                        <div className="px-4 pb-4 space-y-3.5 border-t-2 border-slate-100 pt-3.5 bg-[#F8FCFF]">
                           {tc.preconditions?.length > 0 && (
                             <div>
-                              <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5">Preconditions</p>
+                              <p className="text-[10px] font-black text-[#64748B] uppercase tracking-wider mb-1.5">Preconditions</p>
                               <ul className="space-y-1">
                                 {tc.preconditions.map((p, i) => (
-                                  <li key={i} className="text-[11px] text-foreground/80 flex items-start gap-1.5">
-                                    <span className="w-1 h-1 rounded-full bg-primary mt-1.5 shrink-0" />
+                                  <li key={i} className="text-xs text-[#0F172A] font-medium flex items-start gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6] mt-1.5 shrink-0" />
                                     {p}
                                   </li>
                                 ))}
@@ -761,11 +770,11 @@ export default function TestCaseChatbot() {
 
                           {tc.steps?.length > 0 && (
                             <div>
-                              <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5">Steps</p>
+                              <p className="text-[10px] font-black text-[#64748B] uppercase tracking-wider mb-1.5">Steps</p>
                               <ol className="space-y-1">
                                 {tc.steps.map((s, i) => (
-                                  <li key={i} className="text-[11px] text-foreground/80 flex items-start gap-2">
-                                    <span className="w-4 h-4 rounded-md bg-primary/10 text-primary text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                  <li key={i} className="text-xs text-[#0F172A] font-medium flex items-start gap-2">
+                                    <span className="w-4.5 h-4.5 rounded-md bg-[#FAF5FF] border border-purple-200 text-[#7C3AED] text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">
                                       {i + 1}
                                     </span>
                                     {s}
@@ -776,8 +785,8 @@ export default function TestCaseChatbot() {
                           )}
 
                           <div>
-                            <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1.5">Expected Result</p>
-                            <p className="text-[11px] text-foreground/80 bg-surface p-2.5 rounded-lg border border-border/50 leading-relaxed">
+                            <p className="text-[10px] font-black text-[#16A34A] uppercase tracking-wider mb-1.5">Expected Result</p>
+                            <p className="text-xs text-[#16A34A] font-bold bg-white p-3 rounded-xl border border-emerald-200 leading-relaxed">
                               {tc.expectedResults}
                             </p>
                           </div>

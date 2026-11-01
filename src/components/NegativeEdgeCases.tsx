@@ -124,17 +124,18 @@ export default function NegativeEdgeCases() {
             type="button"
             onClick={handleGenerateEdgeCases}
             disabled={isGenerating}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#0f172a] dark:text-white hover:border-[#0ea5e9] text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border-2 border-sky-300 text-[#0284C7] hover:border-[#0EA5E9] text-xs font-black shadow-xs transition-colors cursor-pointer"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isGenerating ? 'animate-spin text-[#0ea5e9]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isGenerating ? 'animate-spin text-[#0EA5E9]' : ''}`} />
             <span>Generate Edge Cases</span>
           </button>
 
           {filtered.length > 0 && (
             <>
               <button
+                type="button"
                 onClick={handlePromoteAll}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 text-[#16a34a] text-xs font-semibold hover:bg-emerald-100 transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#DCFCE7] border-2 border-emerald-300 text-[#16A34A] text-xs font-black hover:opacity-90 transition-all cursor-pointer shadow-xs"
                 title="Promote all visible edge cases to main test suite"
               >
                 <Plus className="w-3.5 h-3.5" />
@@ -142,8 +143,9 @@ export default function NegativeEdgeCases() {
               </button>
 
               <button
+                type="button"
                 onClick={handleExportExcel}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] text-white text-xs font-black shadow-md shadow-sky-500/20 hover:opacity-95 transition-all cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Export Excel</span>
@@ -153,34 +155,34 @@ export default function NegativeEdgeCases() {
         </div>
       </motion.div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-3.5 shadow-xs">
-          <p className="text-[10px] text-muted uppercase font-bold">Total Edge Scenarios</p>
-          <p className="text-2xl font-black text-slate-800 dark:text-slate-100 mt-1">{negativeTestCases.length}</p>
+      {/* KPI Cards in White, Sky Blue, Purple, and Light Pink */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <p className="text-xs text-[#0F172A] uppercase font-black tracking-wider">Total Edge Scenarios</p>
+          <p className="text-3xl font-black text-[#0F172A] mt-1 tracking-tight">{negativeTestCases.length}</p>
         </div>
-        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 rounded-xl p-3.5 shadow-xs">
-          <p className="text-[10px] text-amber-800 dark:text-amber-400 uppercase font-bold">Boundary Cases</p>
-          <p className="text-2xl font-black text-amber-600 mt-1">
+        <div className="bg-white border-2 border-sky-300 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <p className="text-xs text-[#0284C7] uppercase font-black tracking-wider">Boundary Cases</p>
+          <p className="text-3xl font-black text-[#0284C7] mt-1 tracking-tight">
             {negativeTestCases.filter(c => c.category === 'boundary').length}
           </p>
         </div>
-        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 rounded-xl p-3.5 shadow-xs">
-          <p className="text-[10px] text-red-800 dark:text-red-400 uppercase font-bold">Negative / Faults</p>
-          <p className="text-2xl font-black text-[#dc2626] mt-1">
+        <div className="bg-white border-2 border-pink-300 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <p className="text-xs text-[#BE185D] uppercase font-black tracking-wider">Negative / Faults</p>
+          <p className="text-3xl font-black text-[#BE185D] mt-1 tracking-tight">
             {negativeTestCases.filter(c => c.category === 'negative').length}
           </p>
         </div>
-        <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 rounded-xl p-3.5 shadow-xs">
-          <p className="text-[10px] text-purple-800 dark:text-purple-400 uppercase font-bold">Security & Auth</p>
-          <p className="text-2xl font-black text-[#7c3aed] mt-1">
+        <div className="bg-white border-2 border-purple-300 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <p className="text-xs text-[#7C3AED] uppercase font-black tracking-wider">Security & Auth</p>
+          <p className="text-3xl font-black text-[#7C3AED] mt-1 tracking-tight">
             {negativeTestCases.filter(c => c.category === 'security').length}
           </p>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex flex-wrap items-center gap-1.5 p-2 bg-slate-50 dark:bg-slate-800/60 border border-border rounded-xl text-xs">
+      <div className="flex flex-wrap items-center gap-2 p-2.5 bg-white border-2 border-slate-200 rounded-2xl text-xs shadow-xs">
         {scenarioCategories.map(cat => {
           const Icon = cat.icon;
           const isSelected = filter === cat.id;
@@ -190,16 +192,17 @@ export default function NegativeEdgeCases() {
           return (
             <button
               key={cat.id}
+              type="button"
               onClick={() => setFilter(cat.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold transition-colors ${
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-black transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-[#7c3aed] text-white shadow-xs'
-                  : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-border hover:border-border-bright'
+                  ? 'bg-gradient-to-r from-[#8B5CF6] to-[#0EA5E9] text-white shadow-xs'
+                  : 'bg-[#F8FCFF] text-slate-700 border-2 border-slate-200 hover:border-purple-300'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
               <span>{cat.label}</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'}`}>
+              <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isSelected ? 'bg-white/25 text-white' : 'bg-purple-100 text-[#7C3AED]'}`}>
                 {count}
               </span>
             </button>
@@ -209,10 +212,10 @@ export default function NegativeEdgeCases() {
 
       {/* Main List */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-slate-50 dark:bg-slate-800/40 border border-dashed border-border rounded-2xl">
-          <ShieldAlert className="w-16 h-16 text-slate-300 mb-3" />
-          <h3 className="text-base font-bold text-foreground">No Edge Cases in this Category</h3>
-          <p className="text-xs text-muted mt-1 max-w-md text-center">
+        <div className="flex flex-col items-center justify-center py-20 bg-white border-2 border-dashed border-sky-300 rounded-2xl shadow-xs">
+          <ShieldAlert className="w-16 h-16 text-sky-300 mb-3" />
+          <h3 className="text-base font-black text-[#0F172A]">No Edge Cases in this Category</h3>
+          <p className="text-xs font-bold text-[#64748B] mt-1 max-w-md text-center">
             Click &ldquo;Generate Edge Cases&rdquo; to analyze your SRS requirements and generate boundary and fault scenarios.
           </p>
         </div>
@@ -227,32 +230,33 @@ export default function NegativeEdgeCases() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.02 }}
-                className="bg-white dark:bg-slate-800 border border-border rounded-xl overflow-hidden shadow-xs hover:border-border-bright transition-colors"
+                className="bg-white border-2 border-slate-200 rounded-2xl overflow-hidden shadow-xs hover:border-[#8B5CF6] hover:shadow-sm transition-all"
               >
                 {/* Header row */}
                 <div
                   onClick={() => setExpandedTC(isExpanded ? null : tc.id)}
-                  className="flex items-center gap-3 p-3.5 cursor-pointer text-xs"
+                  className="flex items-center gap-3.5 p-4 cursor-pointer text-xs"
                 >
-                  <span className="font-mono font-bold text-[#7c3aed] bg-purple-50 dark:bg-purple-950/40 px-2 py-0.5 rounded border border-purple-200">
+                  <span className="font-mono font-black text-[#7C3AED] bg-purple-50 px-2.5 py-0.5 rounded-lg border border-purple-200">
                     {tc.testCaseId}
                   </span>
 
-                  <span className="font-semibold text-slate-800 dark:text-slate-200 flex-1 truncate">
+                  <span className="font-black text-sm text-[#0F172A] flex-1 truncate">
                     {tc.title || tc.scenario}
                   </span>
 
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${getCategoryBadge(tc.category)}`}>
+                  <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full border ${getCategoryBadge(tc.category)}`}>
                     {tc.category}
                   </span>
 
                   {/* Coverage toggle */}
                   <button
+                    type="button"
                     onClick={(e) => { e.stopPropagation(); toggleTestCaseCoverage(tc.testCaseId); }}
-                    className={`px-2.5 py-1 text-[11px] font-semibold rounded-lg flex items-center gap-1 border transition-colors ${
+                    className={`px-3 py-1.5 text-xs font-black rounded-xl flex items-center gap-1.5 border-2 transition-colors cursor-pointer ${
                       tc.isCovered
-                        ? 'bg-emerald-50 text-[#16a34a] border-emerald-200'
-                        : 'bg-slate-100 text-slate-600 border-border hover:bg-slate-200'
+                        ? 'bg-[#DCFCE7] text-[#16A34A] border-emerald-300'
+                        : 'bg-[#F8FCFF] text-slate-700 border-slate-200 hover:border-slate-300'
                     }`}
                   >
                     <CheckCircle2 className="w-3.5 h-3.5" />
@@ -261,19 +265,20 @@ export default function NegativeEdgeCases() {
 
                   {/* Promote button */}
                   <button
+                    type="button"
                     onClick={(e) => { e.stopPropagation(); handlePromoteToSuite(tc); }}
-                    className={`px-2.5 py-1 text-[11px] font-semibold rounded-lg flex items-center gap-1 border transition-colors ${
+                    className={`px-3 py-1.5 text-xs font-black rounded-xl flex items-center gap-1.5 border-2 transition-colors cursor-pointer ${
                       inMainSuite
-                        ? 'bg-sky-50 text-[#0ea5e9] border-sky-200 opacity-80'
-                        : 'bg-emerald-50 text-[#16a34a] border-emerald-200 hover:bg-emerald-100'
+                        ? 'bg-[#E0F2FE] text-[#0284C7] border-sky-300 opacity-90'
+                        : 'bg-[#FAF5FF] text-[#7C3AED] border-purple-300 hover:bg-purple-100'
                     }`}
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>{inMainSuite ? 'In Suite' : 'Add to Suite'}</span>
                   </button>
 
-                  <div className="text-muted">
-                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  <div className="text-[#64748B]">
+                    {isExpanded ? <ChevronUp className="w-4.5 h-4.5" /> : <ChevronDown className="w-4.5 h-4.5" />}
                   </div>
                 </div>
 
@@ -284,39 +289,39 @@ export default function NegativeEdgeCases() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="border-t border-border bg-slate-50/50 dark:bg-slate-850 p-4 space-y-3 text-xs"
+                      className="border-t-2 border-slate-100 bg-[#F8FCFF] p-4.5 space-y-3.5 text-xs"
                     >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <p className="font-bold text-muted text-[10px] uppercase mb-0.5">Preconditions & Context</p>
-                          <p className="text-slate-700 dark:text-slate-300">{tc.preconditions || 'None'}</p>
+                        <div className="bg-white p-3 rounded-xl border-2 border-slate-200">
+                          <p className="font-black text-[#64748B] text-[10px] uppercase mb-1">Preconditions & Context</p>
+                          <p className="text-[#0F172A] font-bold">{tc.preconditions || 'None'}</p>
                         </div>
-                        <div>
-                          <p className="font-bold text-muted text-[10px] uppercase mb-0.5">Expected System Defense</p>
-                          <p className="text-[#16a34a] font-medium">{tc.expectedResults}</p>
+                        <div className="bg-white p-3 rounded-xl border-2 border-emerald-200">
+                          <p className="font-black text-[#16A34A] text-[10px] uppercase mb-1">Expected System Defense</p>
+                          <p className="text-[#16A34A] font-bold">{tc.expectedResults}</p>
                         </div>
                       </div>
 
-                      <div>
-                        <p className="font-bold text-muted text-[10px] uppercase mb-1">Execution Steps</p>
-                        <ol className="list-decimal list-inside space-y-1 text-slate-700 dark:text-slate-300">
+                      <div className="bg-white p-3.5 rounded-xl border-2 border-slate-200">
+                        <p className="font-black text-[#0F172A] text-xs uppercase mb-1.5">Execution Steps</p>
+                        <ol className="list-decimal list-inside space-y-1 text-[#0F172A] font-medium">
                           {tc.steps.map((step, si) => (
                             <li key={si}>{step}</li>
                           ))}
                         </ol>
                       </div>
 
-                      <div className="flex items-center gap-3 pt-2 border-t border-border/50">
-                        <span className="text-[11px] font-bold text-muted">Risk Score:</span>
-                        <div className="flex-1 max-w-xs h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                      <div className="flex items-center gap-3 pt-2 border-t-2 border-slate-200">
+                        <span className="text-xs font-black text-[#0F172A]">Risk Score:</span>
+                        <div className="flex-1 max-w-xs h-2.5 bg-slate-200 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full ${
-                              tc.riskScore >= 70 ? 'bg-red-500' : tc.riskScore >= 40 ? 'bg-amber-500' : 'bg-emerald-500'
+                              tc.riskScore >= 70 ? 'bg-[#BE185D]' : tc.riskScore >= 40 ? 'bg-amber-500' : 'bg-[#16A34A]'
                             }`}
                             style={{ width: `${tc.riskScore}%` }}
                           />
                         </div>
-                        <span className="font-mono font-bold text-xs">{tc.riskScore}/100</span>
+                        <span className="font-mono font-black text-xs text-[#0F172A]">{tc.riskScore}/100</span>
                       </div>
                     </motion.div>
                   )}

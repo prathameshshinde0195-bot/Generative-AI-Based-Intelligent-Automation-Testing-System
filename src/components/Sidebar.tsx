@@ -48,11 +48,11 @@ export default function Sidebar() {
         </div>
         {!collapsed && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="overflow-hidden">
-            <h1 className="text-sm font-extrabold text-[#0F172A] tracking-tight leading-tight flex items-center gap-1.5">
+            <h1 className="text-base font-black text-[#0F172A] tracking-tight leading-tight flex items-center gap-1.5">
               <span>Gen AI</span>
               <span className="text-[#0EA5E9]">Testing</span>
             </h1>
-            <p className="text-[10px] text-[#64748B] font-semibold">Autonomous QA Suite</p>
+            <p className="text-xs text-[#64748B] font-bold">Autonomous QA Suite</p>
           </motion.div>
         )}
       </div>
@@ -76,27 +76,27 @@ export default function Sidebar() {
               key={item.id}
               type="button"
               onClick={() => setActiveFeature(item.id)}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all duration-200 group cursor-pointer ${
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all duration-200 group cursor-pointer ${
                 isActive
-                  ? 'bg-gradient-to-r from-[#F0F9FF] to-[#FAF5FF] text-[#0284C7] border border-sky-200 font-bold shadow-xs'
-                  : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F8FAFC] border border-transparent font-medium'
+                  ? 'bg-gradient-to-r from-[#F0F9FF] to-[#FAF5FF] text-[#0284C7] border border-sky-300 font-extrabold shadow-sm'
+                  : 'text-slate-700 hover:text-[#0F172A] hover:bg-[#F8FAFC] border border-transparent font-bold'
               }`}
               title={collapsed ? item.label : undefined}
             >
               <Icon
-                className={`w-4 h-4 shrink-0 transition-colors ${
+                className={`w-4.5 h-4.5 shrink-0 transition-colors ${
                   isActive
                     ? 'text-[#0EA5E9]'
                     : 'text-[#64748B] group-hover:text-[#8B5CF6]'
                 }`}
               />
               {!collapsed && (
-                <span className="text-xs truncate">{item.label}</span>
+                <span className="text-[13px] font-bold truncate tracking-tight">{item.label}</span>
               )}
               {isActive && !collapsed && (
                 <motion.div
                   layoutId="activeIndicator"
-                  className="ml-auto w-1.5 h-3.5 rounded-full bg-gradient-to-b from-[#0EA5E9] to-[#EC4899]"
+                  className="ml-auto w-1.5 h-4 rounded-full bg-gradient-to-b from-[#0EA5E9] to-[#EC4899]"
                 />
               )}
             </button>
@@ -107,36 +107,36 @@ export default function Sidebar() {
       {/* Footer & User Card */}
       <div className="p-3 border-t border-[#E2E8F0] shrink-0 space-y-2.5 bg-white">
         {!collapsed && (
-          <div className="flex items-center gap-2 px-2.5 py-1.5 bg-[#FAF5FF] border border-[#EDE9FE] rounded-xl">
-            <Zap className="w-3.5 h-3.5 text-[#8B5CF6]" />
-            <span className="text-[11px] text-[#7C3AED] font-bold">GenAI Engine Active</span>
-            <span className="ml-auto flex h-2 w-2 relative">
+          <div className="flex items-center gap-2 px-3 py-2 bg-[#FAF5FF] border border-[#EDE9FE] rounded-xl">
+            <Zap className="w-4 h-4 text-[#8B5CF6]" />
+            <span className="text-xs text-[#7C3AED] font-extrabold">GenAI Engine Active</span>
+            <span className="ml-auto flex h-2.5 w-2.5 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#16A34A]"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#16A34A]"></span>
             </span>
           </div>
         )}
 
-        <div className={`p-2 rounded-xl transition-all ${collapsed ? 'bg-transparent' : 'bg-[#F8FAFC] border border-[#E2E8F0]'}`}>
+        <div className={`p-2.5 rounded-xl transition-all ${collapsed ? 'bg-transparent' : 'bg-white border border-[#E2E8F0] shadow-xs'}`}>
           <div className={`flex items-center gap-2.5 ${collapsed ? 'justify-center' : 'px-1'}`}>
             {user?.profilePicture ? (
               <img
                 src={user.profilePicture}
                 alt="Avatar"
-                className="w-8 h-8 rounded-full object-cover border border-[#0EA5E9]/30 shrink-0 shadow-xs"
+                className="w-9 h-9 rounded-full object-cover border border-[#0EA5E9]/30 shrink-0 shadow-xs"
                 onError={(e) => {
                   (e.currentTarget as HTMLElement).style.display = 'none';
                 }}
               />
             ) : (
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
-                <User className="w-4 h-4" />
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] text-white flex items-center justify-center font-black text-sm shrink-0 shadow-xs">
+                <User className="w-4.5 h-4.5" />
               </div>
             )}
             {!collapsed && (
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold text-[#0F172A] truncate">{user?.name || 'QA Specialist'}</p>
-                <p className="text-[10px] text-[#64748B] truncate font-medium">{user?.email || 'Active Session'}</p>
+                <p className="text-sm font-black text-[#0F172A] truncate">{user?.name || 'QA Specialist'}</p>
+                <p className="text-xs text-[#64748B] truncate font-bold">{user?.email || 'Active Session'}</p>
               </div>
             )}
             {!collapsed && (

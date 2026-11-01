@@ -147,43 +147,43 @@ export default function CoverageAnalyzer() {
         </div>
       </motion.div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs">
-          <p className="text-[10px] text-muted uppercase font-bold">Total Requirements</p>
-          <p className="text-3xl font-black text-slate-800 dark:text-slate-100 mt-1">{activeCoverage.totalRequirements}</p>
+      {/* KPI Cards in White, Sky Blue, Purple, and Light Pink */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-white border-2 border-sky-300 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+          <p className="text-xs text-[#0284C7] uppercase font-black tracking-wider">Total Requirements</p>
+          <p className="text-3xl font-black text-[#0284C7] mt-1 tracking-tight">{activeCoverage.totalRequirements}</p>
         </div>
-        <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 rounded-xl p-4 shadow-xs">
-          <p className="text-[10px] text-emerald-800 dark:text-emerald-400 uppercase font-bold">Covered Requirements</p>
-          <p className="text-3xl font-black text-[#16a34a] mt-1">{activeCoverage.coveredRequirements}</p>
+        <div className="bg-white border-2 border-emerald-300 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+          <p className="text-xs text-[#16A34A] uppercase font-black tracking-wider">Covered Requirements</p>
+          <p className="text-3xl font-black text-[#16A34A] mt-1 tracking-tight">{activeCoverage.coveredRequirements}</p>
         </div>
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs">
-          <p className="text-[10px] text-muted uppercase font-bold">Requirement Coverage %</p>
-          <p className={`text-3xl font-black mt-1 ${activeCoverage.coveragePercentage >= 80 ? 'text-[#16a34a]' : activeCoverage.coveragePercentage >= 50 ? 'text-amber-500' : 'text-[#dc2626]'}`}>
+        <div className="bg-white border-2 border-purple-300 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+          <p className="text-xs text-[#7C3AED] uppercase font-black tracking-wider">Requirement Coverage</p>
+          <p className={`text-3xl font-black mt-1 tracking-tight ${activeCoverage.coveragePercentage >= 80 ? 'text-[#16A34A]' : activeCoverage.coveragePercentage >= 50 ? 'text-amber-500' : 'text-[#BE185D]'}`}>
             {activeCoverage.coveragePercentage}%
           </p>
         </div>
-        <div className="bg-sky-50 dark:bg-sky-950/30 border border-sky-200 rounded-xl p-4 shadow-xs">
-          <p className="text-[10px] text-sky-800 dark:text-sky-400 uppercase font-bold">Execution Coverage %</p>
-          <p className="text-3xl font-black text-[#0ea5e9] mt-1">{executionCoveragePct}%</p>
+        <div className="bg-white border-2 border-pink-300 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all">
+          <p className="text-xs text-[#BE185D] uppercase font-black tracking-wider">Execution Coverage</p>
+          <p className="text-3xl font-black text-[#BE185D] mt-1 tracking-tight">{executionCoveragePct}%</p>
         </div>
       </div>
 
       {/* Threshold Config Slider */}
-      <div className="bg-slate-50 dark:bg-slate-800/60 border border-border rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+      <div className="bg-white border-2 border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-xs">
         <div className="flex items-center gap-2">
-          <Sliders className="w-4 h-4 text-[#7c3aed]" />
-          <span className="font-bold text-foreground">Configure CI/CD Coverage Gate:</span>
-          <span className="font-mono font-bold text-[#7c3aed] bg-purple-50 px-2 py-0.5 rounded border border-purple-200">{coverageGate}%</span>
+          <Sliders className="w-4 h-4 text-[#8B5CF6]" />
+          <span className="font-black text-[#0F172A] text-xs uppercase">Configure CI/CD Coverage Gate:</span>
+          <span className="font-mono font-black text-[#7C3AED] bg-purple-50 px-2.5 py-0.5 rounded-lg border border-purple-200 text-sm">{coverageGate}%</span>
         </div>
-        <div className="w-full sm:w-64">
+        <div className="w-full sm:w-72">
           <input
             type="range"
             min="50"
             max="100"
             value={coverageGate}
             onChange={(e) => setCoverageGate(Number(e.target.value))}
-            className="w-full accent-[#7c3aed]"
+            className="w-full accent-[#8B5CF6]"
           />
         </div>
       </div>
@@ -191,9 +191,9 @@ export default function CoverageAnalyzer() {
       {/* Visual Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Coverage Overview Donut */}
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs">
-          <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-            <PieIcon className="w-4 h-4 text-[#7c3aed]" />
+        <div className="bg-white border-2 border-purple-200 rounded-2xl p-5 shadow-sm">
+          <h3 className="text-sm font-black text-[#0F172A] uppercase tracking-wider mb-4 flex items-center gap-2">
+            <PieIcon className="w-4 h-4 text-[#8B5CF6]" />
             <span>Requirement Coverage Ratio</span>
           </h3>
           <ResponsiveContainer width="100%" height={240}>
@@ -208,16 +208,16 @@ export default function CoverageAnalyzer() {
             {coveragePie.map(d => (
               <div key={d.name} className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ background: d.color }} />
-                <span className="text-xs text-muted font-medium">{d.name}: {d.value}</span>
+                <span className="text-xs text-slate-700 font-bold">{d.name}: {d.value}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Test Category Distribution */}
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs">
-          <h3 className="text-sm font-bold text-foreground mb-4 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-[#0ea5e9]" />
+        <div className="bg-white border-2 border-sky-200 rounded-2xl p-5 shadow-sm">
+          <h3 className="text-sm font-black text-[#0F172A] uppercase tracking-wider mb-4 flex items-center gap-2">
+            <Activity className="w-4 h-4 text-[#0EA5E9]" />
             <span>Test Type & Category Distribution</span>
           </h3>
           <ResponsiveContainer width="100%" height={240}>
@@ -236,27 +236,27 @@ export default function CoverageAnalyzer() {
 
       {/* Missing Requirements Alert & 1-Click Gap Remediation */}
       {activeCoverage.missingRequirements.length > 0 && (
-        <div className="bg-red-50/70 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40 rounded-xl p-5 shadow-xs space-y-3">
+        <div className="bg-white border-2 border-pink-300 rounded-2xl p-5 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-red-600" />
-              <h3 className="text-sm font-bold text-red-700 dark:text-red-300">
+              <AlertCircle className="w-5 h-5 text-[#BE185D]" />
+              <h3 className="text-sm font-black text-[#BE185D] uppercase tracking-wide">
                 Coverage Gap Detected: {activeCoverage.missingRequirements.length} Uncovered Requirements
               </h3>
             </div>
-            <span className="text-xs text-red-600 font-medium">Click &ldquo;Generate Test Case&rdquo; to close gaps</span>
+            <span className="text-xs text-[#BE185D] font-bold">Click &ldquo;Generate Test Case&rdquo; to close gaps</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
             {activeCoverage.missingRequirements.map(reqId => (
-              <div key={reqId} className="bg-white dark:bg-slate-800 border border-red-200 rounded-lg p-3 flex items-center justify-between text-xs gap-2">
+              <div key={reqId} className="bg-[#FDF2F8] border border-[#FCE7F3] rounded-xl p-3.5 flex items-center justify-between text-xs gap-2">
                 <div>
-                  <span className="font-mono font-bold text-red-600">{reqId}</span>
-                  <p className="text-[11px] text-muted truncate">No active test case mapped</p>
+                  <span className="font-mono font-black text-sm text-[#BE185D]">{reqId}</span>
+                  <p className="text-xs text-slate-600 font-medium truncate">No active test case mapped</p>
                 </div>
                 <button
                   onClick={() => handleGenerateMissingTest(reqId)}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded bg-red-50 text-red-700 hover:bg-red-100 font-semibold text-xs transition-colors shrink-0"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#BE185D] hover:bg-[#9D174D] text-white font-bold text-xs transition-colors shrink-0 shadow-xs cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Generate Test</span>

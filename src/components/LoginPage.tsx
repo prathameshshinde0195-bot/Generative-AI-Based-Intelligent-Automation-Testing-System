@@ -775,7 +775,7 @@ export default function LoginPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="bg-white border border-[#E2E8F0] rounded-3xl p-8 shadow-2xl relative"
+          className="bg-white border-2 border-sky-200 rounded-3xl p-8 shadow-2xl relative"
         >
           {/* Header & Logo */}
           <div className="text-center mb-8">
@@ -1028,19 +1028,19 @@ export default function LoginPage() {
                     type="button"
                     disabled={isLoading}
                     onClick={() => void handleQuickLogin('admin@test.com', 'Admin@123')}
-                    className="p-3 bg-[#F0F9FF] hover:bg-sky-100/60 border border-sky-200 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
+                    className="p-3 bg-white hover:bg-sky-50/70 border-2 border-sky-300 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
                   >
-                    <div className="text-xs font-bold text-[#0284C7] group-hover:text-[#0369A1]">Admin Demo</div>
-                    <div className="text-[11px] text-[#64748B] truncate">admin@test.com</div>
+                    <div className="text-xs font-black text-[#0284C7] group-hover:text-[#0369A1]">Admin Demo</div>
+                    <div className="text-[11px] font-bold text-[#64748B] truncate">admin@test.com</div>
                   </button>
                   <button
                     type="button"
                     disabled={isLoading}
                     onClick={() => void handleQuickLogin('qa@test.com', 'QA@123')}
-                    className="p-3 bg-[#FAF5FF] hover:bg-purple-100/60 border border-purple-200 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
+                    className="p-3 bg-white hover:bg-purple-50/70 border-2 border-purple-300 rounded-xl text-left transition-all group cursor-pointer disabled:opacity-50"
                   >
-                    <div className="text-xs font-bold text-[#8B5CF6] group-hover:text-[#7C3AED]">QA Lead Demo</div>
-                    <div className="text-[11px] text-[#64748B] truncate">qa@test.com</div>
+                    <div className="text-xs font-black text-[#8B5CF6] group-hover:text-[#7C3AED]">QA Lead Demo</div>
+                    <div className="text-[11px] font-bold text-[#64748B] truncate">qa@test.com</div>
                   </button>
                 </div>
               </div>

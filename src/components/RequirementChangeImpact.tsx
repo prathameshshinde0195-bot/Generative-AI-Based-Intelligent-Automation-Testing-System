@@ -167,21 +167,21 @@ export default function RequirementChangeImpact() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/40 flex items-center justify-center text-[#0ea5e9]">
-            <GitCompare className="w-5 h-5" />
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#E0F2FE] bg-white p-5 rounded-2xl shadow-sm border">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <GitCompare className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
               Requirement Change Impact Predictor
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-sky-50 text-[#0ea5e9] dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200">
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
                 Regression Intelligence
               </span>
             </h2>
-            <p className="text-xs text-[#64748b]">Identify which existing test cases break or require regeneration when specification rules change</p>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">Identify which existing test cases break or require regeneration when specification rules change</p>
           </div>
         </div>
 
@@ -189,33 +189,33 @@ export default function RequirementChangeImpact() {
         {result && (
           <button
             onClick={handleExportImpact}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] hover:opacity-95 text-white text-xs font-black shadow-xs transition-all cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-4 h-4" />
             <span>Export Impact Report</span>
           </button>
         )}
       </motion.div>
 
-      {/* Input Panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* Input Panel in White, Sky Blue, Purple, and Light Pink */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left — Old Requirement */}
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 space-y-4 shadow-xs">
+        <div className="bg-white border-2 border-purple-200 rounded-2xl p-6 space-y-4 shadow-sm">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-purple-100 dark:bg-purple-950 text-[#7c3aed] text-[11px] font-bold flex items-center justify-center">1</span>
+            <h3 className="text-xs font-black text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-purple-100 text-[#7C3AED] text-xs font-black flex items-center justify-center">1</span>
               Original Requirement (Baseline)
             </h3>
           </div>
 
           {requirements.length > 0 && (
-            <div className="space-y-1">
-              <label className="text-[11px] text-muted uppercase tracking-wider font-bold">
+            <div className="space-y-1.5">
+              <label className="text-xs text-slate-700 uppercase tracking-wider font-bold">
                 Select saved requirement
               </label>
               <select
                 onChange={(e) => handleSelectReq(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-700 border border-border text-foreground rounded-lg px-3 py-2 text-xs outline-none"
+                className="w-full bg-[#F8FCFF] border-2 border-slate-200 text-[#0F172A] rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none"
               >
                 <option value="">-- Choose to auto-fill --</option>
                 {requirements.map((r) => (
@@ -227,61 +227,61 @@ export default function RequirementChangeImpact() {
             </div>
           )}
 
-          <div className="space-y-1">
-            <label className="text-[11px] text-muted uppercase tracking-wider font-bold flex items-center gap-1">
-              <FileText className="w-3 h-3" /> Original Specification Text
+          <div className="space-y-1.5">
+            <label className="text-xs text-slate-700 uppercase tracking-wider font-bold flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-[#8B5CF6]" /> Original Specification Text
             </label>
             <textarea
               value={oldRequirement}
               onChange={(e) => setOldRequirement(e.target.value)}
               placeholder="e.g. The system shall allow users to register with an email and password of at least 6 characters."
               rows={6}
-              className="w-full bg-slate-50 dark:bg-slate-700 border border-border text-foreground rounded-lg p-3 text-xs outline-none focus:border-[#7c3aed] font-mono leading-relaxed resize-none"
+              className="w-full bg-[#F8FCFF] border-2 border-slate-200 text-[#0F172A] rounded-xl p-3.5 text-xs font-semibold outline-none focus:border-[#8B5CF6] font-mono leading-relaxed resize-none"
             />
           </div>
         </div>
 
         {/* Right — New Requirement */}
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 space-y-4 shadow-xs">
-          <h3 className="text-xs font-bold text-foreground uppercase tracking-wider flex items-center gap-2">
-            <span className="w-5 h-5 rounded-full bg-purple-100 dark:bg-purple-950 text-[#7c3aed] text-[11px] font-bold flex items-center justify-center">2</span>
+        <div className="bg-white border-2 border-sky-300 rounded-2xl p-6 space-y-4 shadow-sm">
+          <h3 className="text-xs font-black text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
+            <span className="w-6 h-6 rounded-full bg-sky-100 text-[#0284C7] text-xs font-black flex items-center justify-center">2</span>
             Updated Requirement (Target)
           </h3>
 
-          <div className="space-y-1">
-            <label className="text-[11px] text-muted uppercase tracking-wider font-bold flex items-center gap-1">
-              <FileText className="w-3 h-3" /> Updated Specification Text
+          <div className="space-y-1.5">
+            <label className="text-xs text-slate-700 uppercase tracking-wider font-bold flex items-center gap-1.5">
+              <FileText className="w-3.5 h-3.5 text-[#0EA5E9]" /> Updated Specification Text
             </label>
             <textarea
               value={newRequirement}
               onChange={(e) => setNewRequirement(e.target.value)}
               placeholder="e.g. The system shall allow users to register with an email and password of at least 10 characters including uppercase, lowercase, numbers, and special characters."
               rows={6}
-              className="w-full bg-slate-50 dark:bg-slate-700 border border-border text-foreground rounded-lg p-3 text-xs outline-none focus:border-[#7c3aed] font-mono leading-relaxed resize-none"
+              className="w-full bg-[#F8FCFF] border-2 border-slate-200 text-[#0F172A] rounded-xl p-3.5 text-xs font-semibold outline-none focus:border-[#0EA5E9] font-mono leading-relaxed resize-none"
             />
           </div>
 
-          <div className="flex gap-2 pt-1">
+          <div className="flex gap-2.5 pt-1">
             <button
               onClick={handleAnalyze}
               disabled={loading}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#7c3aed] hover:bg-[#6d28d9] disabled:opacity-50 text-white rounded-lg text-xs font-bold shadow-xs transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] hover:opacity-95 disabled:opacity-50 text-white rounded-xl text-xs font-black shadow-xs transition-all cursor-pointer"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Computing Impact Analysis...</span>
                 </>
               ) : (
                 <>
-                  <GitCompare className="w-3.5 h-3.5" />
+                  <GitCompare className="w-4 h-4" />
                   <span>Analyze Regression Impact</span>
                 </>
               )}
             </button>
             <button
               onClick={handleClear}
-              className="px-3 py-2.5 border border-border rounded-lg text-xs text-muted hover:text-foreground transition-colors"
+              className="px-4 py-3 border-2 border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:text-[#0F172A] bg-white transition-colors cursor-pointer"
             >
               Clear
             </button>

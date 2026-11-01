@@ -120,20 +120,20 @@ export default function App() {
       <Sidebar />
       <main className="flex-1 overflow-hidden flex flex-col bg-[#F0F9FF]">
         {/* Header with White, Sky Blue, Purple, and Light Pink accents */}
-        <div className="relative flex items-center justify-between px-6 py-3.5 bg-white border-b border-[#E0F2FE] shadow-xs">
+        <div className="relative flex items-center justify-between px-6 py-4 bg-white border-b-2 border-sky-100 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] animate-pulse" />
-            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">
+            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] animate-pulse shadow-sm" />
+            <h2 className="text-lg font-black text-[#0F172A] tracking-tight">
               {featureTitles[activeFeature] || 'Testing Intelligence Dashboard'}
             </h2>
-            <span className="hidden sm:inline-flex text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
+            <span className="hidden sm:inline-flex text-[11px] font-black px-3 py-1 rounded-full bg-[#FDF2F8] text-[#BE185D] border-2 border-pink-200 shadow-2xs">
               Gen AI Engine v2.4
             </span>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#FAF5FF] border border-[#EDE9FE] text-[11px] text-[#7C3AED] font-semibold">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]" />
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#FAF5FF] border-2 border-purple-200 text-xs text-[#7C3AED] font-black shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-[#8B5CF6]" />
               Enterprise Testing Active
             </div>
             <ProjectSwitcher />

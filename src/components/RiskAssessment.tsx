@@ -151,9 +151,9 @@ export default function RiskAssessment() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-slate-800 border border-border rounded-xl p-6 flex flex-col items-center justify-center shadow-xs"
+          className="bg-white border-2 border-pink-300 rounded-2xl p-6 flex flex-col items-center justify-center shadow-sm"
         >
-          <span className="text-xs font-bold text-muted uppercase tracking-wider mb-4">Composite Quality Risk Index</span>
+          <span className="text-xs font-black text-[#0F172A] uppercase tracking-wider mb-4">Composite Quality Risk Index</span>
           <div className="relative w-36 h-36">
             <svg className="w-full h-full -rotate-90" viewBox="0 0 140 140">
               <circle cx="70" cy="70" r="60" fill="none" stroke="#e2e8f0" strokeWidth="8" />
@@ -170,17 +170,17 @@ export default function RiskAssessment() {
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className={`text-4xl font-black ${getScoreColor(activeRisk.overallScore)}`}>{activeRisk.overallScore}</span>
-              <span className="text-[10px] text-muted font-bold">/ 100</span>
+              <span className="text-xs text-slate-500 font-bold">/ 100</span>
             </div>
           </div>
-          <span className={`text-sm font-bold mt-3 ${getScoreColor(activeRisk.overallScore)}`}>
+          <span className={`text-base font-black mt-3 ${getScoreColor(activeRisk.overallScore)}`}>
             {getScoreLabel(activeRisk.overallScore)}
           </span>
         </motion.div>
 
         {/* Radar Chart */}
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }} className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs">
-          <h3 className="text-xs font-bold text-muted uppercase tracking-wider mb-2">Vector Radar Distribution</h3>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }} className="bg-white border-2 border-purple-200 rounded-2xl p-6 shadow-sm">
+          <h3 className="text-xs font-black text-[#0F172A] uppercase tracking-wider mb-2">Vector Radar Distribution</h3>
           <ResponsiveContainer width="100%" height={220}>
             <RadarChart data={radarData}>
               <PolarGrid stroke="#e2e8f0" />
@@ -198,14 +198,14 @@ export default function RiskAssessment() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs"
+              className="bg-white border-2 border-sky-200 rounded-2xl p-4 shadow-sm"
             >
               <div className="flex items-center gap-2 mb-1.5">
                 <cat.icon className={`w-4 h-4 ${getScoreColor(cat.score)}`} />
-                <span className="text-xs font-bold text-foreground">{cat.label}</span>
+                <span className="text-xs font-black text-[#0F172A]">{cat.label}</span>
                 <span className={`ml-auto text-base font-black font-mono ${getScoreColor(cat.score)}`}>{cat.score}/100</span>
               </div>
-              <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden mb-2">
+              <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden mb-2">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${cat.score}%` }}
@@ -213,96 +213,96 @@ export default function RiskAssessment() {
                   className={`h-full rounded-full ${cat.score >= 70 ? 'bg-[#dc2626]' : cat.score >= 40 ? 'bg-amber-500' : 'bg-[#16a34a]'}`}
                 />
               </div>
-              <p className="text-[10px] text-muted leading-relaxed">{cat.description}</p>
+              <p className="text-xs text-slate-600 font-semibold leading-relaxed">{cat.description}</p>
             </motion.div>
           ))}
         </div>
       </div>
 
       {/* 3x3 Likelihood vs Impact Risk Matrix */}
-      <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs space-y-3">
-        <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[#7c3aed]" />
+      <div className="bg-white border-2 border-slate-200 rounded-2xl p-6 shadow-sm space-y-3">
+        <h3 className="text-sm font-black text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
+          <TrendingUp className="w-4 h-4 text-[#8B5CF6]" />
           <span>Likelihood vs. Impact Risk Matrix</span>
         </h3>
-        <p className="text-xs text-muted">
+        <p className="text-xs text-slate-600 font-medium">
           Categorization of system failure probability versus operational and security impact.
         </p>
 
-        <div className="grid grid-cols-4 gap-2 text-xs text-center font-medium">
-          <div className="p-2 font-bold text-muted uppercase text-[10px] flex items-center justify-center">
+        <div className="grid grid-cols-4 gap-2 text-xs text-center font-bold">
+          <div className="p-2 font-black text-[#0F172A] uppercase text-xs flex items-center justify-center">
             Likelihood \ Impact
           </div>
-          <div className="p-2 font-bold text-muted uppercase text-[10px] bg-slate-50 dark:bg-slate-800 rounded">
+          <div className="p-2.5 font-black text-slate-700 uppercase text-xs bg-[#F8FCFF] rounded-xl border border-sky-100">
             Low Impact
           </div>
-          <div className="p-2 font-bold text-muted uppercase text-[10px] bg-slate-50 dark:bg-slate-800 rounded">
+          <div className="p-2.5 font-black text-slate-700 uppercase text-xs bg-[#F8FCFF] rounded-xl border border-sky-100">
             Medium Impact
           </div>
-          <div className="p-2 font-bold text-muted uppercase text-[10px] bg-slate-50 dark:bg-slate-800 rounded">
+          <div className="p-2.5 font-black text-slate-700 uppercase text-xs bg-[#F8FCFF] rounded-xl border border-sky-100">
             High Impact
           </div>
 
           {/* High Likelihood row */}
-          <div className="p-2 font-bold text-muted uppercase text-[10px] bg-slate-50 dark:bg-slate-800 rounded flex items-center justify-center">
+          <div className="p-2.5 font-black text-slate-700 uppercase text-xs bg-[#F8FCFF] rounded-xl border border-sky-100 flex items-center justify-center">
             High Likelihood
           </div>
-          <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 text-amber-800 font-semibold">
+          <div className="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-900 font-bold">
             Medium Risk (Input formatting)
           </div>
-          <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 text-red-700 font-bold">
+          <div className="p-3.5 rounded-xl bg-[#FDF2F8] border-2 border-pink-200 text-[#BE185D] font-black">
             High Risk (Concurrent latency)
           </div>
-          <div className="p-3 rounded-lg bg-red-100 dark:bg-red-900/40 border border-red-300 text-red-900 font-black">
+          <div className="p-3.5 rounded-xl bg-red-100 border-2 border-red-300 text-red-950 font-black">
             CRITICAL (Auth bypass)
           </div>
 
           {/* Medium Likelihood row */}
-          <div className="p-2 font-bold text-muted uppercase text-[10px] bg-slate-50 dark:bg-slate-800 rounded flex items-center justify-center">
+          <div className="p-2.5 font-black text-slate-700 uppercase text-xs bg-[#F8FCFF] rounded-xl border border-sky-100 flex items-center justify-center">
             Medium Likelihood
           </div>
-          <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 text-emerald-800 font-semibold">
+          <div className="p-3.5 rounded-xl bg-emerald-50 border-2 border-emerald-200 text-emerald-900 font-bold">
             Low Risk (UI rendering glitch)
           </div>
-          <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 text-amber-800 font-semibold">
+          <div className="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-900 font-bold">
             Medium Risk (API pagination)
           </div>
-          <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 text-red-700 font-bold">
+          <div className="p-3.5 rounded-xl bg-[#FDF2F8] border-2 border-pink-200 text-[#BE185D] font-black">
             High Risk (Data corruption)
           </div>
 
           {/* Low Likelihood row */}
-          <div className="p-2 font-bold text-muted uppercase text-[10px] bg-slate-50 dark:bg-slate-800 rounded flex items-center justify-center">
+          <div className="p-2.5 font-black text-slate-700 uppercase text-xs bg-[#F8FCFF] rounded-xl border border-sky-100 flex items-center justify-center">
             Low Likelihood
           </div>
-          <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 text-emerald-800 font-semibold">
+          <div className="p-3.5 rounded-xl bg-emerald-50 border-2 border-emerald-200 text-emerald-900 font-bold">
             Minimal (Localization edge)
           </div>
-          <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 text-emerald-800 font-semibold">
+          <div className="p-3.5 rounded-xl bg-emerald-50 border-2 border-emerald-200 text-emerald-900 font-bold">
             Low Risk (Network jitter)
           </div>
-          <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 text-amber-800 font-semibold">
+          <div className="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-200 text-amber-900 font-bold">
             Medium Risk (Server restart)
           </div>
         </div>
       </div>
 
       {/* Identified Risk Factors Registry & Mitigations */}
-      <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-5 shadow-xs space-y-4">
+      <div className="bg-white border-2 border-purple-200 rounded-2xl p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+          <h3 className="text-sm font-black text-[#0F172A] uppercase tracking-wider flex items-center gap-2">
             <Lightbulb className="w-4 h-4 text-amber-500" />
             <span>Identified Risk Factors & Actionable Mitigations ({activeRisk.factors.length})</span>
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {activeRisk.factors.map((factor, i) => (
-            <div key={i} className="flex items-start gap-2.5 bg-slate-50 dark:bg-slate-850 border border-border rounded-xl p-3.5 text-xs">
-              <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+            <div key={i} className="flex items-start gap-3 bg-[#FAF5FF] border-2 border-purple-100 rounded-2xl p-4 text-xs">
+              <AlertTriangle className="w-4 h-4 text-[#8B5CF6] shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-foreground">{factor}</p>
-                <p className="text-[11px] text-muted mt-1">Recommended Action: Add targeted automated boundary and load assertions in test suite.</p>
+                <p className="font-black text-[#0F172A]">{factor}</p>
+                <p className="text-xs text-slate-600 font-semibold mt-1">Recommended Action: Add targeted automated boundary and load assertions in test suite.</p>
               </div>
             </div>
           ))}

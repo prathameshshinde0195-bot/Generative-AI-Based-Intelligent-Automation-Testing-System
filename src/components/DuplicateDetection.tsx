@@ -175,21 +175,21 @@ export default function DuplicateDetection() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/40 flex items-center justify-center text-[#0ea5e9]">
-            <Copy className="w-5 h-5" />
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#E0F2FE] bg-white p-5 rounded-2xl shadow-sm border">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <Copy className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
               Duplicate & Redundant Test Case Detection
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-sky-50 text-[#0ea5e9] dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200">
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
                 NLP Semantic Deduplication
               </span>
             </h2>
-            <p className="text-xs text-[#64748b]">Identify identical or highly overlapping test scenarios to minimize suite bloat and execution cost</p>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">Identify identical or highly overlapping test scenarios to minimize suite bloat and execution cost</p>
           </div>
         </div>
 
@@ -198,9 +198,9 @@ export default function DuplicateDetection() {
           <button
             onClick={handleRescan}
             disabled={isScanning || allCases.length === 0}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#0f172a] dark:text-white hover:border-[#0ea5e9] text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border-2 border-slate-200 text-[#0F172A] hover:border-[#0EA5E9] text-xs font-bold shadow-xs transition-colors cursor-pointer"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin text-[#0ea5e9]' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin text-[#0EA5E9]' : ''}`} />
             <span>Re-Scan Duplicates</span>
           </button>
 
@@ -208,7 +208,7 @@ export default function DuplicateDetection() {
             <>
               <button
                 onClick={() => setBulkConfirmOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 text-[#dc2626] text-xs font-semibold hover:bg-red-100 transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FDF2F8] border-2 border-[#FCE7F3] text-[#BE185D] text-xs font-black hover:bg-pink-100 transition-colors cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>Bulk Cleanup ({filteredDuplicates.length})</span>
@@ -216,7 +216,7 @@ export default function DuplicateDetection() {
 
               <button
                 onClick={handleExportReport}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] hover:opacity-95 text-white text-xs font-black shadow-xs transition-all cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Export Report</span>
@@ -226,16 +226,16 @@ export default function DuplicateDetection() {
         </div>
       </motion.div>
 
-      {/* Threshold Slider & Summary Stats Bar */}
+      {/* Threshold Slider & Summary Stats Bar in White, Sky Blue, Purple, and Light Pink */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Slider Box */}
-        <div className="bg-slate-50 dark:bg-slate-800/60 border border-border rounded-xl p-4 space-y-2">
-          <div className="flex items-center justify-between text-xs font-bold text-foreground">
-            <span className="flex items-center gap-1.5">
-              <Sliders className="w-3.5 h-3.5 text-[#7c3aed]" />
+        <div className="bg-white border-2 border-purple-200 rounded-2xl p-5 space-y-2 shadow-sm">
+          <div className="flex items-center justify-between text-xs font-black text-[#0F172A]">
+            <span className="flex items-center gap-1.5 uppercase">
+              <Sliders className="w-4 h-4 text-[#8B5CF6]" />
               <span>Similarity Threshold:</span>
             </span>
-            <span className="text-[#7c3aed]">{threshold}%</span>
+            <span className="text-base font-black text-[#7C3AED] bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-200">{threshold}%</span>
           </div>
           <input
             type="range"
@@ -243,37 +243,37 @@ export default function DuplicateDetection() {
             max="95"
             value={threshold}
             onChange={(e) => setThreshold(Number(e.target.value))}
-            className="w-full accent-[#7c3aed]"
+            className="w-full accent-[#8B5CF6]"
           />
-          <div className="flex justify-between text-[10px] text-muted font-medium">
+          <div className="flex justify-between text-xs text-[#64748B] font-bold">
             <span>50% (Broad Overlap)</span>
             <span>95% (Near Identical)</span>
           </div>
         </div>
 
         {/* Duplicate count */}
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 flex items-center justify-between shadow-xs">
+        <div className="bg-white border-2 border-pink-300 rounded-2xl p-5 flex items-center justify-between shadow-sm">
           <div>
-            <p className="text-[10px] text-muted uppercase font-bold">Detected Duplicate Pairs</p>
-            <p className="text-2xl font-black text-red-600 mt-1">{filteredDuplicates.length}</p>
+            <p className="text-xs text-[#BE185D] uppercase font-black tracking-wider">Detected Duplicate Pairs</p>
+            <p className="text-3xl font-black text-[#BE185D] mt-1 tracking-tight">{filteredDuplicates.length}</p>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/40 flex items-center justify-center text-red-500">
-            <Copy className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-2xl bg-[#FDF2F8] border border-[#FCE7F3] flex items-center justify-center text-[#EC4899] font-black">
+            <Copy className="w-6 h-6" />
           </div>
         </div>
 
         {/* Average Similarity */}
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 flex items-center justify-between shadow-xs">
+        <div className="bg-white border-2 border-sky-300 rounded-2xl p-5 flex items-center justify-between shadow-sm">
           <div>
-            <p className="text-[10px] text-muted uppercase font-bold">Average Similarity Score</p>
-            <p className="text-2xl font-black text-[#7c3aed] mt-1">
+            <p className="text-xs text-[#0284C7] uppercase font-black tracking-wider">Average Similarity Score</p>
+            <p className="text-3xl font-black text-[#0284C7] mt-1 tracking-tight">
               {filteredDuplicates.length > 0
                 ? `${Math.round(filteredDuplicates.reduce((acc, d) => acc + d.similarity, 0) / filteredDuplicates.length)}%`
                 : '0%'}
             </p>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 flex items-center justify-center text-[#7c3aed]">
-            <Sparkles className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-200 flex items-center justify-center text-[#0EA5E9] font-black">
+            <Sparkles className="w-6 h-6" />
           </div>
         </div>
       </div>
@@ -305,14 +305,14 @@ export default function DuplicateDetection() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.03 }}
-                  className="bg-white dark:bg-slate-800 border border-border rounded-xl p-4 shadow-xs space-y-3"
+                  className="bg-white border-2 border-slate-200 hover:border-[#8B5CF6] rounded-2xl p-5 shadow-sm hover:shadow-md space-y-3.5 transition-all"
                 >
                   {/* Top Bar */}
-                  <div className="flex items-center justify-between pb-2 border-b border-border/50">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div className="flex items-center gap-2">
-                      <AlertCircle className="w-4 h-4 text-amber-500" />
-                      <span className="text-xs font-bold text-foreground">Overlap Detected</span>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${getSimilarityBadge(dup.similarity)}`}>
+                      <AlertCircle className="w-5 h-5 text-amber-500" />
+                      <span className="text-sm font-black text-[#0F172A]">Overlap Detected</span>
+                      <span className={`text-xs font-black px-2.5 py-0.5 rounded-full ${getSimilarityBadge(dup.similarity)}`}>
                         {dup.similarity}% Similarity
                       </span>
                     </div>
@@ -321,51 +321,51 @@ export default function DuplicateDetection() {
                       {dup.suggestedMergedCase && (
                         <button
                           onClick={() => setMergingPair(dup)}
-                          className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-purple-50 text-[#7c3aed] dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200 hover:bg-purple-100 transition-colors"
+                          className="flex items-center gap-1.5 text-xs font-black px-3 py-1.5 rounded-xl bg-purple-50 text-[#7C3AED] border-2 border-purple-200 hover:bg-purple-100 transition-colors cursor-pointer"
                         >
-                          <Merge className="w-3 h-3" />
+                          <Merge className="w-3.5 h-3.5" />
                           <span>Merge Cases</span>
                         </button>
                       )}
 
                       <button
                         onClick={() => setDeleteConfirmTcId(dup.testCase2Id)}
-                        className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-300 border border-red-200 hover:bg-red-100 transition-colors"
+                        className="flex items-center gap-1.5 text-xs font-black px-3 py-1.5 rounded-xl bg-[#FDF2F8] text-[#BE185D] border-2 border-[#FCE7F3] hover:bg-pink-100 transition-colors cursor-pointer"
                       >
-                        <Trash2 className="w-3 h-3" />
+                        <Trash2 className="w-3.5 h-3.5" />
                         <span>Remove {dup.testCase2Id}</span>
                       </button>
                     </div>
                   </div>
 
-                  <p className="text-xs text-muted font-medium">Reason: {dup.reason}</p>
+                  <p className="text-xs text-slate-700 font-bold">Reason: {dup.reason}</p>
 
                   {/* Side-by-Side Comparison */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     {/* Primary Case 1 */}
-                    <div className="bg-slate-50 dark:bg-slate-850 border border-border rounded-lg p-3 space-y-1.5">
+                    <div className="bg-[#F8FCFF] border-2 border-sky-200 rounded-xl p-4 space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-[#7c3aed]">{dup.testCase1Id} (Base)</span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                        <span className="font-mono font-black text-sm text-[#0284C7]">{dup.testCase1Id} (Base)</span>
+                        <span className="text-[11px] font-black px-2 py-0.5 rounded-full bg-sky-100 text-[#0284C7] border border-sky-200">
                           {tc1?.priority}
                         </span>
                       </div>
-                      <p className="font-semibold text-foreground">{tc1?.title || tc1?.scenario}</p>
-                      <p className="text-[11px] text-muted">Steps: {tc1?.steps.join(' → ')}</p>
-                      <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium">Expected: {tc1?.expectedResults}</p>
+                      <p className="font-black text-sm text-[#0F172A]">{tc1?.title || tc1?.scenario}</p>
+                      <p className="text-xs text-[#64748B] font-semibold">Steps: {tc1?.steps.join(' → ')}</p>
+                      <p className="text-xs text-[#166534] font-bold">Expected: {tc1?.expectedResults}</p>
                     </div>
 
                     {/* Redundant Case 2 */}
-                    <div className="bg-slate-50 dark:bg-slate-850 border border-border rounded-lg p-3 space-y-1.5">
+                    <div className="bg-[#FDF2F8] border-2 border-pink-200 rounded-xl p-4 space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="font-mono font-bold text-red-600">{dup.testCase2Id} (Redundant)</span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                        <span className="font-mono font-black text-sm text-[#BE185D]">{dup.testCase2Id} (Redundant)</span>
+                        <span className="text-[11px] font-black px-2 py-0.5 rounded-full bg-pink-100 text-[#BE185D] border border-pink-200">
                           {tc2?.priority}
                         </span>
                       </div>
-                      <p className="font-semibold text-foreground">{tc2?.title || tc2?.scenario}</p>
-                      <p className="text-[11px] text-muted">Steps: {tc2?.steps.join(' → ')}</p>
-                      <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium">Expected: {tc2?.expectedResults}</p>
+                      <p className="font-black text-sm text-[#0F172A]">{tc2?.title || tc2?.scenario}</p>
+                      <p className="text-xs text-[#64748B] font-semibold">Steps: {tc2?.steps.join(' → ')}</p>
+                      <p className="text-xs text-[#BE185D] font-bold">Expected: {tc2?.expectedResults}</p>
                     </div>
                   </div>
                 </motion.div>
