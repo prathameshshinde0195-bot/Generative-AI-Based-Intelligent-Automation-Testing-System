@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   FileText, AlertTriangle, Shield, BarChart3,
@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useAppStore } from '../lib/store';
 import { aiAPI } from '../lib/api';
+import type { TestCase } from '../lib/types';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, RadarChart, PolarGrid, PolarAngleAxis, Radar } from 'recharts';
 import * as XLSX from 'xlsx';
 
@@ -79,15 +80,17 @@ export default function Dashboard() {
   }, [projectId]);
 
   // Date filtering
-  const filteredCases = allTestCases.filter(tc => {
-    if (dateRange === 'all') return true;
-    const created = tc.createdAt ? new Date(tc.createdAt).getTime() : Date.now();
-    const now = Date.now();
-    if (dateRange === 'today') return now - created <= 24 * 60 * 60 * 1000;
-    if (dateRange === '7d') return now - created <= 7 * 24 * 60 * 60 * 1000;
-    if (dateRange === '30d') return now - created <= 30 * 24 * 60 * 60 * 1000;
-    return true;
-  });
+  const [currentTime] = useState(() => Date.now());
+  const filteredCases: TestCase[] = useMemo(() => {
+    if (dateRange === 'all') return allTestCases;
+    return allTestCases.filter((tc: TestCase) => {
+      const created = tc.createdAt ? new Date(tc.createdAt).getTime() : currentTime;
+      if (dateRange === 'today') return currentTime - created <= 24 * 60 * 60 * 1000;
+      if (dateRange === '7d') return currentTime - created <= 7 * 24 * 60 * 60 * 1000;
+      if (dateRange === '30d') return currentTime - created <= 30 * 24 * 60 * 60 * 1000;
+      return true;
+    });
+  }, [allTestCases, dateRange, currentTime]);
 
   // Test execution stats
   const passedCases = filteredCases.filter(tc => (tc.executionStatus || '').toLowerCase() === 'pass' || (tc.executionStatus || '').toLowerCase() === 'passed');
@@ -150,13 +153,13 @@ export default function Dashboard() {
               <TrendingUp className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2">
+              <h2 className="text-xl font-black text-black flex items-center gap-2">
                 Testing Intelligence Dashboard
                 <span className="text-xs px-2.5 py-0.5 rounded-full font-black bg-[#F0F9FF] text-[#0284C7] border border-sky-200">
                   Project: {projectId || 'default'}
                 </span>
               </h2>
-              <p className="text-xs font-bold text-[#64748B]">Real-time AI automation analytics, test execution telemetry, and quality radar</p>
+              <p className="text-xs font-black text-black">Real-time AI automation analytics, test execution telemetry, and quality radar</p>
             </div>
           </div>
         </div>

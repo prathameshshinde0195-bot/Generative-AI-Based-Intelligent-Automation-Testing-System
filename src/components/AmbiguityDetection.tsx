@@ -78,7 +78,7 @@ export default function AmbiguityDetection() {
 
   // Batch Accept All
   const handleBatchAccept = () => {
-    let updatedText = srsText;
+    const updatedText = srsText;
     const unresolved = ambiguities.filter(a => !a.resolved && a.rewrittenRequirement);
     if (unresolved.length === 0) {
       toast.info('No pending suggestions to accept');

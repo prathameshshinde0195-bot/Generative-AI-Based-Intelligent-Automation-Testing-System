@@ -14,7 +14,7 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 // ─── 21 Test Data Categories ──────────────────────────────────────────────────
-export const ALL_TEST_DATA_CATEGORIES = [
+const ALL_TEST_DATA_CATEGORIES = [
   { id: 'valid', label: 'Valid Test Data', icon: CheckCircle2, color: 'text-[#16a34a]', bg: 'bg-[#dcfce7]', border: 'border-emerald-200' },
   { id: 'invalid', label: 'Invalid Test Data', icon: XCircle, color: 'text-[#dc2626]', bg: 'bg-[#fee2e2]', border: 'border-red-200' },
   { id: 'positive', label: 'Positive Test Data', icon: CheckCircle2, color: 'text-[#16a34a]', bg: 'bg-[#dcfce7]', border: 'border-emerald-200' },
