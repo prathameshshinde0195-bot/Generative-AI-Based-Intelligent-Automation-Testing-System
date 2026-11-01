@@ -2,7 +2,8 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowUpDown, AlertTriangle, Sliders, Download,
-  Flame, History, Edit2, Info, ChevronDown, ChevronUp, Sparkles
+  Flame, History, Edit2, Info, ChevronDown, ChevronUp, Sparkles,
+  ShieldCheck, Zap
 } from 'lucide-react';
 import { useAppStore } from '../lib/store';
 import { toast } from 'sonner';
@@ -10,8 +11,16 @@ import * as XLSX from 'xlsx';
 import type { TestCase } from '../lib/types';
 
 export default function TestPrioritization() {
-  const { updateTestCase } = useAppStore();
-  const allCases = useAppStore((s) => [...s.testCases, ...s.negativeTestCases]);
+  const { updateTestCase, setActiveFeature } = useAppStore();
+  const testCases = useAppStore((s) => s.testCases) || [];
+  const negativeCases = useAppStore((s) => s.negativeTestCases) || [];
+
+  // Filter out any null or malformed items safely
+  const allCases: TestCase[] = useMemo(() => {
+    return [...testCases, ...negativeCases].filter(
+      (tc): tc is TestCase => Boolean(tc && typeof tc === 'object')
+    );
+  }, [testCases, negativeCases]);
 
   // Weights configuration
   const [showWeightConfig, setShowWeightConfig] = useState(false);
@@ -30,40 +39,78 @@ export default function TestPrioritization() {
 
   // Dynamic priority calculation based on weights
   const prioritizedCases = useMemo(() => {
-    return allCases.map(tc => {
+    return allCases.map((tc, index) => {
+      const tcId = tc.testCaseId || tc.id || `TC-${index + 1}`;
+      const category = (tc.category || '').toLowerCase();
+      const scenario = (tc.scenario || tc.title || '').toLowerCase();
+      const reqId = String(tc.requirementId || '');
+
       // Factors evaluation
-      const hasSecurity = tc.category === 'security' || (tc.scenario || '').toLowerCase().includes('security') || (tc.scenario || '').toLowerCase().includes('auth');
-      const hasBoundary = tc.category === 'boundary' || tc.category === 'negative';
-      const isCriticalReq = (tc.requirementId || '').includes('1') || (tc.requirementId || '').includes('001');
+      const hasSecurity =
+        category === 'security' ||
+        scenario.includes('security') ||
+        scenario.includes('auth') ||
+        scenario.includes('token') ||
+        scenario.includes('encrypt');
+      const hasBoundary =
+        category === 'boundary' ||
+        category === 'negative' ||
+        scenario.includes('boundary') ||
+        scenario.includes('edge') ||
+        scenario.includes('invalid');
+      const isCriticalReq =
+        reqId.includes('1') ||
+        reqId.includes('001') ||
+        reqId.toLowerCase().includes('crit') ||
+        scenario.includes('payment') ||
+        scenario.includes('checkout') ||
+        scenario.includes('login');
 
       // 0-100 scores
-      const businessScore = isCriticalReq ? 90 : 65;
-      const securityScore = hasSecurity ? 95 : 30;
-      const frequencyScore = tc.classification === 'Positive' ? 85 : 45;
-      const regScore = hasBoundary ? 80 : 50;
+      const businessScore = isCriticalReq ? 92 : 65;
+      const securityScore = hasSecurity ? 96 : 35;
+      const frequencyScore = (tc.classification || 'Positive') === 'Positive' ? 85 : 45;
+      const regScore = hasBoundary ? 85 : 50;
 
       // Weighted score
       const totalWeight = businessWeight + securityWeight + frequencyWeight + regressionWeight || 100;
-      const computedScore = Math.round(
-        (businessScore * businessWeight +
-         securityScore * securityWeight +
-         frequencyScore * frequencyWeight +
-         regScore * regressionWeight) / totalWeight
+      const computedScore = Math.min(
+        100,
+        Math.max(
+          10,
+          Math.round(
+            (businessScore * businessWeight +
+              securityScore * securityWeight +
+              frequencyScore * frequencyWeight +
+              regScore * regressionWeight) /
+              totalWeight
+          )
+        )
       );
 
       // Inferred suite
-      const isSmoke = (computedScore >= 75 && tc.classification !== 'Negative') || tc.priority === 'Critical';
-      const isRegression = computedScore >= 50 || hasBoundary;
+      const isSmoke =
+        (computedScore >= 75 && tc.classification !== 'Negative') ||
+        tc.priority === 'Critical' ||
+        isCriticalReq;
+      const isRegression = computedScore >= 45 || hasBoundary;
 
-      // Explanation
+      // Explainable Reasoning
       const reasoning = [
-        hasSecurity ? 'High security/authentication sensitivity' : 'Standard security profile',
-        isCriticalReq ? 'Maps to primary business workflow' : 'Secondary functional path',
-        hasBoundary ? 'Edge/boundary condition requiring regression verification' : 'Core execution path',
+        hasSecurity
+          ? 'High security & authentication sensitivity (Weight: ' + securityWeight + '%)'
+          : 'Standard operational security profile',
+        isCriticalReq
+          ? 'Maps directly to primary business workflow (Weight: ' + businessWeight + '%)'
+          : 'Secondary or auxiliary functional pathway',
+        hasBoundary
+          ? 'Edge/boundary condition critical for regression stability'
+          : 'Nominal happy-path execution flow',
       ];
 
       return {
         ...tc,
+        testCaseId: tcId,
         computedScore,
         isSmoke,
         isRegression,
@@ -74,88 +121,113 @@ export default function TestPrioritization() {
 
   // Apply suite filter
   const displayedCases = useMemo(() => {
-    if (suiteFilter === 'smoke') return prioritizedCases.filter(tc => tc.isSmoke);
-    if (suiteFilter === 'regression') return prioritizedCases.filter(tc => tc.isRegression);
-    if (suiteFilter === 'critical') return prioritizedCases.filter(tc => tc.computedScore >= 75 || tc.priority === 'High' || tc.priority === 'Critical');
+    if (suiteFilter === 'smoke') return prioritizedCases.filter((tc) => tc.isSmoke);
+    if (suiteFilter === 'regression') return prioritizedCases.filter((tc) => tc.isRegression);
+    if (suiteFilter === 'critical')
+      return prioritizedCases.filter(
+        (tc) => tc.computedScore >= 75 || tc.priority === 'High' || tc.priority === 'Critical'
+      );
     return prioritizedCases;
   }, [prioritizedCases, suiteFilter]);
 
-  const highCount = displayedCases.filter(tc => tc.priority === 'High' || tc.priority === 'Critical' || tc.computedScore >= 75).length;
-  const medCount = displayedCases.filter(tc => (tc.priority === 'Medium' || (tc.computedScore >= 45 && tc.computedScore < 75))).length;
-  const lowCount = displayedCases.filter(tc => tc.priority === 'Low' || tc.computedScore < 45).length;
+  const highCount = displayedCases.filter(
+    (tc) => tc.priority === 'High' || tc.priority === 'Critical' || tc.computedScore >= 75
+  ).length;
+  const medCount = displayedCases.filter(
+    (tc) => tc.priority === 'Medium' || (tc.computedScore >= 45 && tc.computedScore < 75)
+  ).length;
+  const lowCount = displayedCases.filter(
+    (tc) => tc.priority === 'Low' || tc.computedScore < 45
+  ).length;
 
   const getPriorityBadge = (p: string, score: number) => {
     if (p === 'Critical' || p === 'High' || score >= 75) {
-      return 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border border-red-200';
+      return 'bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3] font-bold';
     }
     if (p === 'Medium' || score >= 45) {
-      return 'bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200';
+      return 'bg-[#FAF5FF] text-[#7C3AED] border border-[#EDE9FE] font-bold';
     }
-    return 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200';
+    return 'bg-[#F0F9FF] text-[#0284C7] border border-[#E0F2FE] font-bold';
   };
 
   const handleSavePriorityOverride = () => {
     if (!editingTc) return;
-    updateTestCase(editingTc.testCaseId, { priority: overridePriority });
-    toast.success(`Priority for ${editingTc.testCaseId} updated to ${overridePriority}`);
+    const targetId = editingTc.testCaseId || editingTc.id;
+    if (targetId) {
+      updateTestCase(targetId, { priority: overridePriority });
+      toast.success(`Priority for ${targetId} updated to ${overridePriority}`);
+    }
     setEditingTc(null);
   };
 
   const handleExportPlan = () => {
-    const data = displayedCases.map((tc, idx) => ({
-      'Execution Order': idx + 1,
-      'Test Case ID': tc.testCaseId,
-      'Title / Scenario': tc.title || tc.scenario,
-      'Priority': tc.priority,
-      'Computed Score': tc.computedScore,
-      'Suite': tc.isSmoke ? 'Smoke + Regression' : tc.isRegression ? 'Regression' : 'Extended',
-      'Category': tc.category,
-      'Requirement ID': tc.requirementId,
-      'Reasoning': tc.reasoning.join('; '),
-    }));
+    try {
+      const data = displayedCases.map((tc, idx) => ({
+        'Execution Order': idx + 1,
+        'Test Case ID': tc.testCaseId || tc.id || `TC-${idx + 1}`,
+        'Title / Scenario': tc.title || tc.scenario || 'Untitled',
+        'Priority': tc.priority || 'Medium',
+        'Risk & Priority Score': tc.computedScore,
+        'Recommended Suite': tc.isSmoke ? 'Smoke + Regression' : tc.isRegression ? 'Regression' : 'Extended',
+        'Category': tc.category || 'Functional',
+        'Requirement ID': tc.requirementId || 'N/A',
+        'Explainable Factors': (tc.reasoning || []).join('; '),
+      }));
 
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Prioritized Execution Plan');
-    XLSX.writeFile(wb, `Prioritized-Test-Plan-${suiteFilter}-${new Date().toISOString().slice(0, 10)}.xlsx`);
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Prioritized Test Plan');
+      XLSX.writeFile(wb, `Prioritized-Test-Plan-${suiteFilter}-${new Date().toISOString().slice(0, 10)}.xlsx`);
+      toast.success('Prioritized test plan exported to Excel successfully!');
+    } catch (err: any) {
+      toast.error('Failed to export Excel plan: ' + (err?.message || 'Unknown error'));
+    }
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Header Bar */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/40 flex items-center justify-center text-[#0ea5e9]">
-            <ArrowUpDown className="w-5 h-5" />
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#E0F2FE] bg-white p-5 rounded-2xl shadow-sm border"
+      >
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <ArrowUpDown className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
-              Intelligent Test Case Prioritization
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-sky-50 text-[#0ea5e9] dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200">
-                Risk-Based Execution
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
+              Intelligent Test Prioritization
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
+                AI Risk-Ranked
               </span>
             </h2>
-            <p className="text-xs text-[#64748b]">Compute optimal test execution order by business criticality, risk, and regression sensitivity</p>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">
+              Dynamically computes the highest-ROI test execution sequence based on business criticality, regression risk, and security surface.
+            </p>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
+            type="button"
             onClick={() => setShowWeightConfig(!showWeightConfig)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#0f172a] dark:text-white hover:border-[#0ea5e9] text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-white border border-[#CBD5E1] text-[#0F172A] hover:border-[#8B5CF6] hover:text-[#7C3AED] text-xs font-bold shadow-sm transition-all cursor-pointer"
           >
-            <Sliders className="w-3.5 h-3.5 text-[#0ea5e9]" />
-            <span>Config Weights</span>
+            <Sliders className="w-4 h-4 text-[#8B5CF6]" />
+            <span>{showWeightConfig ? 'Hide Weights' : 'Adjust Weights'}</span>
           </button>
 
           <button
+            type="button"
             onClick={handleExportPlan}
             disabled={displayedCases.length === 0}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#0ea5e9] hover:bg-[#0284c7] text-white text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] hover:opacity-95 text-white text-xs font-bold shadow-md shadow-sky-500/20 transition-all disabled:opacity-50 cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export Execution Plan</span>
+            <Download className="w-4 h-4" />
+            <span>Export Plan (.xlsx)</span>
           </button>
         </div>
       </motion.div>
@@ -167,21 +239,23 @@ export default function TestPrioritization() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800/40 rounded-xl p-4 space-y-3"
+            className="bg-white border border-[#EDE9FE] rounded-2xl p-5 space-y-4 shadow-sm"
           >
-            <div className="flex items-center justify-between">
-              <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-[#7c3aed]" />
-                <span>Adjust Priority Scoring Weights</span>
+            <div className="flex items-center justify-between border-b border-[#F3E8FF] pb-3">
+              <h4 className="text-xs font-bold text-[#0F172A] flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#8B5CF6]" />
+                <span>Fine-Tune Prioritization Weighting Matrix</span>
               </h4>
-              <span className="text-[11px] text-muted">Total: {businessWeight + securityWeight + frequencyWeight + regressionWeight}%</span>
+              <span className="text-xs font-bold text-[#8B5CF6] bg-[#FAF5FF] px-2.5 py-1 rounded-lg border border-[#EDE9FE]">
+                Total Weight: {businessWeight + securityWeight + frequencyWeight + regressionWeight}%
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-              <div>
-                <div className="flex justify-between mb-1 font-semibold text-slate-700 dark:text-slate-300">
-                  <span>Business Impact:</span>
-                  <span className="text-[#7c3aed]">{businessWeight}%</span>
+              <div className="p-3 bg-[#F0F9FF] border border-[#E0F2FE] rounded-xl">
+                <div className="flex justify-between mb-1.5 font-bold text-[#0F172A]">
+                  <span className="text-[#0284C7]">Business Impact:</span>
+                  <span className="text-[#0284C7] font-mono">{businessWeight}%</span>
                 </div>
                 <input
                   type="range"
@@ -189,14 +263,15 @@ export default function TestPrioritization() {
                   max="100"
                   value={businessWeight}
                   onChange={(e) => setBusinessWeight(Number(e.target.value))}
-                  className="w-full accent-[#7c3aed]"
+                  className="w-full accent-[#0EA5E9]"
                 />
+                <p className="text-[10px] text-[#64748B] mt-1">Core workflows & mission-critical revenue paths</p>
               </div>
 
-              <div>
-                <div className="flex justify-between mb-1 font-semibold text-slate-700 dark:text-slate-300">
-                  <span>Security Risk:</span>
-                  <span className="text-[#7c3aed]">{securityWeight}%</span>
+              <div className="p-3 bg-[#FAF5FF] border border-[#EDE9FE] rounded-xl">
+                <div className="flex justify-between mb-1.5 font-bold text-[#0F172A]">
+                  <span className="text-[#7C3AED]">Security & Auth Risk:</span>
+                  <span className="text-[#7C3AED] font-mono">{securityWeight}%</span>
                 </div>
                 <input
                   type="range"
@@ -204,14 +279,15 @@ export default function TestPrioritization() {
                   max="100"
                   value={securityWeight}
                   onChange={(e) => setSecurityWeight(Number(e.target.value))}
-                  className="w-full accent-[#7c3aed]"
+                  className="w-full accent-[#8B5CF6]"
                 />
+                <p className="text-[10px] text-[#64748B] mt-1">Authentication, token, data sensitivity</p>
               </div>
 
-              <div>
-                <div className="flex justify-between mb-1 font-semibold text-slate-700 dark:text-slate-300">
-                  <span>Execution Frequency:</span>
-                  <span className="text-[#7c3aed]">{frequencyWeight}%</span>
+              <div className="p-3 bg-[#FDF2F8] border border-[#FCE7F3] rounded-xl">
+                <div className="flex justify-between mb-1.5 font-bold text-[#0F172A]">
+                  <span className="text-[#BE185D]">Execution Frequency:</span>
+                  <span className="text-[#BE185D] font-mono">{frequencyWeight}%</span>
                 </div>
                 <input
                   type="range"
@@ -219,14 +295,15 @@ export default function TestPrioritization() {
                   max="100"
                   value={frequencyWeight}
                   onChange={(e) => setFrequencyWeight(Number(e.target.value))}
-                  className="w-full accent-[#7c3aed]"
+                  className="w-full accent-[#EC4899]"
                 />
+                <p className="text-[10px] text-[#64748B] mt-1">How often users trigger this functional path</p>
               </div>
 
-              <div>
-                <div className="flex justify-between mb-1 font-semibold text-slate-700 dark:text-slate-300">
-                  <span>Regression Sensitivity:</span>
-                  <span className="text-[#7c3aed]">{regressionWeight}%</span>
+              <div className="p-3 bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl">
+                <div className="flex justify-between mb-1.5 font-bold text-[#0F172A]">
+                  <span className="text-[#16A34A]">Regression Sensitivity:</span>
+                  <span className="text-[#16A34A] font-mono">{regressionWeight}%</span>
                 </div>
                 <input
                   type="range"
@@ -234,36 +311,38 @@ export default function TestPrioritization() {
                   max="100"
                   value={regressionWeight}
                   onChange={(e) => setRegressionWeight(Number(e.target.value))}
-                  className="w-full accent-[#7c3aed]"
+                  className="w-full accent-[#16A34A]"
                 />
+                <p className="text-[10px] text-[#64748B] mt-1">Boundary, negative, & change-prone areas</p>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Suite Filters & Summary Cards */}
-      <div className="space-y-3">
+      {/* Suite Filters & Summary KPI Cards */}
+      <div className="space-y-4">
         {/* Suite Selection Tabs */}
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-slate-800/60 border border-border rounded-xl">
-          <div className="flex flex-wrap items-center gap-1.5 text-xs">
-            <span className="font-semibold text-muted text-[11px] uppercase mr-1">Target Suite:</span>
+        <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white border border-[#E2E8F0] rounded-2xl shadow-sm">
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <span className="font-bold text-[#64748B] text-[11px] uppercase mr-1">Target Suite:</span>
             {[
               { id: 'all', label: 'All Prioritized Cases', icon: ArrowUpDown },
               { id: 'smoke', label: 'Suggested Smoke Suite', icon: Flame },
               { id: 'regression', label: 'Regression Suite', icon: History },
               { id: 'critical', label: 'Critical Risk Only', icon: AlertTriangle },
-            ].map(tab => {
+            ].map((tab) => {
               const Icon = tab.icon;
               const isActive = suiteFilter === tab.id;
               return (
                 <button
                   key={tab.id}
+                  type="button"
                   onClick={() => setSuiteFilter(tab.id as any)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-[#7c3aed] text-white shadow-xs'
-                      : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-border hover:border-border-bright'
+                      ? 'bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] text-white shadow-md shadow-sky-500/20'
+                      : 'bg-white hover:bg-slate-50 text-[#64748B] hover:text-[#0F172A] border border-[#CBD5E1]'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -273,43 +352,81 @@ export default function TestPrioritization() {
             })}
           </div>
 
-          <span className="text-xs text-muted font-medium">
-            Showing {displayedCases.length} of {allCases.length} test cases
+          <span className="text-xs text-[#64748B] font-semibold bg-[#F0F9FF] px-3 py-1.5 rounded-xl border border-sky-100">
+            Showing <strong className="text-[#0284C7]">{displayedCases.length}</strong> of {allCases.length} test cases
           </span>
         </div>
 
-        {/* Priority KPI breakdown */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {[
-            { label: 'High Priority / Critical', count: highCount, color: 'text-red-600', bg: 'bg-red-50 dark:bg-red-950/30 border-red-200' },
-            { label: 'Medium Priority', count: medCount, color: 'text-amber-600', bg: 'bg-amber-50 dark:bg-amber-950/30 border-amber-200' },
-            { label: 'Low Priority', count: lowCount, color: 'text-[#16a34a]', bg: 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200' },
-          ].map(s => (
-            <div key={s.label} className={`${s.bg} rounded-xl px-4 py-3 border shadow-xs flex items-center justify-between`}>
-              <div>
-                <p className="text-[10px] text-muted uppercase tracking-wider font-bold">{s.label}</p>
-                <p className={`text-2xl font-black ${s.color} mt-0.5`}>{s.count}</p>
+        {/* Priority KPI breakdown Cards in White, Sky Blue, Purple, and Light Pink */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white border border-[#FCE7F3] rounded-2xl p-4 shadow-sm flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#FDF2F8] text-[#BE185D] flex items-center justify-center font-bold">
+                <Flame className="w-5 h-5" />
               </div>
-              <span className="text-xs text-muted font-medium">
-                {displayedCases.length > 0 ? `${Math.round((s.count / displayedCases.length) * 100)}%` : '0%'}
-              </span>
+              <div>
+                <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold">High / Critical Priority</p>
+                <p className="text-2xl font-black text-[#BE185D] mt-0.5">{highCount}</p>
+              </div>
             </div>
-          ))}
+            <span className="text-xs font-bold text-[#BE185D] bg-[#FDF2F8] px-2.5 py-1 rounded-lg border border-[#FCE7F3]">
+              {displayedCases.length > 0 ? `${Math.round((highCount / displayedCases.length) * 100)}%` : '0%'}
+            </span>
+          </div>
+
+          <div className="bg-white border border-[#EDE9FE] rounded-2xl p-4 shadow-sm flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#FAF5FF] text-[#7C3AED] flex items-center justify-center font-bold">
+                <Zap className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold">Medium Priority</p>
+                <p className="text-2xl font-black text-[#7C3AED] mt-0.5">{medCount}</p>
+              </div>
+            </div>
+            <span className="text-xs font-bold text-[#7C3AED] bg-[#FAF5FF] px-2.5 py-1 rounded-lg border border-[#EDE9FE]">
+              {displayedCases.length > 0 ? `${Math.round((medCount / displayedCases.length) * 100)}%` : '0%'}
+            </span>
+          </div>
+
+          <div className="bg-white border border-[#E0F2FE] rounded-2xl p-4 shadow-sm flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#F0F9FF] text-[#0284C7] flex items-center justify-center font-bold">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-[10px] text-[#64748B] uppercase tracking-wider font-bold">Low Priority</p>
+                <p className="text-2xl font-black text-[#0284C7] mt-0.5">{lowCount}</p>
+              </div>
+            </div>
+            <span className="text-xs font-bold text-[#0284C7] bg-[#F0F9FF] px-2.5 py-1 rounded-lg border border-sky-100">
+              {displayedCases.length > 0 ? `${Math.round((lowCount / displayedCases.length) * 100)}%` : '0%'}
+            </span>
+          </div>
         </div>
       </div>
 
       {displayedCases.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-slate-50 dark:bg-slate-800/40 border border-dashed border-border rounded-2xl">
-          <ArrowUpDown className="w-16 h-16 text-slate-300 mb-3" />
-          <h3 className="text-base font-bold text-foreground">No Test Cases Available</h3>
-          <p className="text-xs text-muted mt-1 max-w-md text-center">
-            Generate test cases in the SRS Input module to compute intelligent execution priorities.
+        <div className="flex flex-col items-center justify-center py-16 bg-white border border-dashed border-[#CBD5E1] rounded-3xl p-8 text-center shadow-sm">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E0F2FE] via-[#FAF5FF] to-[#FDF2F8] text-[#0EA5E9] flex items-center justify-center mb-4">
+            <ArrowUpDown className="w-8 h-8" />
+          </div>
+          <h3 className="text-lg font-bold text-[#0F172A]">No Prioritized Test Cases Yet</h3>
+          <p className="text-xs text-[#64748B] mt-1 max-w-md">
+            Generate test cases in the SRS Input & Generator module to automatically compute risk scores, smoke test tags, and regression ranking.
           </p>
+          <button
+            type="button"
+            onClick={() => setActiveFeature('srs-input')}
+            className="mt-5 px-5 py-2.5 bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] text-white font-bold text-xs rounded-xl shadow-md transition-all hover:opacity-95 cursor-pointer"
+          >
+            Go to SRS Input & Generator
+          </button>
         </div>
       ) : (
         /* Prioritized Test Execution Table */
-        <div className="bg-white dark:bg-slate-800 border border-border rounded-xl overflow-hidden shadow-xs">
-          <div className="grid grid-cols-[60px_100px_1fr_110px_130px_110px_90px_60px] gap-2 px-4 py-3 bg-slate-50 dark:bg-slate-800/80 text-[10px] font-bold text-muted uppercase tracking-wider border-b border-border">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl overflow-hidden shadow-sm">
+          <div className="grid grid-cols-[60px_110px_1fr_110px_140px_120px_100px_70px] gap-2 px-4 py-3 bg-[#F8FAFC] text-[10px] font-bold text-[#64748B] uppercase tracking-wider border-b border-[#E2E8F0]">
             <span>Rank</span>
             <span>Test ID</span>
             <span>Scenario / Title</span>
@@ -317,81 +434,93 @@ export default function TestPrioritization() {
             <span>Risk Score</span>
             <span>Suggested Suite</span>
             <span>Category</span>
-            <span className="text-right">Actions</span>
+            <span className="text-right">Action</span>
           </div>
 
-          <div className="divide-y divide-border/60 max-h-[560px] overflow-y-auto">
+          <div className="divide-y divide-[#F1F5F9] max-h-[580px] overflow-y-auto">
             {displayedCases.map((tc, idx) => {
               const isExpanded = expandedTcId === tc.testCaseId;
+              const score = tc.computedScore;
+
               return (
-                <div key={tc.id || tc.testCaseId} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
-                  <div className="grid grid-cols-[60px_100px_1fr_110px_130px_110px_90px_60px] gap-2 px-4 py-3 items-center text-xs">
+                <div key={tc.testCaseId || idx} className="hover:bg-slate-50/70 transition-colors">
+                  <div className="grid grid-cols-[60px_110px_1fr_110px_140px_120px_100px_70px] gap-2 px-4 py-3.5 items-center text-xs">
                     {/* Rank */}
-                    <span className="font-mono font-bold text-[#7c3aed]">#{idx + 1}</span>
+                    <span className="font-mono font-bold text-[#8B5CF6] bg-[#FAF5FF] w-7 h-7 rounded-lg flex items-center justify-center border border-[#EDE9FE]">
+                      #{idx + 1}
+                    </span>
 
                     {/* Test ID */}
-                    <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{tc.testCaseId}</span>
+                    <span className="font-mono font-bold text-[#0F172A]">{tc.testCaseId}</span>
 
                     {/* Scenario */}
                     <div className="min-w-0 pr-2">
-                      <p className="font-medium text-slate-800 dark:text-slate-200 truncate">{tc.title || tc.scenario}</p>
-                      <p className="text-[10px] text-muted truncate">Req: {tc.requirementId}</p>
+                      <p className="font-semibold text-[#0F172A] truncate">{tc.title || tc.scenario || 'Untitled Case'}</p>
+                      <p className="text-[10px] text-[#64748B] truncate">Req: {tc.requirementId || 'Unlinked'}</p>
                     </div>
 
                     {/* Priority Badge */}
                     <div>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${getPriorityBadge(tc.priority, tc.computedScore)}`}>
+                      <span className={`text-[10px] px-2.5 py-0.5 rounded-full ${getPriorityBadge(tc.priority, score)}`}>
                         {tc.priority}
                       </span>
                     </div>
 
                     {/* Risk / Priority Score Bar */}
                     <div className="flex items-center gap-2">
-                      <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                      <div className="flex-1 h-2 bg-[#F1F5F9] rounded-full overflow-hidden border border-[#E2E8F0]">
                         <div
                           className={`h-full rounded-full ${
-                            tc.computedScore >= 75 ? 'bg-red-500' : tc.computedScore >= 45 ? 'bg-amber-500' : 'bg-emerald-500'
+                            score >= 75
+                              ? 'bg-gradient-to-r from-[#EC4899] to-[#BE185D]'
+                              : score >= 45
+                              ? 'bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED]'
+                              : 'bg-gradient-to-r from-[#0EA5E9] to-[#0284C7]'
                           }`}
-                          style={{ width: `${tc.computedScore}%` }}
+                          style={{ width: `${score}%` }}
                         />
                       </div>
-                      <span className="font-mono font-bold text-xs">{tc.computedScore}</span>
+                      <span className="font-mono font-bold text-xs text-[#0F172A]">{score}</span>
                     </div>
 
                     {/* Suggested Suite */}
                     <div>
                       {tc.isSmoke ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-300 border border-orange-200">
-                          <Flame className="w-3 h-3" /> Smoke
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
+                          <Flame className="w-3 h-3 text-[#BE185D]" /> Smoke
                         </span>
                       ) : tc.isRegression ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200">
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-lg bg-[#F0F9FF] text-[#0284C7] border border-[#E0F2FE]">
                           Regression
                         </span>
                       ) : (
-                        <span className="text-[10px] text-muted">Extended</span>
+                        <span className="text-[10px] font-semibold text-[#64748B] bg-slate-100 px-2 py-0.5 rounded-lg">
+                          Extended
+                        </span>
                       )}
                     </div>
 
                     {/* Category */}
-                    <span className="text-muted capitalize text-[11px] truncate">{tc.category}</span>
+                    <span className="text-[#64748B] capitalize text-[11px] font-medium truncate">{tc.category || 'Functional'}</span>
 
-                    {/* Action */}
+                    {/* Actions */}
                     <div className="flex items-center justify-end gap-1">
                       <button
+                        type="button"
                         onClick={() => {
                           setEditingTc(tc);
                           setOverridePriority(tc.priority as any);
                         }}
-                        className="p-1 rounded text-muted hover:text-[#7c3aed] transition-colors"
+                        className="p-1.5 rounded-lg text-[#64748B] hover:text-[#8B5CF6] hover:bg-[#FAF5FF] transition-all cursor-pointer"
                         title="Override Priority"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => setExpandedTcId(isExpanded ? null : tc.testCaseId)}
-                        className="p-1 rounded text-muted hover:text-foreground transition-colors"
-                        title="View Reasoning"
+                        className="p-1.5 rounded-lg text-[#64748B] hover:text-[#0EA5E9] hover:bg-[#F0F9FF] transition-all cursor-pointer"
+                        title="View Explainable Factors"
                       >
                         {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                       </button>
@@ -400,17 +529,21 @@ export default function TestPrioritization() {
 
                   {/* Expandable Reasoning Card */}
                   {isExpanded && (
-                    <div className="px-4 py-3 bg-purple-50/40 dark:bg-purple-950/20 border-t border-border/50 text-xs space-y-1.5">
-                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#7c3aed] uppercase">
-                        <Info className="w-3.5 h-3.5" />
-                        <span>Explainable Priority Factors:</span>
+                    <div className="px-5 py-3.5 bg-[#FAF5FF] border-t border-[#EDE9FE] text-xs space-y-2">
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#7C3AED] uppercase tracking-wider">
+                        <Info className="w-3.5 h-3.5 text-[#8B5CF6]" />
+                        <span>Explainable AI Risk Factors:</span>
                       </div>
-                      <ul className="list-disc list-inside space-y-0.5 text-slate-700 dark:text-slate-300 text-[11px]">
-                        {tc.reasoning.map((r, i) => (
+                      <ul className="list-disc list-inside space-y-1 text-[#0F172A] text-xs">
+                        {(tc.reasoning || []).map((r, i) => (
                           <li key={i}>{r}</li>
                         ))}
-                        <li>Preconditions: {tc.preconditions || 'None specified'}</li>
-                        <li>Expected Result: {tc.expectedResults}</li>
+                        <li>
+                          <strong>Preconditions:</strong> {tc.preconditions || 'Standard environment setup'}
+                        </li>
+                        <li>
+                          <strong>Expected Result:</strong> {tc.expectedResults || 'System behaves according to specification'}
+                        </li>
                       </ul>
                     </div>
                   )}
@@ -423,33 +556,45 @@ export default function TestPrioritization() {
 
       {/* Manual Priority Override Modal */}
       {editingTc && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-800 border border-border rounded-2xl max-w-md w-full p-5 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between pb-2 border-b border-border">
-              <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                <Edit2 className="w-4 h-4 text-[#7c3aed]" />
-                <span>Override Priority: {editingTc.testCaseId}</span>
+        <div className="fixed inset-0 z-50 bg-slate-900/30 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#E2E8F0] rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+              <h3 className="text-base font-bold text-[#0F172A] flex items-center gap-2">
+                <Edit2 className="w-4 h-4 text-[#8B5CF6]" />
+                <span>Adjust Priority: {editingTc.testCaseId}</span>
               </h3>
-              <button onClick={() => setEditingTc(null)} className="text-muted hover:text-foreground">
+              <button
+                type="button"
+                onClick={() => setEditingTc(null)}
+                className="text-slate-400 hover:text-slate-700 transition-colors cursor-pointer text-lg"
+              >
                 ✕
               </button>
             </div>
 
-            <p className="text-xs text-muted">
-              Adjust priority classification for <span className="font-semibold text-foreground">{editingTc.scenario}</span>.
+            <p className="text-xs text-[#64748B]">
+              Override priority ranking for{' '}
+              <strong className="text-[#0F172A]">{editingTc.scenario || editingTc.title}</strong>:
             </p>
 
-            <div className="space-y-1">
-              <label className="text-[11px] font-bold text-muted uppercase">Select Priority</label>
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">
+                Select New Priority
+              </label>
               <div className="grid grid-cols-4 gap-2">
-                {(['Critical', 'High', 'Medium', 'Low'] as const).map(p => (
+                {(['Critical', 'High', 'Medium', 'Low'] as const).map((p) => (
                   <button
                     key={p}
+                    type="button"
                     onClick={() => setOverridePriority(p)}
-                    className={`py-2 text-xs font-semibold rounded-lg border transition-colors ${
+                    className={`py-2.5 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                       overridePriority === p
-                        ? 'bg-[#7c3aed] text-white border-[#7c3aed]'
-                        : 'bg-surface border-border text-foreground hover:border-[#7c3aed]'
+                        ? p === 'Critical' || p === 'High'
+                          ? 'bg-[#FDF2F8] text-[#BE185D] border-[#FCE7F3] shadow-xs'
+                          : p === 'Medium'
+                          ? 'bg-[#FAF5FF] text-[#7C3AED] border-[#EDE9FE] shadow-xs'
+                          : 'bg-[#F0F9FF] text-[#0284C7] border-[#E0F2FE] shadow-xs'
+                        : 'bg-white border-[#E2E8F0] text-[#64748B] hover:border-[#8B5CF6]'
                     }`}
                   >
                     {p}
@@ -458,16 +603,18 @@ export default function TestPrioritization() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#E2E8F0]">
               <button
+                type="button"
                 onClick={() => setEditingTc(null)}
-                className="px-3 py-1.5 text-xs rounded-lg border border-border text-muted hover:text-foreground"
+                className="px-4 py-2 text-xs font-bold rounded-xl border border-[#CBD5E1] text-[#64748B] hover:text-[#0F172A] cursor-pointer"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleSavePriorityOverride}
-                className="px-4 py-1.5 text-xs rounded-lg bg-[#7c3aed] text-white font-semibold hover:bg-[#6d28d9]"
+                className="px-5 py-2 text-xs rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#7C3AED] hover:opacity-95 text-white font-bold shadow-md cursor-pointer"
               >
                 Save Priority
               </button>

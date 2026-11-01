@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Moon, Sun } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import SRSInput from './components/SRSInput';
@@ -63,17 +62,29 @@ const featureTitles: Record<string, string> = {
   'chat-chatbot': 'Conversational Test Case Chatbot',
 };
 
+import ErrorBoundary from './components/ErrorBoundary';
+
 export default function App() {
-  const { activeFeature, theme, setTheme, isAuthenticated, setIsAuthenticated, setUser, setToken } = useAppStore();
+  const { activeFeature, setActiveFeature, isAuthenticated, setIsAuthenticated, setUser, setToken } = useAppStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    
-    // Fallback check in case zustand rehydration needs help (though persist usually handles it)
+    // Ensure document never has pitch-black dark mode class
+    document.documentElement.classList.remove('dark');
+
+    const handleNavigateDashboard = () => {
+      setActiveFeature('dashboard');
+    };
+    window.addEventListener('app:navigate-dashboard', handleNavigateDashboard);
+    return () => window.removeEventListener('app:navigate-dashboard', handleNavigateDashboard);
+  }, [setActiveFeature]);
+
+  useEffect(() => {
+    // Fallback check in case zustand rehydration needs help
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
-    
+
     if (token && storedUser && !isAuthenticated) {
       try {
         const parsedUser = JSON.parse(storedUser);
@@ -88,59 +99,55 @@ export default function App() {
     }
   }, [isAuthenticated, setIsAuthenticated, setUser, setToken]);
 
-  useEffect(() => {
-    // Apply theme
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
-
   if (!mounted) {
     return null;
   }
 
   if (!isAuthenticated) {
     return (
-      <>
+      <ErrorBoundary fallbackTitle="Authentication Screen">
         <Toaster richColors position="top-right" />
         <LoginPage />
-      </>
+      </ErrorBoundary>
     );
   }
 
   const ActiveComponent = featureComponents[activeFeature] || Dashboard;
 
   return (
-    <div className={`flex h-screen bg-white dark:bg-slate-900 transition-colors overflow-hidden ${theme === 'dark' ? 'dark' : ''}`}>
+    <div className="flex h-screen bg-white transition-colors overflow-hidden">
       <Toaster richColors position="top-right" />
       <Sidebar />
-      <main className="flex-1 overflow-hidden flex flex-col bg-[#f0f9ff] dark:bg-slate-900">
-        {/* Header with theme toggle */}
-        <div className="relative flex items-center justify-between px-6 py-4 bg-white dark:bg-slate-800 border-b border-[#e2e8f0] dark:border-slate-700 shadow-2xs">
-          <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-[#0f172a] dark:text-white">
+      <main className="flex-1 overflow-hidden flex flex-col bg-[#F0F9FF]">
+        {/* Header with White, Sky Blue, Purple, and Light Pink accents */}
+        <div className="relative flex items-center justify-between px-6 py-3.5 bg-white border-b border-[#E0F2FE] shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] animate-pulse" />
+            <h2 className="text-base font-bold text-[#0F172A] tracking-tight">
               {featureTitles[activeFeature] || 'Testing Intelligence Dashboard'}
             </h2>
+            <span className="hidden sm:inline-flex text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
+              Gen AI Engine v2.4
+            </span>
           </div>
+
           <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-[#FAF5FF] border border-[#EDE9FE] text-[11px] text-[#7C3AED] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#8B5CF6]" />
+              Enterprise Testing Active
+            </div>
             <ProjectSwitcher />
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 hover:bg-[#f0f9ff] dark:hover:bg-slate-700 rounded-lg transition"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? (
-                <Sun className="w-5 h-5 text-yellow-400" />
-              ) : (
-                <Moon className="w-5 h-5 text-slate-600" />
-              )}
-            </button>
           </div>
         </div>
-        <div className="flex-1 overflow-auto bg-[#f0f9ff] dark:bg-slate-900">
-          <ActiveComponent />
+
+        {/* Feature Component Rendered with ErrorBoundary */}
+        <div className="flex-1 overflow-auto bg-[#F0F9FF]">
+          <ErrorBoundary
+            fallbackTitle={`${featureTitles[activeFeature] || 'Feature'} View`}
+            onReset={() => setActiveFeature('dashboard')}
+          >
+            <ActiveComponent />
+          </ErrorBoundary>
         </div>
       </main>
     </div>

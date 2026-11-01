@@ -95,11 +95,11 @@ export default function Dashboard() {
   const blockedCases = filteredCases.filter(tc => (tc.executionStatus || '').toLowerCase() === 'blocked');
   const notRunCases = filteredCases.filter(tc => !tc.executionStatus || (tc.executionStatus || '').toLowerCase() === 'not run');
 
-  // Priority chart data
+  // Priority chart data with White, Sky Blue, Purple, Light Pink palette
   const priorityData = [
-    { name: 'Critical/High', value: filteredCases.filter(tc => tc.priority === 'High' || tc.priority === 'Critical').length, color: '#dc2626' },
-    { name: 'Medium', value: filteredCases.filter(tc => tc.priority === 'Medium').length, color: '#f59e0b' },
-    { name: 'Low', value: filteredCases.filter(tc => tc.priority === 'Low').length, color: '#16a34a' },
+    { name: 'Critical/High', value: filteredCases.filter(tc => tc.priority === 'High' || tc.priority === 'Critical').length, color: '#EC4899' },
+    { name: 'Medium', value: filteredCases.filter(tc => tc.priority === 'Medium').length, color: '#8B5CF6' },
+    { name: 'Low', value: filteredCases.filter(tc => tc.priority === 'Low').length, color: '#0EA5E9' },
   ].filter(d => d.value > 0);
 
   // Category breakdown
@@ -141,7 +141,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Top Header Bar */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
         <div>
@@ -255,33 +255,33 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 rounded-lg p-3 flex items-center gap-3">
-            <CheckCircle2 className="w-5 h-5 text-[#16a34a]" />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+          <div className="bg-[#F0FDF4] border border-[#DCFCE7] rounded-xl p-3.5 flex items-center gap-3">
+            <CheckCircle2 className="w-5 h-5 text-[#16A34A]" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-emerald-800 dark:text-emerald-400">Passed</p>
-              <p className="text-xl font-extrabold text-[#16a34a]">{passedCases.length}</p>
+              <p className="text-[10px] uppercase font-bold text-[#166534]">Passed</p>
+              <p className="text-xl font-extrabold text-[#16A34A]">{passedCases.length}</p>
             </div>
           </div>
-          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40 rounded-lg p-3 flex items-center gap-3">
-            <XCircle className="w-5 h-5 text-[#dc2626]" />
+          <div className="bg-[#FDF2F8] border border-[#FCE7F3] rounded-xl p-3.5 flex items-center gap-3">
+            <XCircle className="w-5 h-5 text-[#EC4899]" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-red-800 dark:text-red-400">Failed</p>
-              <p className="text-xl font-extrabold text-[#dc2626]">{failedCases.length}</p>
+              <p className="text-[10px] uppercase font-bold text-[#BE185D]">Failed</p>
+              <p className="text-xl font-extrabold text-[#BE185D]">{failedCases.length}</p>
             </div>
           </div>
-          <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 rounded-lg p-3 flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-500" />
+          <div className="bg-[#FAF5FF] border border-[#EDE9FE] rounded-xl p-3.5 flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 text-[#8B5CF6]" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-amber-800 dark:text-amber-400">Blocked</p>
-              <p className="text-xl font-extrabold text-amber-600">{blockedCases.length}</p>
+              <p className="text-[10px] uppercase font-bold text-[#7C3AED]">Blocked</p>
+              <p className="text-xl font-extrabold text-[#7C3AED]">{blockedCases.length}</p>
             </div>
           </div>
-          <div className="bg-slate-50 dark:bg-slate-800/50 border border-border rounded-lg p-3 flex items-center gap-3">
-            <Clock className="w-5 h-5 text-slate-400" />
+          <div className="bg-[#F0F9FF] border border-[#E0F2FE] rounded-xl p-3.5 flex items-center gap-3">
+            <Clock className="w-5 h-5 text-[#0EA5E9]" />
             <div>
-              <p className="text-[10px] uppercase font-bold text-slate-600 dark:text-slate-400">Not Executed</p>
-              <p className="text-xl font-extrabold text-slate-700 dark:text-slate-200">{notRunCases.length}</p>
+              <p className="text-[10px] uppercase font-bold text-[#0284C7]">Not Executed</p>
+              <p className="text-xl font-extrabold text-[#0284C7]">{notRunCases.length}</p>
             </div>
           </div>
         </div>

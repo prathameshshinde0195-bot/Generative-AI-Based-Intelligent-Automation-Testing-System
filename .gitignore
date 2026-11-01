@@ -29,3 +29,5 @@ server/powershell.cmd
 .vercel
 server/backups/
 backups/
+
+.vercel

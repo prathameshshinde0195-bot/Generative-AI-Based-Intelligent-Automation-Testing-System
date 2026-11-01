@@ -107,21 +107,21 @@ export default function CoverageAnalyzer() {
   const passesGate = activeCoverage.coveragePercentage >= coverageGate;
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/40 flex items-center justify-center text-[#0ea5e9]">
-            <BarChart3 className="w-5 h-5" />
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#E0F2FE] bg-white p-5 rounded-2xl shadow-sm border">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <BarChart3 className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
               Test Coverage Analyzer & Gap Detector
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-sky-50 text-[#0ea5e9] dark:bg-sky-950/40 dark:text-sky-300 border border-sky-200">
-                Quality Gate
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#F0F9FF] text-[#0284C7] border border-[#E0F2FE]">
+                Traceability Audit
               </span>
             </h2>
-            <p className="text-xs text-[#64748b]">Verify requirement and execution test coverage with missing scenario gap alerts</p>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">Verify requirement and execution test coverage with missing scenario gap alerts</p>
           </div>
         </div>
 

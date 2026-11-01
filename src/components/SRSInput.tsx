@@ -414,19 +414,24 @@ export default function SRSInput() {
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900 transition-colors">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Header Banner */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-[#e0f2fe] dark:bg-sky-950/50 text-[#0ea5e9]">
-              <FileText className="w-6 h-6" />
-            </span>
-            SRS Input & Intelligent Test Case Generator
-          </h2>
-          <p className="text-sm text-[#64748b] dark:text-slate-400 mt-1">
-            Analyze requirements, select target test categories, and generate comprehensive, grounded test suites with automated traceability.
-          </p>
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl shadow-sm border border-[#E0F2FE]">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <FileText className="w-6 h-6" />
+          </div>
+          <div>
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
+              SRS Input & Intelligent Generator
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
+                AI-Grounded
+              </span>
+            </h2>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">
+              Analyze requirements, select target test categories, and generate comprehensive, grounded test suites with automated traceability.
+            </p>
+          </div>
         </div>
 
         {/* Global Toolbar buttons */}

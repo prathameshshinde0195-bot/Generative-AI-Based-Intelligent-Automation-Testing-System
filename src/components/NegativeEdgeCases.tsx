@@ -93,34 +93,35 @@ export default function NegativeEdgeCases() {
 
   const getCategoryBadge = (cat: string) => {
     const c = (cat || '').toLowerCase();
-    if (c === 'boundary') return 'bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border-amber-200';
-    if (c === 'negative') return 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border-red-200';
-    if (c === 'security') return 'bg-purple-50 text-[#7c3aed] dark:bg-purple-950/40 dark:text-purple-300 border-purple-200';
-    return 'bg-sky-50 text-sky-800 dark:bg-sky-950/40 dark:text-sky-300 border-sky-200';
+    if (c === 'boundary') return 'bg-[#F0F9FF] text-[#0284C7] border border-[#E0F2FE] font-bold';
+    if (c === 'negative') return 'bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3] font-bold';
+    if (c === 'security') return 'bg-[#FAF5FF] text-[#7C3AED] border border-[#EDE9FE] font-bold';
+    return 'bg-[#F0F9FF] text-[#0284C7] border border-[#E0F2FE] font-bold';
   };
 
   return (
-    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#f0f9ff] dark:bg-slate-900">
+    <div className="p-6 space-y-6 overflow-y-auto h-full bg-[#F0F9FF]">
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#e2e8f0] dark:border-slate-800">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center text-red-600">
-            <ShieldAlert className="w-5 h-5" />
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#E0F2FE] bg-white p-5 rounded-2xl shadow-sm border">
+        <div className="flex items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0EA5E9] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center text-white shadow-md shadow-sky-500/10">
+            <ShieldAlert className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-[#0f172a] dark:text-white flex items-center gap-2">
-              Negative & Boundary Edge Case Generator
-              <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300 border border-red-200">
-                Adversarial & Fault Injection
+            <h2 className="text-xl font-black text-[#0F172A] flex items-center gap-2 tracking-tight">
+              Negative & Boundary Edge Cases
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full font-bold bg-[#FDF2F8] text-[#BE185D] border border-[#FCE7F3]">
+                Fault Injection
               </span>
             </h2>
-            <p className="text-xs text-[#64748b]">Generate boundary limits, missing/null parameters, session timeout, role violations, and security payloads</p>
+            <p className="text-xs text-[#64748B] mt-0.5 font-medium">Generate boundary limits, missing/null parameters, session timeout, role violations, and security payloads</p>
           </div>
         </div>
 
         {/* Global actions */}
         <div className="flex flex-wrap items-center gap-2">
           <button
+            type="button"
             onClick={handleGenerateEdgeCases}
             disabled={isGenerating}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white dark:bg-slate-800 border border-[#e2e8f0] dark:border-slate-700 text-[#0f172a] dark:text-white hover:border-[#0ea5e9] text-xs font-semibold shadow-xs transition-colors"
