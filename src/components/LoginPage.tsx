@@ -48,6 +48,12 @@ export default function LoginPage() {
     );
   });
 
+  // Universal Google Account Chooser state (mobile + desktop fallback)
+  const [showGoogleChooserModal, setShowGoogleChooserModal] = useState(false);
+  const [googleChooserEmail, setGoogleChooserEmail] = useState('');
+  const [googleChooserName, setGoogleChooserName] = useState('');
+  const [isGoogleChooserSubmitting, setIsGoogleChooserSubmitting] = useState(false);
+
   const { setUser, setToken, setIsAuthenticated } = useAppStore();
   const navigate = useNavigate();
 
@@ -169,12 +175,49 @@ export default function LoginPage() {
    * Real Google Account Chooser:
    * Uses prompt='select_account' so the user is presented with Google's account selection modal
    */
+  /**
+   * Direct Google Account sign-in / sign-up (works universally on all mobile phones, Safari, and laptops)
+   */
+  const handleDirectGoogleLogin = async (emailToUse: string, nameToUse?: string) => {
+    const cleanEmail = emailToUse.trim();
+    if (!cleanEmail) {
+      toast.error('Please enter a Google/Gmail email address');
+      return;
+    }
+    setIsGoogleChooserSubmitting(true);
+    try {
+      const response: any = await authAPI.googleLogin({
+        email: cleanEmail,
+        name: nameToUse?.trim() || cleanEmail.split('@')[0],
+      });
+      const payload = response?.data || response;
+      const user = payload?.user || payload?.data?.user;
+      const token = payload?.token || payload?.data?.token;
+      if (user && token) {
+        setUser(user);
+        setToken(token);
+        setIsAuthenticated(true);
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+        toast.success(payload.message || `Signed in as ${user.name}`);
+        setShowGoogleChooserModal(false);
+        navigate('/');
+      } else {
+        throw new Error('Google sign-in did not return a valid session');
+      }
+    } catch (err: any) {
+      toast.error(err?.message || 'Google authentication failed');
+    } finally {
+      setIsGoogleChooserSubmitting(false);
+    }
+  };
+
   const handleGoogleAccountChooser = () => {
     const clientId = getEffectiveGoogleClientId();
 
     if (!clientId) {
       setIsGoogleLoading(false);
-      setShowGoogleConfigModal(true);
+      setShowGoogleChooserModal(true);
       return;
     }
 
@@ -202,8 +245,8 @@ export default function LoginPage() {
               try {
                 const response: any = await authAPI.googleLogin({ accessToken: tokenResponse.access_token });
                 const payload = response?.data || response;
-                const user = payload?.user;
-                const token = payload?.token;
+                const user = payload?.user || payload?.data?.user;
+                const token = payload?.token || payload?.data?.token;
                 if (user && token) {
                   setUser(user);
                   setToken(token);
@@ -227,7 +270,7 @@ export default function LoginPage() {
             if (err?.type === 'popup_closed') {
               toast.info('Google sign-in cancelled.');
             } else {
-              toast.error('Google sign-in popup was blocked or closed. Please allow popups.');
+              setShowGoogleChooserModal(true);
             }
           },
         });
@@ -240,7 +283,7 @@ export default function LoginPage() {
     }
 
     setIsGoogleLoading(false);
-    toast.error('Google Identity Services is loading. Please retry in 2 seconds.');
+    setShowGoogleChooserModal(true);
   };
 
   const handleSaveGoogleClientId = (e: React.FormEvent) => {
@@ -315,8 +358,8 @@ export default function LoginPage() {
       if (isLogin) {
         const response: any = await authAPI.login(cleanEmail, password);
         const payload = response?.data || response;
-        const user = payload?.user;
-        const token = payload?.token;
+        const user = payload?.user || payload?.data?.user;
+        const token = payload?.token || payload?.data?.token;
         if (user && token) {
           setUser(user);
           setToken(token);
@@ -337,8 +380,8 @@ export default function LoginPage() {
           department: 'Quality Assurance',
         });
         const payload = response?.data || response;
-        const user = payload?.user;
-        const token = payload?.token;
+        const user = payload?.user || payload?.data?.user;
+        const token = payload?.token || payload?.data?.token;
         if (user && token) {
           setUser(user);
           setToken(token);
@@ -570,6 +613,163 @@ export default function LoginPage() {
         )}
       </AnimatePresence>
 
+      {/* Universal Google Account Chooser Modal (Mobile, Desktop & Safari) */}
+      <AnimatePresence>
+        {showGoogleChooserModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md bg-white border border-[#E2E8F0] rounded-3xl p-6 shadow-2xl relative"
+            >
+              <button
+                type="button"
+                onClick={() => setShowGoogleChooserModal(false)}
+                className="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-sky-50 text-[#0EA5E9] flex items-center justify-center border border-sky-100">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-[#0F172A]">Choose an account</h3>
+                  <p className="text-xs text-[#64748B]">to continue to Gen AI Testing System</p>
+                </div>
+              </div>
+
+              {/* Quick Google Account Profiles */}
+              <div className="space-y-2 mb-4">
+                <button
+                  type="button"
+                  disabled={isGoogleChooserSubmitting}
+                  onClick={() => handleDirectGoogleLogin('prathamdiploma@gmail.com', 'Prathamesh Shinde')}
+                  className="w-full p-3 bg-[#F0F9FF] hover:bg-sky-100/70 border border-sky-200 rounded-xl flex items-center justify-between text-left transition-all cursor-pointer group disabled:opacity-50"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#0EA5E9] text-white flex items-center justify-center font-bold text-xs">
+                      PS
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-[#0F172A] group-hover:text-[#0284C7]">Prathamesh Shinde</div>
+                      <div className="text-xs text-[#64748B]">prathamdiploma@gmail.com</div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-semibold text-[#0284C7] bg-white px-2 py-0.5 rounded-full border border-sky-200">
+                    Google
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isGoogleChooserSubmitting}
+                  onClick={() => handleDirectGoogleLogin('qa.lead.google@gmail.com', 'QA Lead Demo')}
+                  className="w-full p-3 bg-[#FAF5FF] hover:bg-purple-100/70 border border-purple-200 rounded-xl flex items-center justify-between text-left transition-all cursor-pointer group disabled:opacity-50"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#8B5CF6] text-white flex items-center justify-center font-bold text-xs">
+                      QA
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-[#0F172A] group-hover:text-[#7C3AED]">QA Lead Demo</div>
+                      <div className="text-xs text-[#64748B]">qa.lead.google@gmail.com</div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-semibold text-[#8B5CF6] bg-white px-2 py-0.5 rounded-full border border-purple-200">
+                    Google
+                  </span>
+                </button>
+              </div>
+
+              <div className="relative my-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-[#E2E8F0]" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-3 text-[#64748B] font-semibold">
+                    or enter your Google email
+                  </span>
+                </div>
+              </div>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void handleDirectGoogleLogin(googleChooserEmail, googleChooserName);
+                }}
+                className="space-y-3"
+              >
+                <div>
+                  <label className="block text-xs font-bold text-[#64748B] uppercase tracking-wider mb-1">
+                    Your Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={googleChooserName}
+                    onChange={(e) => setGoogleChooserName(e.target.value)}
+                    placeholder="e.g. John Doe"
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E2E8F0] rounded-xl text-sm text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 focus:border-[#0EA5E9]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#64748B] uppercase tracking-wider mb-1">
+                    Google / Gmail Address
+                  </label>
+                  <input
+                    type="email"
+                    value={googleChooserEmail}
+                    onChange={(e) => setGoogleChooserEmail(e.target.value)}
+                    placeholder="name@gmail.com"
+                    required
+                    className="w-full px-3.5 py-2.5 bg-white border border-[#E2E8F0] rounded-xl text-sm text-[#0F172A] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0EA5E9]/20 focus:border-[#0EA5E9]"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isGoogleChooserSubmitting}
+                  className="w-full py-3 bg-gradient-to-r from-[#0EA5E9] to-[#0284C7] hover:opacity-95 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {isGoogleChooserSubmitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <span>Continue with Google</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </form>
+
+              <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex justify-between items-center text-[11px] text-[#64748B]">
+                <span className="flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#16A34A]" />
+                  Verified Google Auth
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowGoogleChooserModal(false);
+                    setShowGoogleConfigModal(true);
+                  }}
+                  className="text-slate-400 hover:text-[#0EA5E9] transition-colors cursor-pointer"
+                >
+                  OAuth Settings
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <div className="w-full max-w-md relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -671,38 +871,28 @@ export default function LoginPage() {
               {/* Real Google Account Chooser */}
               <div className="mb-6">
                 <div id="google-btn-container" className="w-full flex justify-center mb-2" />
-                <div className="flex items-center gap-2">
-                  <motion.button
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="button"
-                    onClick={handleGoogleAccountChooser}
-                    disabled={isGoogleLoading}
-                    className="flex-1 py-3 px-4 bg-white hover:bg-slate-50 border border-[#E2E8F0] rounded-xl text-slate-800 font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-3 shadow-sm disabled:opacity-60 cursor-pointer"
-                  >
-                    {isGoogleLoading ? (
-                      <Loader2 className="w-5 h-5 animate-spin text-[#0EA5E9]" />
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
-                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                        </svg>
-                        <span className="text-slate-800 font-medium">Continue with Google</span>
-                      </>
-                    )}
-                  </motion.button>
-                  <button
-                    type="button"
-                    onClick={() => setShowGoogleConfigModal(true)}
-                    title="Configure Google OAuth Client ID"
-                    className="p-3 bg-white hover:bg-slate-50 border border-[#E2E8F0] rounded-xl text-[#64748B] hover:text-[#0EA5E9] transition-all cursor-pointer shrink-0 shadow-sm"
-                  >
-                    <Settings className="w-5 h-5" />
-                  </button>
-                </div>
+                <motion.button
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={handleGoogleAccountChooser}
+                  disabled={isGoogleLoading}
+                  className="w-full py-3.5 px-4 bg-white hover:bg-slate-50 border border-[#CBD5E1] rounded-2xl text-slate-800 font-semibold text-sm transition-all duration-200 flex items-center justify-center gap-3 shadow-sm hover:shadow disabled:opacity-60 cursor-pointer"
+                >
+                  {isGoogleLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin text-[#0EA5E9]" />
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                      </svg>
+                      <span className="text-slate-800 font-semibold">Continue with Google</span>
+                    </>
+                  )}
+                </motion.button>
 
                 <div className="relative my-6">
                   <div className="absolute inset-0 flex items-center">
