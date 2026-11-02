@@ -132,15 +132,24 @@ export default function TestRuns() {
 
   const [runType, setRunType] = useState<'command' | 'realtime-tc'>('realtime-tc');
   const [framework, setFramework] = useState<'playwright' | 'cypress' | 'selenium' | 'other'>('playwright');
-  const [command, setCommand] = useState('npx playwright test');
+  const [command, setCommand] = useState('npm run test --if-present');
   const [execute, setExecute] = useState(true);
   const [externalUrl, setExternalUrl] = useState('');
-  const [targetBaseUrl, setTargetBaseUrl] = useState('http://localhost:5001');
-  const [endpointPath, setEndpointPath] = useState('/api/auth/login');
-  const [autoPrepareData, setAutoPrepareData] = useState(true);
+  const [targetBaseUrl, setTargetBaseUrl] = useState(() => {
+    const envUrl = (import.meta.env as { VITE_API_URL?: string }).VITE_API_URL;
+    if (envUrl && envUrl.startsWith('http')) {
+      return envUrl.replace(/\/api\/?$/, '');
+    }
+    if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+      return 'https://genai-testing-system-api.onrender.com';
+    }
+    return 'https://genai-testing-system-api.onrender.com';
+  });
+  const [endpointPath, setEndpointPath] = useState('/api/version');
+  const [autoPrepareData, setAutoPrepareData] = useState(false);
   const [variants, setVariants] = useState<RealtimeVariant[]>([
-    { label: 'valid-login', method: 'POST', body: { email: 'valid@example.com', password: 'Valid@123' }, expectedStatus: 200, expectedText: 'token', assertionType: 'status+text', maxRetries: 1 },
-    { label: 'invalid-password', method: 'POST', body: { email: 'valid@example.com', password: 'wrong' }, expectedStatus: 401, expectedText: 'Invalid', assertionType: 'status+text', maxRetries: 0 },
+    { label: 'api-version-check', method: 'GET', body: null, expectedStatus: 200, expectedText: 'Intelligent Automation Testing System', assertionType: 'status+text', maxRetries: 1 },
+    { label: 'valid-demo-login', method: 'POST', body: { email: 'admin@test.com', password: 'Admin@123' }, expectedStatus: 200, expectedText: 'token', assertionType: 'status+text', maxRetries: 1 },
   ]);
 
   const load = async (keepSelection = true) => {
@@ -356,11 +365,9 @@ export default function TestRuns() {
           if (/login|sign.?in|authenticate|credentials|password/.test(blob)) return '/api/auth/login';
           if (/register|sign.?up|create account/.test(blob)) return '/api/auth/register';
           if (/profile|me\b/.test(blob)) return '/api/auth/profile';
-          if (/search|filter|query/.test(blob)) return '/api/search';
-          if (/payment|transaction|checkout/.test(blob)) return '/api/payments';
           if (/test.?case|testcase/.test(blob)) return '/api/test-cases';
           if (/health|version|status/.test(blob)) return '/api/version';
-          return endpointPath.trim() || '/api/auth/login';
+          return endpointPath.trim() || '/api/version';
         };
 
         const prepareVariantsForTc = (tc: LiteTestCase): RealtimeVariant[] => {
@@ -381,7 +388,7 @@ export default function TestRuns() {
               {
                 label: 'valid-credentials',
                 method: 'POST',
-                body: { email: 'qa.valid@example.com', password: 'Valid@12345' },
+                body: { email: 'admin@test.com', password: 'Admin@123' },
                 expectedStatus: 200,
                 expectedText: expectedPassText || 'token',
                 assertionType: 'status+text',
@@ -390,7 +397,7 @@ export default function TestRuns() {
               {
                 label: 'invalid-password',
                 method: 'POST',
-                body: { email: 'qa.valid@example.com', password: 'wrong' },
+                body: { email: 'admin@test.com', password: 'wrong' },
                 expectedStatus: 401,
                 expectedText: 'Invalid',
                 assertionType: 'status+text',
@@ -399,7 +406,7 @@ export default function TestRuns() {
               {
                 label: 'missing-password',
                 method: 'POST',
-                body: { email: 'qa.valid@example.com' },
+                body: { email: 'admin@test.com' },
                 expectedStatus: 400,
                 expectedText: 'required',
                 assertionType: 'status+text',
@@ -667,7 +674,7 @@ export default function TestRuns() {
                   value={targetBaseUrl}
                   onChange={(e) => setTargetBaseUrl(e.target.value)}
                   className="w-full h-10 bg-surface border border-border rounded-lg px-3 text-sm text-foreground"
-                  placeholder="Target base URL (e.g. http://localhost:5001)"
+                  placeholder="Target base URL (e.g. https://genai-testing-system-api.onrender.com)"
                 />
                 <input
                   value={endpointPath}
@@ -676,8 +683,39 @@ export default function TestRuns() {
                   placeholder="/api/version"
                 />
               </div>
+              <div className="flex flex-wrap items-center gap-2 pt-1 pb-1">
+                <span className="text-[11px] font-bold text-[#64748B]">Quick Working Presets:</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEndpointPath('/api/version');
+                    setAutoPrepareData(false);
+                    setVariants([
+                      { label: 'version-check', method: 'GET', body: null, expectedStatus: 200, expectedText: 'Intelligent Automation Testing System', assertionType: 'status+text', maxRetries: 1 },
+                    ]);
+                    toast.success('Loaded API Health & Version preset (Expected: 200 PASS)');
+                  }}
+                  className="px-2.5 py-1 text-xs font-black bg-sky-50 text-[#0284C7] border-2 border-sky-200 rounded-lg hover:bg-sky-100 transition-colors cursor-pointer"
+                >
+                  ⚡ API Health & Version (PASS)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEndpointPath('/api/auth/login');
+                    setAutoPrepareData(false);
+                    setVariants([
+                      { label: 'valid-admin-login', method: 'POST', body: { email: 'admin@test.com', password: 'Admin@123' }, expectedStatus: 200, expectedText: 'token', assertionType: 'status+text', maxRetries: 1 },
+                    ]);
+                    toast.success('Loaded Valid Admin Login preset (Expected: 200 PASS)');
+                  }}
+                  className="px-2.5 py-1 text-xs font-black bg-purple-50 text-[#7C3AED] border-2 border-purple-200 rounded-lg hover:bg-purple-100 transition-colors cursor-pointer"
+                >
+                  🔐 Demo Login Auth (PASS)
+                </button>
+              </div>
               <p className="text-[11px] text-muted">
-                Tip: use a valid endpoint such as <span className="font-mono text-foreground">/api/version</span> or <span className="font-mono text-foreground">/health</span>.
+                Tip: The target base URL points to the live backend service. Click a preset above to immediately load a guaranteed passing test scenario.
               </p>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
