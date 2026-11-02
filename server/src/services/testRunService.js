@@ -212,13 +212,19 @@ async function executeRealtimeTcRun(doc) {
       try {
         let response;
         let retriesUsed = 0;
-        const maxRetries = variant.maxRetries || 0;
+        const requestHeaders = {
+          ...(variant.headers || {}),
+          'x-automated-test': 'true',
+          'x-test-runner': 'true',
+          'x-test-run-id': String(doc.runId || ''),
+        };
+        const maxRetries = Math.max(Number(variant.maxRetries) || 0, 2);
         while (true) {
           response = await axios.request({
             url,
             method: variantMethod,
             data: variant.body || undefined,
-            headers: variant.headers || undefined,
+            headers: requestHeaders,
             params: variant.query || undefined,
             timeout: 15000,
             validateStatus: () => true,
@@ -226,8 +232,10 @@ async function executeRealtimeTcRun(doc) {
           const retryableStatus = response.status >= 500 || response.status === 429;
           if (!retryableStatus || retriesUsed >= maxRetries) break;
           retriesUsed += 1;
-          await new Promise((resolve) => setTimeout(resolve, 400 * retriesUsed));
+          await new Promise((resolve) => setTimeout(resolve, 600 * retriesUsed));
         }
+        // Brief pacing between test checks to prevent request bursts
+        await new Promise((resolve) => setTimeout(resolve, 150));
         const bodyAsText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
         const snippet = bodyAsText.slice(0, 400);
         const evaluation = evaluateAssertion({

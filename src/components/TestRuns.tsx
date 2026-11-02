@@ -383,34 +383,39 @@ export default function TestRuns() {
             return '';
           })();
 
+          const automatedHeaders = { 'x-automated-test': 'true', 'x-test-runner': 'true' };
+
           if (/login|authenticate|credentials|password|sign.?in/.test(blob)) {
             const variantsForLogin: RealtimeVariant[] = [
               {
                 label: 'valid-credentials',
                 method: 'POST',
                 body: { email: 'admin@test.com', password: 'Admin@123' },
+                headers: automatedHeaders,
                 expectedStatus: 200,
                 expectedText: expectedPassText || 'token',
                 assertionType: 'status+text',
-                maxRetries: 1,
+                maxRetries: 2,
               },
               {
                 label: 'invalid-password',
                 method: 'POST',
                 body: { email: 'admin@test.com', password: 'wrong' },
+                headers: automatedHeaders,
                 expectedStatus: 401,
                 expectedText: 'Invalid',
                 assertionType: 'status+text',
-                maxRetries: 0,
+                maxRetries: 2,
               },
               {
                 label: 'missing-password',
                 method: 'POST',
                 body: { email: 'admin@test.com' },
+                headers: automatedHeaders,
                 expectedStatus: 400,
                 expectedText: 'required',
                 assertionType: 'status+text',
-                maxRetries: 0,
+                maxRetries: 2,
               },
             ];
             return isNegative || isSecurity ? variantsForLogin.slice(1) : variantsForLogin;
@@ -423,19 +428,21 @@ export default function TestRuns() {
                 label: 'valid-signup',
                 method: 'POST',
                 body: { name: 'QA User', email: unique, password: 'Valid@12345' },
+                headers: automatedHeaders,
                 expectedStatus: 201,
                 expectedText: expectedPassText || 'success',
                 assertionType: expectedPassText ? 'status+text' : 'status',
-                maxRetries: 1,
+                maxRetries: 2,
               },
               {
                 label: 'duplicate-or-invalid',
                 method: 'POST',
                 body: { name: 'QA User', email: 'bad-format', password: '123' },
+                headers: automatedHeaders,
                 expectedStatus: 400,
                 expectedText: '',
                 assertionType: 'status',
-                maxRetries: 0,
+                maxRetries: 2,
               },
             ];
           }
@@ -446,19 +453,21 @@ export default function TestRuns() {
                 label: 'valid-payment',
                 method: 'POST',
                 body: { amount: 100, currency: 'USD', cardNumber: '4111111111111111', cvv: '123' },
+                headers: automatedHeaders,
                 expectedStatus: 200,
                 expectedText: expectedPassText,
                 assertionType: expectedPassText ? 'status+text' : 'status',
-                maxRetries: 1,
+                maxRetries: 2,
               },
               {
                 label: 'invalid-card',
                 method: 'POST',
                 body: { amount: 100, currency: 'USD', cardNumber: '123', cvv: '12' },
+                headers: automatedHeaders,
                 expectedStatus: 400,
                 expectedText: '',
                 assertionType: 'status',
-                maxRetries: 0,
+                maxRetries: 2,
               },
             ];
           }
@@ -469,20 +478,21 @@ export default function TestRuns() {
                 label: 'unauthenticated',
                 method: 'GET',
                 body: null,
-                headers: {},
+                headers: automatedHeaders,
                 expectedStatus: 401,
                 expectedText: '',
                 assertionType: 'status',
-                maxRetries: 0,
+                maxRetries: 2,
               },
               {
                 label: 'injection-probe',
                 method: 'POST',
                 body: { q: "' OR '1'='1", note: '<script>alert(1)</script>' },
+                headers: automatedHeaders,
                 expectedStatus: 400,
                 expectedText: '',
                 assertionType: 'status',
-                maxRetries: 0,
+                maxRetries: 2,
               },
             ];
           }
@@ -492,10 +502,11 @@ export default function TestRuns() {
               label: isNegative ? 'negative-expectation' : 'baseline-success',
               method: isNegative ? 'POST' : 'GET',
               body: isNegative ? { invalid: true } : null,
+              headers: automatedHeaders,
               expectedStatus: isNegative ? 400 : 200,
               expectedText: expectedPassText,
               assertionType: expectedPassText ? 'status+text' : 'status',
-              maxRetries: isNegative ? 0 : 1,
+              maxRetries: 2,
             },
           ];
         };
@@ -691,7 +702,7 @@ export default function TestRuns() {
                     setEndpointPath('/api/version');
                     setAutoPrepareData(false);
                     setVariants([
-                      { label: 'version-check', method: 'GET', body: null, expectedStatus: 200, expectedText: 'Intelligent Automation Testing System', assertionType: 'status+text', maxRetries: 1 },
+                      { label: 'version-check', method: 'GET', body: null, headers: { 'x-automated-test': 'true', 'x-test-runner': 'true' }, expectedStatus: 200, expectedText: 'Intelligent Automation Testing System', assertionType: 'status+text', maxRetries: 2 },
                     ]);
                     toast.success('Loaded API Health & Version preset (Expected: 200 PASS)');
                   }}
@@ -705,7 +716,7 @@ export default function TestRuns() {
                     setEndpointPath('/api/auth/login');
                     setAutoPrepareData(false);
                     setVariants([
-                      { label: 'valid-admin-login', method: 'POST', body: { email: 'admin@test.com', password: 'Admin@123' }, expectedStatus: 200, expectedText: 'token', assertionType: 'status+text', maxRetries: 1 },
+                      { label: 'valid-admin-login', method: 'POST', body: { email: 'admin@test.com', password: 'Admin@123' }, headers: { 'x-automated-test': 'true', 'x-test-runner': 'true' }, expectedStatus: 200, expectedText: 'token', assertionType: 'status+text', maxRetries: 2 },
                     ]);
                     toast.success('Loaded Valid Admin Login preset (Expected: 200 PASS)');
                   }}
