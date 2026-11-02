@@ -171,51 +171,62 @@ function sanitizeClassName(id: string) {
 }
 
 function renderPlaywright(tc: TestCase, actions: AutomationAction[]): string {
+  const reqId = tc.requirementId || 'REQ-GENERAL';
+  const reqDesc = tc.requirementDescription || tc.title || tc.scenario;
+  const dataBlock = tc.testData
+    ? `\n    // Test Data Parameters\n    const testData = ${JSON.stringify(tc.testData)};\n`
+    : '';
+
   const lines = actions.map((a) => {
     switch (a.kind) {
       case 'navigate':
-        return `    // ${a.comment}\n    await page.goto(${JSON.stringify(a.url)});`;
+        return `    // Step: ${a.comment}\n    await page.goto(${JSON.stringify(a.url)});`;
       case 'fill':
-        if (a.by === 'name') return `    // ${a.comment}\n    await page.locator('input[name="${a.target}"], [name="${a.target}"]').first().fill(${JSON.stringify(a.value)});`;
-        if (a.by === 'placeholder') return `    // ${a.comment}\n    await page.getByPlaceholder(${JSON.stringify(a.target)}).fill(${JSON.stringify(a.value)});`;
-        return `    // ${a.comment}\n    await page.getByLabel(${JSON.stringify(a.target)}, { exact: false }).fill(${JSON.stringify(a.value)});`;
+        if (a.by === 'name') return `    // Step: ${a.comment}\n    await page.locator('input[name="${a.target}"], [name="${a.target}"]').first().fill(${JSON.stringify(a.value)});`;
+        if (a.by === 'placeholder') return `    // Step: ${a.comment}\n    await page.getByPlaceholder(${JSON.stringify(a.target)}).fill(${JSON.stringify(a.value)});`;
+        return `    // Step: ${a.comment}\n    await page.getByLabel(${JSON.stringify(a.target)}, { exact: false }).fill(${JSON.stringify(a.value)});`;
       case 'click':
-        if (a.by === 'role') return `    // ${a.comment}\n    await page.getByRole('button', { name: /${a.target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/i }).click();`;
-        if (a.by === 'text') return `    // ${a.comment}\n    await page.getByText(${JSON.stringify(a.target)}, { exact: false }).click();`;
-        if (a.by === 'name') return `    // ${a.comment}\n    await page.locator('[name="${a.target}"]').click();`;
-        return `    // ${a.comment}\n    await page.locator('button[type="submit"], button').first().click();`;
+        if (a.by === 'role') return `    // Step: ${a.comment}\n    await page.getByRole('button', { name: /${a.target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/i }).click();`;
+        if (a.by === 'text') return `    // Step: ${a.comment}\n    await page.getByText(${JSON.stringify(a.target)}, { exact: false }).click();`;
+        if (a.by === 'name') return `    // Step: ${a.comment}\n    await page.locator('[name="${a.target}"]').click();`;
+        return `    // Step: ${a.comment}\n    await page.locator('button[type="submit"], button').first().click();`;
       case 'select':
-        return `    // ${a.comment}\n    await page.locator('select').first().selectOption({ label: ${JSON.stringify(a.value)} });`;
+        return `    // Step: ${a.comment}\n    await page.locator('select').first().selectOption({ label: ${JSON.stringify(a.value)} });`;
       case 'wait':
-        return `    // ${a.comment}\n    await page.waitForTimeout(${a.ms});`;
+        return `    // Step: ${a.comment}\n    await page.waitForTimeout(${a.ms});`;
       case 'assertUrl':
-        return `    // ${a.comment}\n    await expect(page).toHaveURL(new RegExp(${JSON.stringify(a.pattern)}, 'i'));`;
+        return `    // Assertion: ${a.comment}\n    await expect(page).toHaveURL(new RegExp(${JSON.stringify(a.pattern)}, 'i'));`;
       case 'assertText':
-        return `    // ${a.comment}\n    await expect(page.getByText(${JSON.stringify(a.text)}, { exact: false })).toBeVisible({ timeout: 10000 });`;
+        return `    // Assertion: ${a.comment}\n    await expect(page.getByText(${JSON.stringify(a.text)}, { exact: false })).toBeVisible({ timeout: 10000 });`;
       case 'assertVisible':
-        return `    // ${a.comment}\n    await expect(page.locator('body')).toContainText(${JSON.stringify(a.target)});`;
+        return `    // Assertion: ${a.comment}\n    await expect(page.locator('body')).toContainText(${JSON.stringify(a.target)});`;
       case 'assertNotVisible':
-        return `    // ${a.comment}\n    await expect(page.getByText(${JSON.stringify(a.target)}, { exact: false })).toHaveCount(0);`;
+        return `    // Assertion: ${a.comment}\n    await expect(page.getByText(${JSON.stringify(a.target)}, { exact: false })).toHaveCount(0);`;
       case 'assertTitle':
-        return `    // ${a.comment}\n    await expect(page).toHaveTitle(new RegExp(${JSON.stringify(a.text)}, 'i'));`;
+        return `    // Assertion: ${a.comment}\n    await expect(page).toHaveTitle(new RegExp(${JSON.stringify(a.text)}, 'i'));`;
       default:
-        return `    // TODO: ${a.comment}\n    await page.waitForTimeout(500);`;
+        return `    // Step: ${a.comment}\n    await page.waitForTimeout(500);`;
     }
   });
 
   return `import { test, expect } from '@playwright/test';
 
 /**
- * ${tc.testCaseId} — ${tc.scenario}
- * Priority: ${tc.priority} | Category: ${tc.category}
- * Expected: ${tc.expectedResults}
+ * ============================================================================
+ * Requirement: ${reqId} — ${reqDesc}
+ * Test Case:   ${tc.testCaseId} — ${tc.title || tc.scenario}
+ * Priority:    ${tc.priority} | Severity: ${tc.severity || 'Major'} | Category: ${tc.category}
+ * Expected:    ${tc.expectedResults}
+ * Preconditions: ${typeof tc.preconditions === 'string' ? tc.preconditions : JSON.stringify(tc.preconditions)}
  *
- * Run:
- *   npx playwright test ${sanitizeClassName(tc.testCaseId)}.spec.ts
+ * Execution (Playwright CLI):
+ *   npx playwright test ${sanitizeClassName(tc.testCaseId)}.spec.ts --headed
+ * ============================================================================
  */
-test.describe(${JSON.stringify(tc.testCaseId)}, () => {
+test.describe(${JSON.stringify(`${reqId}: ${tc.testCaseId}`)}, () => {
   test(${JSON.stringify(tc.scenario.slice(0, 120))}, async ({ page }) => {
     test.setTimeout(60000);
+${dataBlock}
 ${lines.join('\n\n')}
   });
 });
@@ -223,45 +234,59 @@ ${lines.join('\n\n')}
 }
 
 function renderCypress(tc: TestCase, actions: AutomationAction[]): string {
+  const reqId = tc.requirementId || 'REQ-GENERAL';
+  const reqDesc = tc.requirementDescription || tc.title || tc.scenario;
+  const dataBlock = tc.testData
+    ? `\n    // Test Data Parameters\n    const testData = ${JSON.stringify(tc.testData)};\n`
+    : '';
+
   const lines = actions.map((a) => {
     switch (a.kind) {
       case 'navigate':
-        return `    // ${a.comment}\n    cy.visit(${JSON.stringify(a.url)});`;
+        return `    // Step: ${a.comment}\n    cy.visit(${JSON.stringify(a.url)});`;
       case 'fill':
-        if (a.by === 'name') return `    // ${a.comment}\n    cy.get('input[name="${a.target}"], [name="${a.target}"]').first().clear().type(${JSON.stringify(a.value)});`;
-        return `    // ${a.comment}\n    cy.contains('label', ${JSON.stringify(a.target)}).parent().find('input').clear().type(${JSON.stringify(a.value)});`;
+        if (a.by === 'name') return `    // Step: ${a.comment}\n    cy.get('input[name="${a.target}"], [name="${a.target}"]').first().clear().type(${JSON.stringify(a.value)});`;
+        return `    // Step: ${a.comment}\n    cy.contains('label', ${JSON.stringify(a.target)}).parent().find('input').clear().type(${JSON.stringify(a.value)});`;
       case 'click':
-        if (a.by === 'role' || a.by === 'text') return `    // ${a.comment}\n    cy.contains('button', /${a.target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/i).click();`;
-        return `    // ${a.comment}\n    cy.get('button[type="submit"], button').first().click();`;
+        if (a.by === 'role' || a.by === 'text') return `    // Step: ${a.comment}\n    cy.contains('button', /${a.target.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/i).click();`;
+        return `    // Step: ${a.comment}\n    cy.get('button[type="submit"], button').first().click();`;
       case 'select':
-        return `    // ${a.comment}\n    cy.get('select').first().select(${JSON.stringify(a.value)});`;
+        return `    // Step: ${a.comment}\n    cy.get('select').first().select(${JSON.stringify(a.value)});`;
       case 'wait':
-        return `    // ${a.comment}\n    cy.wait(${a.ms});`;
+        return `    // Step: ${a.comment}\n    cy.wait(${a.ms});`;
       case 'assertUrl':
-        return `    // ${a.comment}\n    cy.url().should('match', /${a.pattern}/i);`;
+        return `    // Assertion: ${a.comment}\n    cy.url().should('match', /${a.pattern}/i);`;
       case 'assertText':
-        return `    // ${a.comment}\n    cy.contains(${JSON.stringify(a.text)}, { matchCase: false }).should('be.visible');`;
+        return `    // Assertion: ${a.comment}\n    cy.contains(${JSON.stringify(a.text)}, { matchCase: false }).should('be.visible');`;
       case 'assertVisible':
-        return `    // ${a.comment}\n    cy.contains(${JSON.stringify(a.target)}).should('exist');`;
+        return `    // Assertion: ${a.comment}\n    cy.contains(${JSON.stringify(a.target)}).should('exist');`;
       case 'assertNotVisible':
-        return `    // ${a.comment}\n    cy.contains(${JSON.stringify(a.target)}, { matchCase: false }).should('not.exist');`;
+        return `    // Assertion: ${a.comment}\n    cy.contains(${JSON.stringify(a.target)}, { matchCase: false }).should('not.exist');`;
       case 'assertTitle':
-        return `    // ${a.comment}\n    cy.title().should('match', /${a.text}/i);`;
+        return `    // Assertion: ${a.comment}\n    cy.title().should('match', /${a.text}/i);`;
       default:
-        return `    // TODO: ${a.comment}\n    cy.wait(500);`;
+        return `    // Step: ${a.comment}\n    cy.wait(500);`;
     }
   });
 
   return `/**
- * ${tc.testCaseId} — ${tc.scenario}
- * Run: npx cypress run --spec cypress/e2e/${sanitizeClassName(tc.testCaseId)}.cy.js
+ * ============================================================================
+ * Requirement: ${reqId} — ${reqDesc}
+ * Test Case:   ${tc.testCaseId} — ${tc.title || tc.scenario}
+ * Priority:    ${tc.priority} | Category: ${tc.category}
+ * Expected:    ${tc.expectedResults}
+ *
+ * Execution (Cypress CLI):
+ *   npx cypress run --spec cypress/e2e/${sanitizeClassName(tc.testCaseId)}.cy.js
+ * ============================================================================
  */
-describe(${JSON.stringify(`${tc.testCaseId}: ${tc.scenario.slice(0, 80)}`)}, () => {
+describe(${JSON.stringify(`${reqId} - ${tc.testCaseId}: ${tc.scenario.slice(0, 70)}`)}, () => {
   beforeEach(() => {
     cy.viewport(1280, 720);
   });
 
-  it('executes selected test case steps', () => {
+  it('verifies requirement execution steps and assertions', () => {
+${dataBlock}
 ${lines.join('\n\n')}
   });
 });
@@ -269,45 +294,56 @@ ${lines.join('\n\n')}
 }
 
 function renderSeleniumPython(tc: TestCase, actions: AutomationAction[]): string {
+  const reqId = tc.requirementId || 'REQ-GENERAL';
+  const reqDesc = tc.requirementDescription || tc.title || tc.scenario;
+  const cls = sanitizeClassName(tc.testCaseId);
+  const dataBlock = tc.testData
+    ? `\n        # Test Data Parameters\n        test_data = ${JSON.stringify(tc.testData)}\n`
+    : '';
+
   const lines = actions.map((a) => {
     switch (a.kind) {
       case 'navigate': {
         const url = a.url.startsWith('http') ? a.url : `${BASE_URL}${a.url}`;
-        return `        # ${a.comment}\n        driver.get(${JSON.stringify(url)})`;
+        return `        # Step: ${a.comment}\n        driver.get(${JSON.stringify(url)})`;
       }
       case 'fill':
-        return `        # ${a.comment}\n        el = driver.find_element(By.CSS_SELECTOR, 'input[name="${a.target}"], [name="${a.target}"]')\n        el.clear()\n        el.send_keys(${JSON.stringify(a.value)})`;
+        return `        # Step: ${a.comment}\n        el = driver.find_element(By.CSS_SELECTOR, 'input[name="${a.target}"], [name="${a.target}"]')\n        el.clear()\n        el.send_keys(${JSON.stringify(a.value)})`;
       case 'click':
         if (a.by === 'role' || a.by === 'text') {
-          return `        # ${a.comment}\n        driver.find_element(By.XPATH, "//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '${a.target.toLowerCase()}')]").click()`;
+          return `        # Step: ${a.comment}\n        driver.find_element(By.XPATH, "//button[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '${a.target.toLowerCase()}')]").click()`;
         }
-        return `        # ${a.comment}\n        driver.find_element(By.CSS_SELECTOR, "button[type='submit'], button").click()`;
+        return `        # Step: ${a.comment}\n        driver.find_element(By.CSS_SELECTOR, "button[type='submit'], button").click()`;
       case 'select':
-        return `        # ${a.comment}\n        from selenium.webdriver.support.ui import Select\n        Select(driver.find_element(By.TAG_NAME, "select")).select_by_visible_text(${JSON.stringify(a.value)})`;
+        return `        # Step: ${a.comment}\n        from selenium.webdriver.support.ui import Select\n        Select(driver.find_element(By.TAG_NAME, "select")).select_by_visible_text(${JSON.stringify(a.value)})`;
       case 'wait':
-        return `        # ${a.comment}\n        time.sleep(${(a.ms / 1000).toFixed(1)})`;
+        return `        # Step: ${a.comment}\n        time.sleep(${(a.ms / 1000).toFixed(1)})`;
       case 'assertUrl':
-        return `        # ${a.comment}\n        assert re.search(${JSON.stringify(a.pattern)}, driver.current_url, re.I), driver.current_url`;
+        return `        # Assertion: ${a.comment}\n        assert re.search(${JSON.stringify(a.pattern)}, driver.current_url, re.I), f"Expected URL to contain ${a.pattern}, got {driver.current_url}"`;
       case 'assertText':
       case 'assertVisible':
-        return `        # ${a.comment}\n        assert ${JSON.stringify(a.kind === 'assertText' ? a.text : a.target)}.lower() in driver.page_source.lower()`;
+        return `        # Assertion: ${a.comment}\n        assert ${JSON.stringify(a.kind === 'assertText' ? a.text : a.target)}.lower() in driver.page_source.lower(), f"Expected text '${a.kind === 'assertText' ? a.text : a.target}' in page source"`;
       case 'assertNotVisible':
-        return `        # ${a.comment}\n        assert ${JSON.stringify(a.target)}.lower() not in driver.page_source.lower()`;
+        return `        # Assertion: ${a.comment}\n        assert ${JSON.stringify(a.target)}.lower() not in driver.page_source.lower(), f"Unexpected text '${a.target}' found in page source"`;
       case 'assertTitle':
-        return `        # ${a.comment}\n        assert re.search(${JSON.stringify(a.text)}, driver.title, re.I)`;
+        return `        # Assertion: ${a.comment}\n        assert re.search(${JSON.stringify(a.text)}, driver.title, re.I), f"Expected title to match '${a.text}', got {driver.title}"`;
       default:
-        return `        # TODO: ${a.comment}\n        time.sleep(0.5)`;
+        return `        # Step: ${a.comment}\n        time.sleep(0.5)`;
     }
   });
 
-  const cls = sanitizeClassName(tc.testCaseId);
   return `"""
-${tc.testCaseId} — ${tc.scenario}
-Expected: ${tc.expectedResults}
+==============================================================================
+Requirement: ${reqId} — ${reqDesc}
+Test Case:   ${tc.testCaseId} — ${tc.title || tc.scenario}
+Priority:    ${tc.priority} | Category: ${tc.category}
+Expected:    ${tc.expectedResults}
+Preconditions: ${typeof tc.preconditions === 'string' ? tc.preconditions : JSON.stringify(tc.preconditions)}
 
-Run:
+Run (PyTest):
   pip install selenium pytest
-  pytest ${cls}_test.py -q
+  pytest ${cls}_test.py -q -v
+==============================================================================
 """
 import re
 import time
@@ -321,51 +357,62 @@ class Test_${cls}:
     def setup_method(self):
         options = Options()
         options.add_argument("--window-size=1280,720")
+        options.add_argument("--no-sandbox")
         self.driver = webdriver.Chrome(options=options)
 
     def teardown_method(self):
-        self.driver.quit()
+        if hasattr(self, 'driver') and self.driver:
+            self.driver.quit()
 
     def test_${cls.toLowerCase()}(self):
         driver = self.driver
+${dataBlock}
 ${lines.join('\n\n')}
 `;
 }
 
 function renderSeleniumJava(tc: TestCase, actions: AutomationAction[]): string {
+  const reqId = tc.requirementId || 'REQ-GENERAL';
+  const reqDesc = tc.requirementDescription || tc.title || tc.scenario;
   const cls = sanitizeClassName(tc.testCaseId) + 'Test';
+  const dataBlock = tc.testData
+    ? `\n        // Test Data Parameters\n        String testData = ${JSON.stringify(tc.testData)};\n`
+    : '';
+
   const lines = actions.map((a) => {
     switch (a.kind) {
       case 'navigate': {
         const url = a.url.startsWith('http') ? a.url : `${BASE_URL}${a.url}`;
-        return `        // ${a.comment}\n        driver.get(${JSON.stringify(url)});`;
+        return `        // Step: ${a.comment}\n        driver.get(${JSON.stringify(url)});`;
       }
       case 'fill':
-        return `        // ${a.comment}\n        WebElement input_${a.target.replace(/\W/g, '_')} = driver.findElement(By.cssSelector("input[name='${a.target}'], [name='${a.target}']"));\n        input_${a.target.replace(/\W/g, '_')}.clear();\n        input_${a.target.replace(/\W/g, '_')}.sendKeys(${JSON.stringify(a.value)});`;
+        return `        // Step: ${a.comment}\n        WebElement input_${a.target.replace(/\W/g, '_')} = driver.findElement(By.cssSelector("input[name='${a.target}'], [name='${a.target}']"));\n        input_${a.target.replace(/\W/g, '_')}.clear();\n        input_${a.target.replace(/\W/g, '_')}.sendKeys(${JSON.stringify(a.value)});`;
       case 'click':
         if (a.by === 'role' || a.by === 'text') {
-          return `        // ${a.comment}\n        driver.findElement(By.xpath("//button[contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '${a.target.toLowerCase()}')]")).click();`;
+          return `        // Step: ${a.comment}\n        driver.findElement(By.xpath("//button[contains(translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '${a.target.toLowerCase()}')]")).click();`;
         }
-        return `        // ${a.comment}\n        driver.findElement(By.cssSelector("button[type='submit'], button")).click();`;
+        return `        // Step: ${a.comment}\n        driver.findElement(By.cssSelector("button[type='submit'], button")).click();`;
       case 'select':
-        return `        // ${a.comment}\n        new Select(driver.findElement(By.tagName("select"))).selectByVisibleText(${JSON.stringify(a.value)});`;
+        return `        // Step: ${a.comment}\n        new Select(driver.findElement(By.tagName("select"))).selectByVisibleText(${JSON.stringify(a.value)});`;
       case 'wait':
-        return `        // ${a.comment}\n        Thread.sleep(${a.ms});`;
+        return `        // Step: ${a.comment}\n        Thread.sleep(${a.ms});`;
       case 'assertUrl':
-        return `        // ${a.comment}\n        assertTrue(driver.getCurrentUrl().toLowerCase().matches(".*" + ${JSON.stringify(a.pattern.toLowerCase())} + ".*"));`;
+        return `        // Assertion: ${a.comment}\n        assertTrue(driver.getCurrentUrl().toLowerCase().matches(".*" + ${JSON.stringify(a.pattern.toLowerCase())} + ".*"), "Current URL did not match expected pattern");`;
       case 'assertText':
       case 'assertVisible':
-        return `        // ${a.comment}\n        assertTrue(driver.getPageSource().toLowerCase().contains(${JSON.stringify((a.kind === 'assertText' ? a.text : a.target).toLowerCase())}));`;
+        return `        // Assertion: ${a.comment}\n        assertTrue(driver.getPageSource().toLowerCase().contains(${JSON.stringify((a.kind === 'assertText' ? a.text : a.target).toLowerCase())}), "Expected text not found in page source");`;
       case 'assertNotVisible':
-        return `        // ${a.comment}\n        assertFalse(driver.getPageSource().toLowerCase().contains(${JSON.stringify(a.target.toLowerCase())}));`;
+        return `        // Assertion: ${a.comment}\n        assertFalse(driver.getPageSource().toLowerCase().contains(${JSON.stringify(a.target.toLowerCase())}), "Forbidden text was found in page source");`;
       case 'assertTitle':
-        return `        // ${a.comment}\n        assertTrue(driver.getTitle().toLowerCase().contains(${JSON.stringify(a.text.toLowerCase())}));`;
+        return `        // Assertion: ${a.comment}\n        assertTrue(driver.getTitle().toLowerCase().contains(${JSON.stringify(a.text.toLowerCase())}), "Page title did not contain expected text");`;
       default:
-        return `        // TODO: ${a.comment}\n        Thread.sleep(500);`;
+        return `        // Step: ${a.comment}\n        Thread.sleep(500);`;
     }
   });
 
-  return `import org.junit.jupiter.api.*;
+  return `package com.enterprise.automation.tests;
+
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -373,12 +420,16 @@ import org.openqa.selenium.support.ui.Select;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * ${tc.testCaseId} — ${tc.scenario}
- * Priority: ${tc.priority} | Category: ${tc.category}
- * Expected: ${tc.expectedResults}
+ * ============================================================================
+ * Requirement: ${reqId} — ${reqDesc}
+ * Test Case:   ${tc.testCaseId} — ${tc.title || tc.scenario}
+ * Priority:    ${tc.priority} | Category: ${tc.category}
+ * Expected:    ${tc.expectedResults}
+ * Preconditions: ${typeof tc.preconditions === 'string' ? tc.preconditions : JSON.stringify(tc.preconditions)}
  *
- * Run (Maven):
- *   mvn -Dtest=${cls} test
+ * Execution (Maven CLI):
+ *   mvn test -Dtest=${cls}
+ * ============================================================================
  */
 public class ${cls} {
     private WebDriver driver;
@@ -387,18 +438,22 @@ public class ${cls} {
     public void setUp() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--window-size=1280,720");
+        options.addArguments("--headless=new");
         driver = new ChromeDriver(options);
     }
 
     @Test
-    @DisplayName(${JSON.stringify(tc.scenario.slice(0, 100))})
+    @DisplayName(${JSON.stringify(`${reqId}: ${tc.scenario.slice(0, 90)}`)})
     public void executeTestCase() throws InterruptedException {
+${dataBlock}
 ${lines.join('\n\n')}
     }
 
     @AfterEach
     public void tearDown() {
-        if (driver != null) driver.quit();
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }
 `;
