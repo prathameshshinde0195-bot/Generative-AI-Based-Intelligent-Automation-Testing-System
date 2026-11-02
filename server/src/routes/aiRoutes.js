@@ -11,11 +11,11 @@ router.get('/health', aiController.checkHealth);
 // AI settings & templates
 router.get('/supported-actions', authenticate, promptTemplateController.getSupportedActions);
 router.get('/settings', authenticate, promptTemplateController.getAISettings);
-router.put('/settings', authenticate, authorize(['Admin']), promptTemplateController.updateAISettings);
+router.put('/settings', authenticate, authorize(['Admin', 'QA']), promptTemplateController.updateAISettings);
 router.get('/templates', authenticate, promptTemplateController.listTemplates);
-router.post('/templates', authenticate, authorize(['Admin']), promptTemplateController.createTemplate);
-router.put('/templates/:templateId', authenticate, authorize(['Admin']), promptTemplateController.updateTemplate);
-router.delete('/templates/:templateId', authenticate, authorize(['Admin']), promptTemplateController.archiveTemplate);
+router.post('/templates', authenticate, authorize(['Admin', 'QA']), promptTemplateController.createTemplate);
+router.put('/templates/:templateId', authenticate, authorize(['Admin', 'QA']), promptTemplateController.updateTemplate);
+router.delete('/templates/:templateId', authenticate, authorize(['Admin', 'QA']), promptTemplateController.archiveTemplate);
 
 router.post('/generate-test-cases', authenticate, aiLimiter, aiController.generateTestCases);
 router.post('/detect-ambiguities', authenticate, aiLimiter, aiController.detectAmbiguities);
